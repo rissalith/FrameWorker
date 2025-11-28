@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录 - XMGamer</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/auth.css">
+</head>
+<body class="auth-page">
+    <!-- 左侧品牌区域 -->
+    <div class="brand-section">
+        <h1 class="brand-title">MaxGamer</h1>
+        <p class="brand-subtitle">Our Relationship Needs More Imagination</p>
+    </div>
+    
+    <div class="video-container">
+        <video class="brand-video" autoplay loop muted playsinline id="loginVideo">
+            <source src="/videos/login.mp4" type="video/mp4">
+            您的浏览器不支持视频播放
+        </video>
+        <div class="video-controls">
+            <button class="volume-toggle" id="volumeToggle" aria-label="切换音量">
+                <svg id="volumeIcon" viewBox="0 0 24 24">
+                    <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
+                </svg>
+            </button>
+        </div>
+    </div>
+    
+    <div class="auth-container">
+        <!-- 谷歌风格登录卡片 -->
+        <div class="auth-card">
+            <div class="auth-header" id="loginHeader">
+                <div class="logo-container">
+                    <img src="/images/logo.png" alt="XMGamer" class="logo-image" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                    <div class="logo-fallback" style="display:none;">
+                        <span class="logo-icon">🎬</span>
+                        <h1 class="logo-text">XMGamer</h1>
+                    </div>
+                </div>
+                <h2 class="auth-title">登录</h2>
+                <p class="auth-subtitle">欢迎回来</p>
+            </div>
+
+            <!-- 登录方式切换 -->
+            <div class="login-mode-switch">
+                <button type="button" class="mode-btn active" data-mode="password">账号密码</button>
+                <button type="button" class="mode-btn" data-mode="email">邮箱验证码</button>
+            </div>
+<!-- 登录表单 -->
+<form id="loginForm" class="auth-form">
+                
+                <!-- 账号密码登录 -->
+                <div id="passwordLoginMode" class="login-mode">
+                    <!-- 邮箱输入 -->
+                    <div class="form-group">
+                        <input
+                            type="email"
+                            id="accountInput"
+                            class="form-input"
+                            placeholder="邮箱"
+                            required
+                        >
+                        <span class="form-error" id="accountError"></span>
+                    </div>
+
+                    <!-- 密码输入 -->
+                    <div class="form-group">
+                        <input
+                            type="password"
+                            id="passwordInput"
+                            class="form-input"
+                            placeholder="密码"
+                            required
+                        >
+                        <span class="form-error" id="passwordError"></span>
+                    </div>
+                </div>
+
+                <!-- 邮箱验证码登录 -->
+                <div id="emailLoginMode" class="login-mode" style="display: none;">
+                    <!-- 邮箱输入 -->
+                    <div class="form-group">
+                        <input
+                            type="email"
+                            id="emailInput"
+                            class="form-input"
+                            placeholder="邮箱地址"
+                            required
+                        >
+                        <span class="form-error" id="emailError"></span>
+                    </div>
+
+                    <!-- 验证码输入 -->
+                    <div class="form-group">
+                        <div class="login-input-wrapper">
+                            <input
+                                type="text"
+                                id="codeInput"
+                                class="form-input code-input-flex"
+                                placeholder="验证码"
+                                maxlength="6"
+                                required
+                            >
+                            <button
+                                type="button"
+                                id="sendCodeBtn"
+                                class="send-code-btn"
+                            >
+                                获取验证码
+                            </button>
+                        </div>
+                        <span class="form-error" id="codeError"></span>
+                    </div>
+                </div>
+
+                <!-- 第三方登录图标 -->
+                <div class="social-login-icons">
+                    <div class="social-login-title">或使用第三方账号登录</div>
+                    <div class="login-input-wrapper">
+                        <button type="button" id="googleLoginBtn" class="social-icon-btn google-btn" title="使用 Google 登录">
+                            <svg class="icon" viewBox="0 0 24 24">
+                                <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                                <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                                <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/>
+                                <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
+                            </svg>
+                        </button>
+                        <button type="button" id="twitterLoginBtn" class="social-icon-btn twitter-btn" title="使用 X 登录">
+                            <svg class="icon" viewBox="0 0 24 24">
+                                <path fill="#000000" d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+                            </svg>
+                        </button>
+                        <button type="button" id="wechatLoginBtn" class="social-icon-btn wechat-btn" title="使用微信登录">
+                            <svg class="icon" viewBox="0 0 24 24">
+                                <path fill="#07C160" d="M8.691 2.188C3.891 2.188 0 5.476 0 9.53c0 2.212 1.17 4.203 3.002 5.55a.59.59 0 0 1 .213.665l-.39 1.48c-.019.07-.048.141-.048.213 0 .163.13.295.29.295a.326.326 0 0 0 .167-.054l1.903-1.114a.864.864 0 0 1 .717-.098 10.16 10.16 0 0 0 2.837.403c.276 0 .543-.027.811-.05-.857-2.578.157-4.972 1.932-6.446 1.703-1.415 3.882-1.98 5.853-1.838-.576-3.583-4.196-6.348-8.596-6.348zM5.785 5.991c.642 0 1.162.529 1.162 1.18a1.17 1.17 0 0 1-1.162 1.178A1.17 1.17 0 0 1 4.623 7.17c0-.651.52-1.18 1.162-1.18zm5.813 0c.642 0 1.162.529 1.162 1.18a1.17 1.17 0 0 1-1.162 1.178 1.17 1.17 0 0 1-1.162-1.178c0-.651.52-1.18 1.162-1.18zm5.34 2.867c-1.797-.052-3.746.512-5.28 1.786-1.72 1.428-2.687 3.72-1.78 6.22.942 2.453 3.666 4.229 6.884 4.229.826 0 1.622-.12 2.361-.336a.722.722 0 0 1 .598.082l1.584.926a.272.272 0 0 0 .14.047c.134 0 .24-.111.24-.247 0-.06-.023-.12-.038-.177l-.327-1.233a.582.582 0 0 1-.023-.156.49.49 0 0 1 .201-.398C23.024 18.48 24 16.82 24 14.98c0-3.21-2.931-5.837-6.656-6.088V8.89c-.135-.01-.27-.027-.407-.03zm-2.53 3.274c.535 0 .969.44.969.982a.976.976 0 0 1-.969.983.976.976 0 0 1-.969-.983c0-.542.434-.982.969-.982zm4.844 0c.535 0 .969.44.969.982a.976.976 0 0 1-.969.983.976.976 0 0 1-.969-.983c0-.542.434-.982.969-.982z"/>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 状态消息 -->
+                <div id="authStatus" class="auth-status" style="display: none;"></div>
+
+                <!-- 底部操作 -->
+                <div class="form-actions">
+                    <button type="submit" id="loginBtn" class="btn-primary">
+                        登录
+                    </button>
+                </div>
+
+                <!-- 注册链接 -->
+                <div class="auth-footer" id="loginFooter">
+                    <span class="footer-text">还没有账号？</span>
+                    <a href="#" class="footer-link" id="showRegisterBtn">立即注册</a>
+                </div>
+            </form>
+<!-- 注册表单 -->
+<form id="registerForm" class="auth-form" style="display: none;">
+                
+                <div class="auth-header" style="margin-bottom: 12px; display: none;">
+                    <h2 class="auth-title">创建账号</h2>
+                    <p class="auth-subtitle">加入我们，开始创作</p>
+                </div>
+
+                <!-- 邮箱输入 -->
+                <div class="form-group">
+                    <input
+                        type="email"
+                        id="registerEmailInput"
+                        class="form-input"
+                        placeholder="邮箱地址"
+                    >
+                    <span class="form-error" id="registerEmailError"></span>
+                </div>
+
+                <!-- 验证码输入 -->
+                <div class="form-group">
+                    <div class="login-input-wrapper">
+                        <input
+                            type="text"
+                            id="registerCodeInput"
+                            class="form-input code-input-flex"
+                            placeholder="验证码"
+                            maxlength="6"
+                        >
+                        <button
+                            type="button"
+                            id="registerSendCodeBtn"
+                            class="send-code-btn"
+                        >
+                            获取验证码
+                        </button>
+                    </div>
+                    <span class="form-error" id="registerCodeError"></span>
+                </div>
+
+                <!-- 密码输入 -->
+                <div class="form-group">
+                    <input
+                        type="password"
+                        id="registerPasswordInput"
+                        class="form-input"
+                        placeholder="设置密码（至少6位）"
+                    >
+                    <span class="form-error" id="registerPasswordError"></span>
+                </div>
+
+                <!-- 确认密码输入 -->
+                <div class="form-group">
+                    <input
+                        type="password"
+                        id="registerConfirmPasswordInput"
+                        class="form-input"
+                        placeholder="确认密码"
+                    >
+                    <span class="form-error" id="registerConfirmPasswordError"></span>
+                </div>
+
+                <!-- 昵称输入（可选） -->
+                <div class="form-group">
+                    <input
+                        type="text"
+                        id="registerNicknameInput"
+                        class="form-input"
+                        placeholder="昵称（可选）"
+                        maxlength="20"
+                    >
+                    <span class="form-error" id="registerNicknameError"></span>
+                </div>
+
+                <!-- 状态消息 -->
+                <div id="registerAuthStatus" class="auth-status" style="display: none;"></div>
+
+                <!-- 底部操作 -->
+                <div class="form-actions">
+                    <button type="submit" id="registerBtn" class="btn-primary">
+                        注册
+                    </button>
+                </div>
+
+                <!-- 登录链接 -->
+                <div class="auth-footer" id="registerFooter">
+                    <span class="footer-text">已有账号？</span>
+                    <a href="#" class="footer-link" id="showLoginBtn">立即登录</a>
+                </div>
+            </form>
+
+            <!-- 设置密码模态框 -->
+            <div id="setPasswordModal" class="modal" style="display: none;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>设置登录密码</h3>
+                        <p class="modal-subtitle">首次登录，请设置您的密码</p>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <input
+                                type="password"
+                                id="newPassword"
+                                class="form-input"
+                                placeholder="请输入密码（至少6位）"
+                                minlength="6"
+                                maxlength="20"
+                            >
+                            <span class="form-error" id="newPasswordError"></span>
+                        </div>
+                        <div class="form-group">
+                            <input
+                                type="password"
+                                id="confirmPassword"
+                                class="form-input"
+                                placeholder="请再次输入密码"
+                                minlength="6"
+                                maxlength="20"
+                            >
+                            <span class="form-error" id="confirmPasswordError"></span>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="skipPasswordBtn" class="btn-secondary">
+                            跳过
+                        </button>
+                        <button type="button" id="confirmPasswordBtn" class="btn-primary">
+                            确定
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 底部链接 -->
+            <div class="bottom-links">
+                <a href="#" class="link">简体中文</a>
+                <a href="#" class="link">帮助</a>
+                <a href="#" class="link">隐私权</a>
+                <a href="#" class="link">条款</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- OAuth配置 -->
+    <script src="js/config/oauth.js"></script>
+    
+    <!-- 引入认证管理模块 -->
+    <script src="js/modules/authManager.js"></script>
+    
+    <!-- 图片轮播器 -->
+    <script src="js/image-carousel.js"></script>
+    
+    <!-- 粒子爆炸效果 -->
+    <script src="js/particle-explosion.js"></script>
+    
+    <!-- 登录页面脚本 -->
+    
+    <!-- 视频音量控制 -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const video = document.getElementById('loginVideo');
+            const volumeToggle = document.getElementById('volumeToggle');
+            const volumeIcon = document.getElementById('volumeIcon');
+            
+            if (video && volumeToggle && volumeIcon) {
+                // 默认静音状态的图标
+                const mutedIconPath = 'M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z';
+                const unmutedIconPath = 'M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z';
+                
+                // 初始化为静音图标
+                volumeIcon.querySelector('path').setAttribute('d', mutedIconPath);
+                volumeToggle.classList.add('muted');
+                
+                volumeToggle.addEventListener('click', function() {
+                    if (video.muted) {
+                        video.muted = false;
+                        volumeIcon.querySelector('path').setAttribute('d', unmutedIconPath);
+                        volumeToggle.classList.remove('muted');
+                    } else {
+                        video.muted = true;
+                        volumeIcon.querySelector('path').setAttribute('d', mutedIconPath);
+                        volumeToggle.classList.add('muted');
+                    }
+                });
+            }
+        });
+    </script>
+    <script src="js/login.js"></script>
+</body>
+</html>

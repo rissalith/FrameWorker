@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录中...</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+        
+        .container {
+            text-align: center;
+            color: white;
+        }
+        
+        .spinner {
+            width: 50px;
+            height: 50px;
+            margin: 0 auto 20px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .message {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+        
+        .error {
+            color: #ff6b6b;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 400px;
+            margin: 20px auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="spinner"></div>
+        <div class="message" id="message">正在处理登录...</div>
+    </div>
+
+    <script>
+        (async function() {
+            const messageEl = document.getElementById('message');
+            
+            try {
+                // 获取URL参数
+                const urlParams = new URLSearchParams(window.location.search);
+                const code = urlParams.get('code');
+                const state = urlParams.get('state');
+                const error = urlParams.get('error');
+                const errorDescription = urlParams.get('error_description');
+                
+                // 检查是否有错误
+                if (error) {
+                    throw new Error(errorDescription || error);
+                }
+                
+                // 检查必需参数
+                if (!code || !state) {
+                    throw new Error('缺少必需的参数');
+                }
+                
+                // 验证state
+                const savedState = sessionStorage.getItem('oauth_state');
+                const provider = sessionStorage.getItem('oauth_provider');
+                
+                if (state !== savedState) {
+                    throw new Error('状态验证失败，可能存在安全风险');
+                }
+                
+                if (!provider) {
+                    throw new Error('未找到登录提供商信息');
+                }
+                
+                messageEl.textContent = '正在验证登录信息...';
+                
+                // 准备请求数据
+                const requestData = { code, state };
+                
+                // 如果是Twitter登录，需要传递code_verifier
+                if (provider === 'twitter') {
+                    const codeVerifier = sessionStorage.getItem('code_verifier');
+                    if (!codeVerifier) {
+                        throw new Error('缺少code_verifier参数');
+                    }
+                    requestData.code_verifier = codeVerifier;
+                    // 清除code_verifier
+                    sessionStorage.removeItem('code_verifier');
+                }
+                
+                // 调用后端API处理OAuth登录
+                const response = await fetch(`/api/auth/${provider}/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestData)
+                });
+                
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.message || data.error || '登录失败');
+                }
+                
+                messageEl.textContent = '登录成功！正在跳转...';
+                
+                // 清除保存的state
+                sessionStorage.removeItem('oauth_state');
+                sessionStorage.removeItem('oauth_provider');
+                
+                // 向父窗口发送成功消息
+                if (window.opener) {
+                    window.opener.postMessage({
+                        type: 'oauth_success',
+                        token: data.token,
+                        user: data.user
+                    }, window.location.origin);
+                    
+                    // 延迟关闭窗口，让用户看到成功消息
+                    setTimeout(() => {
+                        window.close();
+                    }, 1000);
+                } else {
+                    // 如果没有父窗口，直接跳转到主页
+                    localStorage.setItem('xmframer_token', data.token);
+                    window.location.href = '/';
+                }
+                
+            } catch (error) {
+                console.error('OAuth回调处理错误:', error);
+                
+                messageEl.innerHTML = `
+                    <div class="error">
+                        <h3>登录失败</h3>
+                        <p>${error.message}</p>
+                        <button onclick="handleError()" style="
+                            margin-top: 15px;
+                            padding: 10px 20px;
+                            background: #667eea;
+                            color: white;
+                            border: none;
+                            border-radius: 4px;
+                            cursor: pointer;
+                            font-size: 14px;
+                        ">返回登录页</button>
+                    </div>
+                `;
+                
+                // 向父窗口发送错误消息
+                if (window.opener) {
+                    window.opener.postMessage({
+                        type: 'oauth_error',
+                        message: error.message
+                    }, window.location.origin);
+                }
+            }
+        })();
+        
+        function handleError() {
+            if (window.opener) {
+                window.opener.postMessage({
+                    type: 'oauth_cancel'
+                }, window.location.origin);
+                window.close();
+            } else {
+                window.location.href = '/login.html';
+            }
+        }
+    </script>
+</body>
+</html>

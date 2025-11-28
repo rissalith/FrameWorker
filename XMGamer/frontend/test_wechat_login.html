@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>微信登录测试 - XMGamer</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .status {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+
+        .status.info {
+            background: #e3f2fd;
+            color: #1976d2;
+            border-left: 4px solid #1976d2;
+        }
+
+        .status.success {
+            background: #e8f5e9;
+            color: #388e3c;
+            border-left: 4px solid #388e3c;
+        }
+
+        .status.error {
+            background: #ffebee;
+            color: #c62828;
+            border-left: 4px solid #c62828;
+        }
+
+        .status.warning {
+            background: #fff3e0;
+            color: #f57c00;
+            border-left: 4px solid #f57c00;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-wechat {
+            background: #07C160;
+            color: white;
+        }
+
+        .btn-wechat:hover {
+            background: #06ad56;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(7, 193, 96, 0.4);
+        }
+
+        .btn-wechat:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .icon {
+            width: 24px;
+            height: 24px;
+        }
+
+        .config-section {
+            background: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .config-section h3 {
+            color: #333;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+
+        .config-item {
+            margin-bottom: 15px;
+        }
+
+        .config-item label {
+            display: block;
+            color: #666;
+            margin-bottom: 5px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .config-item input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+            font-family: 'Courier New', monospace;
+        }
+
+        .config-item input:focus {
+            outline: none;
+            border-color: #07C160;
+        }
+
+        .info-box {
+            background: #fff9e6;
+            border: 1px solid #ffe58f;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+
+        .info-box h4 {
+            color: #d48806;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .info-box ol {
+            margin-left: 20px;
+            color: #666;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .info-box a {
+            color: #1890ff;
+            text-decoration: none;
+        }
+
+        .info-box a:hover {
+            text-decoration: underline;
+        }
+
+        .user-info {
+            background: #f0f9ff;
+            border: 1px solid #bae7ff;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 20px;
+        }
+
+        .user-info h4 {
+            color: #0958d9;
+            margin-bottom: 10px;
+        }
+
+        .user-info pre {
+            background: white;
+            padding: 10px;
+            border-radius: 4px;
+            overflow-x: auto;
+            font-size: 12px;
+        }
+
+        .debug-log {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            line-height: 1.6;
+        }
+
+        .debug-log .log-time {
+            color: #858585;
+        }
+
+        .debug-log .log-info {
+            color: #4fc3f7;
+        }
+
+        .debug-log .log-success {
+            color: #81c784;
+        }
+
+        .debug-log .log-error {
+            color: #e57373;
+        }
+
+        .debug-log .log-warning {
+            color: #ffb74d;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔐 微信登录测试</h1>
+        <p class="subtitle">测试微信OAuth 2.0登录功能</p>
+
+        <div id="statusMessage" class="status info">
+            ℹ️ 准备就绪，请配置微信开放平台信息后点击登录按钮
+        </div>
+
+        <!-- 配置区域 -->
+        <div class="config-section">
+            <h3>⚙️ 微信开放平台配置</h3>
+            <div class="config-item">
+                <label>App ID:</label>
+                <input type="text" id="wechatAppId" placeholder="请输入微信开放平台的App ID">
+            </div>
+            <div class="config-item">
+                <label>App Secret:</label>
+                <input type="password" id="wechatAppSecret" placeholder="请输入微信开放平台的App Secret">
+            </div>
+        </div>
+
+        <!-- 登录按钮 -->
+        <button id="wechatLoginBtn" class="btn btn-wechat">
+            <svg class="icon" viewBox="0 0 24 24">
+                <path fill="currentColor" d="M8.691 2.188C3.891 2.188 0 5.476 0 9.53c0 2.212 1.17 4.203 3.002 5.55a.59.59 0 0 1 .213.665l-.39 1.48c-.019.07-.048.141-.048.213 0 .163.13.295.29.295a.326.326 0 0 0 .167-.054l1.903-1.114a.864.864 0 0 1 .717-.098 10.16 10.16 0 0 0 2.837.403c.276 0 .543-.027.811-.05-.857-2.578.157-4.972 1.932-6.446 1.703-1.415 3.882-1.98 5.853-1.838-.576-3.583-4.196-6.348-8.596-6.348zM5.785 5.991c.642 0 1.162.529 1.162 1.18a1.17 1.17 0 0 1-1.162 1.178A1.17 1.17 0 0 1 4.623 7.17c0-.651.52-1.18 1.162-1.18zm5.813 0c.642 0 1.162.529 1.162 1.18a1.17 1.17 0 0 1-1.162 1.178 1.17 1.17 0 0 1-1.162-1.178c0-.651.52-1.18 1.162-1.18zm5.34 2.867c-1.797-.052-3.746.512-5.28 1.786-1.72 1.428-2.687 3.72-1.78 6.22.942 2.453 3.666 4.229 6.884 4.229.826 0 1.622-.12 2.361-.336a.722.722 0 0 1 .598.082l1.584.926a.272.272 0 0 0 .14.047c.134 0 .24-.111.24-.247 0-.06-.023-.12-.038-.177l-.327-1.233a.582.582 0 0 1-.023-.156.49.49 0 0 1 .201-.398C23.024 18.48 24 16.82 24 14.98c0-3.21-2.931-5.837-6.656-6.088V8.89c-.135-.01-.27-.027-.407-.03zm-2.53 3.274c.535 0 .969.44.969.982a.976.976 0 0 1-.969.983.976.976 0 0 1-.969-.983c0-.542.434-.982.969-.982zm4.844 0c.535 0 .969.44.969.982a.976.976 0 0 1-.969.983.976.976 0 0 1-.969-.983c0-.542.434-.982.969-.982z"/>
+            </svg>
+            使用微信登录
+        </button>
+
+        <!-- 配置说明 -->
+        <div class="info-box">
+            <h4>📋 配置步骤</h4>
+            <ol>
+                <li>访问 <a href="https://open.weixin.qq.com/" target="_blank">微信开放平台</a></li>
+                <li>创建网站应用并获取 App ID 和 App Secret</li>
+                <li>配置授权回调域：<code>localhost:3000</code> 或你的域名</li>
+                <li>在上方输入框填入 App ID 和 App Secret</li>
+                <li>点击"使用微信登录"按钮测试</li>
+            </ol>
+        </div>
+
+        <!-- 用户信息显示 -->
+        <div id="userInfo" style="display: none;" class="user-info">
+            <h4>✅ 登录成功！用户信息：</h4>
+            <pre id="userInfoContent"></pre>
+        </div>
+
+        <!-- 调试日志 -->
+        <div id="debugLog" class="debug-log"></div>
+    </div>
+
+    <!-- OAuth配置 -->
+    <script src="js/config/oauth.js"></script>
+    
+    <!-- 认证管理模块 -->
+    <script src="js/modules/authManager.js"></script>
+
+    <script>
+        // 日志函数
+        function log(message, type = 'info') {
+            const debugLog = document.getElementById('debugLog');
+            const time = new Date().toLocaleTimeString();
+            const logClass = `log-${type}`;
+            const logEntry = `<div><span class="log-time">[${time}]</span> <span class="${logClass}">${message}</span></div>`;
+            debugLog.innerHTML += logEntry;
+            debugLog.scrollTop = debugLog.scrollHeight;
+            console.log(`[${type.toUpperCase()}] ${message}`);
+        }
+
+        // 显示状态消息
+        function showStatus(message, type = 'info') {
+            const statusDiv = document.getElementById('statusMessage');
+            statusDiv.className = `status ${type}`;
+            
+            const icons = {
+                info: 'ℹ️',
+                success: '✅',
+                error: '❌',
+                warning: '⚠️'
+            };
+            
+            statusDiv.textContent = `${icons[type]} ${message}`;
+            log(message, type);
+        }
+
+        // 显示用户信息
+        function showUserInfo(user) {
+            const userInfoDiv = document.getElementById('userInfo');
+            const userInfoContent = document.getElementById('userInfoContent');
+            userInfoContent.textContent = JSON.stringify(user, null, 2);
+            userInfoDiv.style.display = 'block';
+        }
+
+        // 初始化
+        document.addEventListener('DOMContentLoaded', () => {
+            log('页面加载完成', 'success');
+            log('AuthManager 已加载', 'info');
+
+            // 从localStorage加载配置
+            const savedAppId = localStorage.getItem('wechat_app_id');
+            const savedAppSecret = localStorage.getItem('wechat_app_secret');
+            
+            if (savedAppId) {
+                document.getElementById('wechatAppId').value = savedAppId;
+                log('已加载保存的 App ID', 'info');
+            }
+            if (savedAppSecret) {
+                document.getElementById('wechatAppSecret').value = savedAppSecret;
+                log('已加载保存的 App Secret', 'info');
+            }
+
+            // 保存配置到localStorage
+            document.getElementById('wechatAppId').addEventListener('change', (e) => {
+                localStorage.setItem('wechat_app_id', e.target.value);
+                window.WECHAT_APP_ID = e.target.value;
+                log('App ID 已保存', 'success');
+            });
+
+            document.getElementById('wechatAppSecret').addEventListener('change', (e) => {
+                localStorage.setItem('wechat_app_secret', e.target.value);
+                log('App Secret 已保存', 'success');
+            });
+
+            // 微信登录按钮
+            const wechatLoginBtn = document.getElementById('wechatLoginBtn');
+            
+            wechatLoginBtn.addEventListener('click', async () => {
+                const appId = document.getElementById('wechatAppId').value.trim();
+                const appSecret = document.getElementById('wechatAppSecret').value.trim();
+
+                if (!appId || !appSecret) {
+                    showStatus('请先配置微信 App ID 和 App Secret', 'warning');
+                    return;
+                }
+
+                // 更新全局配置
+                window.WECHAT_APP_ID = appId;
+                
+                log('开始微信登录流程...', 'info');
+                showStatus('正在打开微信登录窗口...', 'info');
+                
+                wechatLoginBtn.disabled = true;
+                wechatLoginBtn.textContent = '登录中...';
+
+                try {
+                    log('调用 AuthManager.loginWithWechat()', 'info');
+                    const result = await AuthManager.loginWithWechat();
+                    
+                    log('微信登录成功！', 'success');
+                    showStatus('微信登录成功！', 'success');
+                    showUserInfo(result.user);
+                    
+                    log(`Token: ${result.token.substring(0, 20)}...`, 'info');
+                    log(`用户ID: ${result.user.id}`, 'info');
+                    log(`昵称: ${result.user.nickname}`, 'info');
+                    
+                } catch (error) {
+                    log(`微信登录失败: ${error.message}`, 'error');
+                    showStatus(`微信登录失败: ${error.message}`, 'error');
+                    console.error('微信登录错误:', error);
+                } finally {
+                    wechatLoginBtn.disabled = false;
+                    wechatLoginBtn.innerHTML = `
+                        <svg class="icon" viewBox="0 0 24 24">
+                            <path fill="currentColor" d="M8.691 2.188C3.891 2.188 0 5.476 0 9.53c0 2.212 1.17 4.203 3.002 5.55a.59.59 0 0 1 .213.665l-.39 1.48c-.019.07-.048.141-.048.213 0 .163.13.295.29.295a.326.326 0 0 0 .167-.054l1.903-1.114a.864.864 0 0 1 .717-.098 10.16 10.16 0 0 0 2.837.403c.276 0 .543-.027.811-.05-.857-2.578.157-4.972 1.932-6.446 1.703-1.415 3.882-1.98 5.853-1.838-.576-3.583-4.196-6.348-8.596-6.348zM5.785 5.991c.642 0 1.162.529 1.162 1.18a1.17 1.17 0 0 1-1.162 1.178A1.17 1.17 0 0 1 4.623 7.17c0-.651.52-1.18 1.162-1.18zm5.813 0c.642 0 1.162.529 1.162 1.18a1.17 1.17 0 0 1-1.162 1.178 1.17 1.17 0 0 1-1.162-1.178c0-.651.52-1.18 1.162-1.18zm5.34 2.867c-1.797-.052-3.746.512-5.28 1.786-1.72 1.428-2.687 3.72-1.78 6.22.942 2.453 3.666 4.229 6.884 4.229.826 0 1.622-.12 2.361-.336a.722.722 0 0 1 .598.082l1.584.926a.272.272 0 0 0 .14.047c.134 0 .24-.111.24-.247 0-.06-.023-.12-.038-.177l-.327-1.233a.582.582 0 0 1-.023-.156.49.49 0 0 1 .201-.398C23.024 18.48 24 16.82 24 14.98c0-3.21-2.931-5.837-6.656-6.088V8.89c-.135-.01-.27-.027-.407-.03zm-2.53 3.274c.535 0 .969.44.969.982a.976.976 0 0 1-.969.983.976.976 0 0 1-.969-.983c0-.542.434-.982.969-.982zm4.844 0c.535 0 .969.44.969.982a.976.976 0 0 1-.969.983.976.976 0 0 1-.969-.983c0-.542.434-.982.969-.982z"/>
+                        </svg>
+                        使用微信登录
+                    `;
+                }
+            });
+
+            // 监听认证状态变化
+            window.addEventListener('authStateChanged', (event) => {
+                log('认证状态已变化', 'info');
+                if (event.detail.isAuthenticated) {
+                    log('用户已登录', 'success');
+                } else {
+                    log('用户已退出', 'info');
+                }
+            });
+
+            log('事件监听器已设置', 'success');
+        });
+    </script>
+</body>
+</html>

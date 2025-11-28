@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>测试精灵图加载</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background: #1a1a1a;
+            color: #fff;
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 20px;
+            background: #2a2a2a;
+            border-radius: 8px;
+        }
+        .test-section h2 {
+            margin-top: 0;
+            color: #4CAF50;
+        }
+        .image-container {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+        .image-box {
+            border: 2px solid #444;
+            padding: 10px;
+            border-radius: 4px;
+            background: #333;
+        }
+        .image-box img {
+            max-width: 300px;
+            max-height: 300px;
+            display: block;
+            margin-bottom: 10px;
+        }
+        .status {
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+        .status.success {
+            background: #4CAF50;
+            color: white;
+        }
+        .status.error {
+            background: #f44336;
+            color: white;
+        }
+        .info {
+            color: #888;
+            font-size: 12px;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎬 精灵图加载测试</h1>
+    
+    <div class="test-section">
+        <h2>测试1: 直接加载图片</h2>
+        <div class="image-container" id="directImages"></div>
+    </div>
+
+    <div class="test-section">
+        <h2>测试2: JavaScript动态加载</h2>
+        <div id="jsLoadResults"></div>
+    </div>
+
+    <script>
+        const images = [
+            { name: '待机-常态', path: '/images/待机-常态.webp' },
+            { name: '待机-张望', path: '/images/待机-张望.webp' },
+            { name: '待机-深呼吸', path: '/images/待机-深呼吸.webp' }
+        ];
+
+        // 测试1: 直接加载
+        const directContainer = document.getElementById('directImages');
+        images.forEach(imgData => {
+            const box = document.createElement('div');
+            box.className = 'image-box';
+            
+            const img = document.createElement('img');
+            img.src = imgData.path;
+            
+            const title = document.createElement('div');
+            title.textContent = imgData.name;
+            title.style.fontWeight = 'bold';
+            
+            const status = document.createElement('div');
+            status.className = 'status';
+            status.textContent = '加载中...';
+            
+            img.onload = function() {
+                status.className = 'status success';
+                status.textContent = `✅ 加载成功 (${this.naturalWidth}x${this.naturalHeight})`;
+            };
+            
+            img.onerror = function() {
+                status.className = 'status error';
+                status.textContent = '❌ 加载失败';
+                img.style.display = 'none';
+            };
+            
+            box.appendChild(title);
+            box.appendChild(img);
+            box.appendChild(status);
+            directContainer.appendChild(box);
+        });
+
+        // 测试2: JavaScript动态加载
+        const jsResults = document.getElementById('jsLoadResults');
+        
+        async function testJSLoad() {
+            for (const imgData of images) {
+                const result = document.createElement('div');
+                result.style.marginBottom = '10px';
+                
+                try {
+                    await new Promise((resolve, reject) => {
+                        const img = new Image();
+                        img.onload = () => {
+                            result.innerHTML = `
+                                <span class="status success">✅ ${imgData.name}</span>
+                                <div class="info">路径: ${imgData.path}</div>
+                                <div class="info">尺寸: ${img.width}x${img.height}</div>
+                            `;
+                            resolve();
+                        };
+                        img.onerror = () => {
+                            result.innerHTML = `
+                                <span class="status error">❌ ${imgData.name}</span>
+                                <div class="info">路径: ${imgData.path}</div>
+                                <div class="info">加载失败</div>
+                            `;
+                            reject();
+                        };
+                        img.src = imgData.path;
+                    });
+                } catch (error) {
+                    console.error(`加载失败: ${imgData.name}`);
+                }
+                
+                jsResults.appendChild(result);
+            }
+        }
+        
+        testJSLoad();
+    </script>
+</body>
+</html>

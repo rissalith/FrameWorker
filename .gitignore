@@ -1,0 +1,56 @@
+# 忽略所有环境变量文件
+*.env
+.env.*
+
+# 但保留 .env.example
+!.env.example
+
+# 但保留 GitHub 配置文档
+!.github/*.md
+!.github/**/*.md
+
+# 忽略日志文件
+logs/
+*.log
+
+# 忽略临时文件
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+
+# 忽略系统文件
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# 忽略 IDE 配置
+.vscode/
+.idea/
+*.sublime-*
+
+# 忽略 node_modules
+node_modules/
+
+# 忽略 Python 缓存
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.so
+
+# 忽略打包文件
+*.tar.gz
+*.zip
+*.rar
+
+# 忽略数据库文件
+*.db
+*.sqlite
+*.sqlite3
+
+# 忽略备份文件
+*.bak
+*.backup

@@ -1,0 +1,61 @@
+<!-- 游戏市场页面 -->
+<div class="page-content" id="game-market-page">
+    <div class="game-market-container">
+        <div class="games-container">
+            <div class="market-toolbar">
+                <div class="view-mode-toggle">
+                    <button class="view-btn active" data-view="card" title="卡片视图">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <rect x="3" y="3" width="7" height="7" rx="1"/>
+                            <rect x="14" y="3" width="7" height="7" rx="1"/>
+                            <rect x="3" y="14" width="7" height="7" rx="1"/>
+                            <rect x="14" y="14" width="7" height="7" rx="1"/>
+                        </svg>
+                    </button>
+                    <button class="view-btn" data-view="list" title="列表视图">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                            <rect x="3" y="4" width="18" height="3" rx="1"/>
+                            <rect x="3" y="10" width="18" height="3" rx="1"/>
+                            <rect x="3" y="16" width="18" height="3" rx="1"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            
+            <div class="games-grid" data-view-mode="card">
+                <!-- 巫女占卜游戏卡片 -->
+                <div class="game-card" data-game="fortune-game">
+                    <div class="game-card-image">
+                        <img src="images/login-bg2.gif" alt="巫女占卜" class="game-icon-img">
+                    </div>
+                    <div class="game-card-content">
+                        <h4 class="game-title">巫女占卜</h4>
+                        <p class="game-description">体验神秘的占卜之旅，探索你的运势</p>
+                        <div class="game-tags">
+                            <span class="tag">占卜</span>
+                            <span class="tag">互动</span>
+                            <span class="tag">直播</span>
+                        </div>
+                    </div>
+                    <div class="game-card-footer">
+                        <button class="btn-play">开始游戏</button>
+                    </div>
+                </div>
+                
+                <!-- 更多游戏卡片可以在这里添加 -->
+                <div class="game-card coming-soon">
+                    <div class="game-card-image">
+                        <div class="game-icon">🎲</div>
+                    </div>
+                    <div class="game-card-content">
+                        <h4 class="game-title">敬请期待</h4>
+                        <p class="game-description">更多精彩游戏即将上线</p>
+                    </div>
+                    <div class="game-card-footer">
+                        <button class="btn-play" disabled>即将推出</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

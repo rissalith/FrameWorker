@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我的钱包 - XMGamer</title>
+    <link rel="stylesheet" href="../css/main.css">
+    <link rel="stylesheet" href="../css/wallet.css">
+</head>
+<body>
+    <div class="container">
+        <!-- 顶部导航 -->
+        <header class="header">
+            <div class="header-content">
+                <h1 class="logo">XMGamer</h1>
+                <nav class="nav">
+                    <a href="../index.html">游戏市场</a>
+                    <a href="wallet.html" class="active">我的钱包</a>
+                    <a href="my-games.html">我的游戏</a>
+                    <div class="user-menu">
+                        <span id="userNickname">加载中...</span>
+                        <button id="logoutBtn" class="btn-text">退出</button>
+                    </div>
+                </nav>
+            </div>
+        </header>
+
+        <!-- 钱包概览 -->
+        <section class="wallet-overview">
+            <div class="balance-card">
+                <div class="balance-icon">💎</div>
+                <div class="balance-info">
+                    <h2>当前余额</h2>
+                    <div class="balance-amount">
+                        <span id="currentBalance">--</span>
+                        <span class="balance-unit">点</span>
+                    </div>
+                </div>
+                <button id="rechargeBtn" class="btn-primary">充值</button>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">累计充值</div>
+                    <div class="stat-value" id="totalRecharged">--</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">累计消费</div>
+                    <div class="stat-value" id="totalConsumed">--</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">冻结余额</div>
+                    <div class="stat-value" id="frozenBalance">--</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 交易历史 -->
+        <section class="transaction-history">
+            <div class="section-header">
+                <h2>交易记录</h2>
+                <div class="filter-tabs">
+                    <button class="tab-btn active" data-type="all">全部</button>
+                    <button class="tab-btn" data-type="DEPOSIT">充值</button>
+                    <button class="tab-btn" data-type="PURCHASE">消费</button>
+                    <button class="tab-btn" data-type="REFUND">退款</button>
+                </div>
+            </div>
+
+            <div id="transactionList" class="transaction-list">
+                <div class="loading">加载中...</div>
+            </div>
+
+            <div class="pagination">
+                <button id="prevPage" class="btn-secondary" disabled>上一页</button>
+                <span id="pageInfo">第 1 页</span>
+                <button id="nextPage" class="btn-secondary">下一页</button>
+            </div>
+        </section>
+    </div>
+
+    <!-- 充值弹窗 -->
+    <div id="rechargeModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>选择充值套餐</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="rechargePackages" class="package-grid">
+                    <div class="loading">加载中...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 支付弹窗 -->
+    <div id="paymentModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>选择支付方式</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="payment-info">
+                    <p>充值金额: <strong id="payAmount">--</strong> 点</p>
+                    <p>支付金额: <strong id="payCny">¥--</strong></p>
+                </div>
+                <div class="payment-methods">
+                    <button class="payment-btn" data-method="stripe">
+                        <span class="payment-icon">💳</span>
+                        <span>信用卡支付</span>
+                    </button>
+                    <button class="payment-btn" data-method="wechat">
+                        <span class="payment-icon">💚</span>
+                        <span>微信支付</span>
+                    </button>
+                    <button class="payment-btn" data-method="alipay">
+                        <span class="payment-icon">💙</span>
+                        <span>支付宝</span>
+                    </button>
+                </div>
+                <div class="payment-note">
+                    <p>⚠️ 测试环境：点击任意支付方式将模拟支付成功</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="../js/wallet.js"></script>
+</body>
+</html>
