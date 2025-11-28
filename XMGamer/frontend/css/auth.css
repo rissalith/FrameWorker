@@ -173,12 +173,14 @@
     position: fixed;
     left: 35px;
     top: 30%;
+    transform: translateY(-50%);
     z-index: 31;
     color: white;
     cursor: move;
     pointer-events: auto;
     user-select: none;
     padding: 25px 35px;
+    animation: fadeInLeft 1s ease-out;
 }
 
 .brand-text-container:active {
