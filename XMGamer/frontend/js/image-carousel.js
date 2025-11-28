@@ -27,9 +27,9 @@ class ImageCarousel {
         this.container.id = 'carousel-container';
         this.container.style.cssText = `
             position: absolute;
-            top: -23%;
-            left: 25%;
-            width: 28%;
+            top: -20%;
+            left: 20%;
+            width: 20%;
             height: 100%;
             z-index: 1;
             pointer-events: none;
