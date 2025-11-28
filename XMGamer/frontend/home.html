@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XMGamer - 直播互动游戏平台</title>
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/game-market.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- 左侧菜单栏 -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h1 class="logo">🎮 XMGamer</h1>
+                <p class="logo-subtitle">直播互动游戏平台</p>
+            </div>
+            
+            <!-- 菜单导航 -->
+            <nav class="sidebar-menu">
+                <div class="menu-item active" data-page="game-market">
+                    <span class="menu-icon">🎮</span>
+                    <span class="menu-text">游戏市场</span>
+                </div>
+            </nav>
+
+            <div class="sidebar-footer">
+                <div class="user-profile" id="userProfile">
+                    <div class="user-avatar">👤</div>
+                    <div class="user-info">
+                        <div class="user-name">访客用户</div>
+                    </div>
+                    <div class="user-menu-toggle">▲</div>
+                </div>
+                <div class="user-menu" id="userMenu" style="display: none;">
+                    <div class="menu-option" data-action="settings">
+                        <span class="menu-icon">⚙️</span>
+                        <span>个人设置</span>
+                    </div>
+                    <div class="menu-option" data-action="wallet">
+                        <span class="menu-icon">💰</span>
+                        <span>钱包</span>
+                    </div>
+                    <div class="menu-option" data-action="logout">
+                        <span class="menu-icon">🚪</span>
+                        <span>退出</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- 主内容区域 -->
+        <main class="main-area">
+            <header class="main-header">
+                <h2 class="page-title" id="pageTitle">游戏市场</h2>
+            </header>
+
+            <div class="main-content" id="mainContent">
+                <!-- 页面内容将通过路由动态加载到这里 -->
+            </div>
+        </main>
+    </div>
+
+    <!-- 功能模块 -->
+    <script src="js/modules/authManager.js"></script>
+    <script src="js/modules/router.js"></script>
+    <script src="js/modules/gameMarket.js"></script>
+    
+    <!-- 主入口 -->
+    <script src="js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,15 @@
+{
+  "version": "1.0.0",
+  "lastUpdated": "2024-11-25T03:51:00Z",
+  "games": [
+    {
+      "id": "fortune-game",
+      "name": "巫女占卜",
+      "version": "1.0.0",
+      "path": "games/fortune-game",
+      "enabled": true,
+      "installedAt": "2024-11-25T03:51:00Z",
+      "lastUpdated": "2024-11-25T03:51:00Z"
+    }
+  ]
+}

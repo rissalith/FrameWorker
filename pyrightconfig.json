@@ -1,0 +1,48 @@
+{
+  "include": [
+    "GameLibrary",
+    "XMGamer"
+  ],
+  "exclude": [
+    "**/node_modules",
+    "**/__pycache__",
+    "**/.*"
+  ],
+  "typeCheckingMode": "off",
+  "reportMissingImports": "none",
+  "reportMissingTypeStubs": false,
+  "reportGeneralTypeIssues": "none",
+  "reportOptionalMemberAccess": "none",
+  "reportOptionalSubscript": "none",
+  "reportPrivateImportUsage": "none",
+  "reportUnboundVariable": "none",
+  "reportAttributeAccessIssue": "none",
+  "reportPossiblyUnboundVariable": "none",
+  "reportArgumentType": "none",
+  "reportCallIssue": "none",
+  "reportOperatorIssue": "none",
+  "pythonVersion": "3.8",
+  "pythonPlatform": "All",
+  "stubPath": "",
+  "executionEnvironments": [
+    {
+      "root": "GameLibrary",
+      "pythonVersion": "3.8",
+      "extraPaths": [
+        ".",
+        "GameLibrary",
+        "GameLibrary/games/fortune-game/backend"
+      ]
+    },
+    {
+      "root": "XMGamer/backend",
+      "pythonVersion": "3.8",
+      "extraPaths": [
+        ".",
+        "XMGamer/backend",
+        "GameLibrary",
+        "GameLibrary/games/fortune-game/backend"
+      ]
+    }
+  ]
+}

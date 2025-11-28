@@ -1,0 +1,101 @@
+{
+  "id": "fortune-game",
+  "name": "巫女占卜",
+  "version": "1.0.0",
+  "description": "体验神秘的占卜之旅，探索你的运势。支持5种占卜类型：日常、爱情、财富、事业、健康，配合精美的2D动画和AI智能对话。",
+  "author": "XMGamer Team",
+  "icon": "frontend/assets/待机2.png",
+  "thumbnail": "frontend/assets/待机2.png",
+  "tags": ["占卜", "互动", "直播", "AI对话"],
+  "category": "entertainment",
+  "type": "iframe",
+  "entry": {
+    "frontend": "frontend/index.html",
+    "backend": "backend/api.py"
+  },
+  "api": {
+    "prefix": "/api/fortune",
+    "endpoints": [
+      {
+        "path": "/chat",
+        "method": "POST",
+        "description": "占卜Agent聊天接口"
+      },
+      {
+        "path": "/live/start",
+        "method": "POST",
+        "description": "开始监听直播间"
+      },
+      {
+        "path": "/live/stop",
+        "method": "POST",
+        "description": "停止监听直播间"
+      },
+      {
+        "path": "/live/status",
+        "method": "GET",
+        "description": "获取直播监听状态"
+      }
+    ]
+  },
+  "websocket": {
+    "enabled": true,
+    "events": [
+      "fortune_chat",
+      "join",
+      "leave",
+      "connect",
+      "disconnect"
+    ]
+  },
+  "dependencies": {
+    "frontend": [
+      "socket.io-client@4.5.4"
+    ],
+    "backend": [
+      "Flask-SocketIO>=5.3.5",
+      "python-socketio>=5.10.0"
+    ]
+  },
+  "permissions": [
+    "websocket",
+    "api",
+    "live-stream"
+  ],
+  "settings": {
+    "autoFlipDelay": 10000,
+    "maxPlayers": 100,
+    "fortuneTypes": ["daily", "love", "wealth", "career", "health"],
+    "fortuneLevels": ["excellent", "good", "medium", "bad", "worst"],
+    "defaultProbability": {
+      "excellent": 5,
+      "good": 35,
+      "medium": 40,
+      "bad": 15,
+      "worst": 5
+    }
+  },
+  "features": [
+    "5种占卜类型",
+    "5个签级",
+    "精美2D卡片动画",
+    "巫女角色对话系统",
+    "直播弹幕集成",
+    "礼物映射占卜",
+    "AI智能回复",
+    "权重调整系统"
+  ],
+  "screenshots": [],
+  "changelog": [
+    {
+      "version": "1.0.0",
+      "date": "2024-11-25",
+      "changes": [
+        "初始版本发布",
+        "支持5种占卜类型",
+        "集成直播功能",
+        "添加AI对话系统"
+      ]
+    }
+  ]
+}

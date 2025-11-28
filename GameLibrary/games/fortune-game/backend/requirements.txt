@@ -1,0 +1,21 @@
+# Fortune Game 占卜游戏后端依赖
+
+# Flask 核心框架
+Flask==3.0.0
+Flask-Cors==4.0.0
+Flask-SocketIO==5.3.5
+python-socketio==5.10.0
+
+# AI Agent - OpenAI兼容接口
+openai>=1.0.0
+
+# 直播服务依赖
+websocket-client>=1.6.0
+betterproto>=2.0.0
+requests>=2.31.0
+
+# 工具库
+python-dotenv==1.0.0
+
+# 可选：如果需要使用execjs执行JavaScript
+PyExecJS>=1.5.1
