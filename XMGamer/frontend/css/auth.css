@@ -169,6 +169,18 @@
     pointer-events: none;
 }
 
+/* 文字容器 - 可拖拽 */
+.brand-text-container {
+    cursor: move;
+    pointer-events: auto;
+    user-select: none;
+    transition: transform 0.1s ease-out;
+}
+
+.brand-text-container:active {
+    cursor: grabbing;
+}
+
 .brand-title {
     font-size: 48px;
     font-weight: 700;
@@ -176,16 +188,11 @@
     line-height: 1.1;
     text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
     letter-spacing: -1px;
-    cursor: move;
     transition: all 0.3s ease;
-    pointer-events: auto;
-    user-select: none;
 }
 
 .brand-title:hover {
-    transform: scale(1.05) translateY(-5px);
     text-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
-    letter-spacing: 2px;
 }
 
 .brand-subtitle {
@@ -195,14 +202,10 @@
     line-height: 1.5;
     text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
     opacity: 0.95;
-    cursor: move;
     transition: all 0.3s ease;
-    pointer-events: auto;
-    user-select: none;
 }
 
 .brand-subtitle:hover {
-    transform: translateX(10px);
     text-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
     opacity: 1;
 }

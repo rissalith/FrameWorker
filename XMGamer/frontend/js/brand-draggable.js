@@ -5,10 +5,8 @@
 
 class BrandDraggable {
     constructor() {
-        this.titleElement = null;
-        this.subtitleElement = null;
+        this.textContainer = null;
         this.isDragging = false;
-        this.currentElement = null;
         this.startX = 0;
         this.startY = 0;
         this.offsetX = 0;
@@ -16,46 +14,40 @@ class BrandDraggable {
     }
 
     init() {
-        this.titleElement = document.querySelector('.brand-title');
-        this.subtitleElement = document.querySelector('.brand-subtitle');
+        this.textContainer = document.querySelector('.brand-text-container');
 
-        if (this.titleElement) {
-            this.makeDraggable(this.titleElement);
-        }
-
-        if (this.subtitleElement) {
-            this.makeDraggable(this.subtitleElement);
+        if (this.textContainer) {
+            this.makeDraggable(this.textContainer);
         }
     }
 
     makeDraggable(element) {
-        element.addEventListener('mousedown', (e) => this.onMouseDown(e, element));
-        element.addEventListener('touchstart', (e) => this.onTouchStart(e, element), { passive: false });
+        element.addEventListener('mousedown', (e) => this.onMouseDown(e));
+        element.addEventListener('touchstart', (e) => this.onTouchStart(e), { passive: false });
     }
 
-    onMouseDown(e, element) {
+    onMouseDown(e) {
         e.preventDefault();
-        this.startDrag(e.clientX, e.clientY, element);
+        this.startDrag(e.clientX, e.clientY);
 
         document.addEventListener('mousemove', this.onMouseMove);
         document.addEventListener('mouseup', this.onMouseUp);
     }
 
-    onTouchStart(e, element) {
+    onTouchStart(e) {
         e.preventDefault();
         const touch = e.touches[0];
-        this.startDrag(touch.clientX, touch.clientY, element);
+        this.startDrag(touch.clientX, touch.clientY);
 
         document.addEventListener('touchmove', this.onTouchMove, { passive: false });
         document.addEventListener('touchend', this.onTouchEnd);
     }
 
-    startDrag(clientX, clientY, element) {
+    startDrag(clientX, clientY) {
         this.isDragging = true;
-        this.currentElement = element;
 
         // 获取当前transform值
-        const style = window.getComputedStyle(element);
+        const style = window.getComputedStyle(this.textContainer);
         const matrix = new DOMMatrix(style.transform);
         
         this.offsetX = matrix.m41;
@@ -63,7 +55,7 @@ class BrandDraggable {
         this.startX = clientX;
         this.startY = clientY;
 
-        element.style.cursor = 'grabbing';
+        this.textContainer.style.cursor = 'grabbing';
     }
 
     onMouseMove = (e) => {
@@ -86,7 +78,7 @@ class BrandDraggable {
         const newX = this.offsetX + deltaX;
         const newY = this.offsetY + deltaY;
 
-        this.currentElement.style.transform = `translate(${newX}px, ${newY}px)`;
+        this.textContainer.style.transform = `translate(${newX}px, ${newY}px)`;
     }
 
     onMouseUp = () => {
@@ -102,11 +94,10 @@ class BrandDraggable {
     }
 
     endDrag() {
-        if (this.currentElement) {
-            this.currentElement.style.cursor = 'move';
+        if (this.textContainer) {
+            this.textContainer.style.cursor = 'move';
         }
         this.isDragging = false;
-        this.currentElement = null;
     }
 }
 
