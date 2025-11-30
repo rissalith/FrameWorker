@@ -59,7 +59,23 @@ load_dotenv()
 
 app = Flask(__name__, static_folder='../frontend', static_url_path='')
 app.config['SECRET_KEY'] = 'xmgamer-secret-key-2024'
-CORS(app)
+
+# 配置CORS - 允许来自前端域名的跨域请求
+CORS(app, resources={
+    r"/api/*": {
+        "origins": [
+            "https://www.xmframer.com",
+            "https://xmframer.com",
+            "http://localhost:*",
+            "http://127.0.0.1:*"
+        ],
+        "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+        "allow_headers": ["Content-Type", "Authorization"],
+        "expose_headers": ["Content-Type", "Authorization"],
+        "supports_credentials": True,
+        "max_age": 3600
+    }
+})
 
 # 初始化SocketIO
 socketio = SocketIO(app, cors_allowed_origins="*", async_mode='threading')
