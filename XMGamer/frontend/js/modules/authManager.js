@@ -16,8 +16,8 @@ const AuthManager = {
         if (hostname === 'localhost' || hostname === '127.0.0.1') {
             return 'http://localhost:5000/api';
         }
-        // 生产环境 - 强制使用HTTP（临时方案，直到配置SSL证书）
-        return `http://api.${hostname.replace('www.', '')}`;
+        // 生产环境 - 使用HTTPS（Cloudflare提供SSL）
+        return `https://api.${hostname.replace('www.', '')}/api`;
     })(),
     
     /**
