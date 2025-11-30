@@ -18,6 +18,15 @@
     overflow: hidden;
 }
 
+/* Safari iOS特定修复 - 只在移动端Safari应用 */
+@supports (-webkit-touch-callout: none) {
+    @media (max-width: 768px) {
+        .auth-page {
+            min-height: -webkit-fill-available;
+        }
+    }
+}
+
 /* 流光溢彩渐变背景层 - 第一层（只覆盖右侧50%区域） */
 .auth-page::before {
     content: '';
@@ -170,6 +179,9 @@
     align-items: center;
     justify-content: flex-start;
     padding-left: 85px;
+    /* Safari优化 */
+    transform: translateZ(0);
+    will-change: transform;
 }
 
 /* 文字容器 - 嵌套在brand-section内，可拖拽 */
@@ -226,12 +238,18 @@
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
     animation: fadeInLeft 1s ease-out 0.4s backwards;
     pointer-events: auto;
+    /* Safari优化 */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
 }
 
 .brand-video {
     width: 100%;
     height: auto;
     display: block;
+    /* Safari视频优化 */
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
 }
 
 .video-controls {
@@ -290,12 +308,15 @@
     padding: 20px;
     position: relative;
     z-index: 5;
+    /* Safari优化 */
+    transform: translateZ(0);
 }
 
 /* 登录卡片 */
 .auth-card {
     background: rgba(255, 255, 255, 0.98);
     backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.3);
     border-radius: 8px;
     padding: 24px 36px 20px;
@@ -305,6 +326,9 @@
     animation: cardFloat 6s ease-in-out infinite;
     position: relative;
     z-index: 6;
+    /* Safari优化 */
+    transform: translateZ(0);
+    -webkit-transform: translateZ(0);
 }
 
 @keyframes cardFloat {
@@ -780,36 +804,80 @@
 }
 
 /* 响应式设计 */
+/* 平板和小屏幕笔记本 */
+@media (max-width: 1024px) {
+    .auth-page {
+        padding-right: 5%;
+    }
+    
+    .brand-section {
+        left: -30px;
+        width: 400px;
+        padding-left: 60px;
+    }
+    
+    .brand-title {
+        font-size: 40px;
+    }
+    
+    .brand-subtitle {
+        font-size: 16px;
+    }
+    
+    .video-container {
+        left: 5%;
+        max-width: 500px;
+    }
+}
+
+/* 平板竖屏 */
 @media (max-width: 768px) {
     .auth-page {
         justify-content: center;
-        padding-right: 0;
+        padding: 20px;
+        flex-direction: column;
     }
 
     .brand-section {
-        position: static;
+        position: relative;
+        left: 0;
+        top: 0;
         transform: none;
+        width: 100%;
+        max-width: 100%;
         text-align: center;
-        margin-bottom: 30px;
-        padding: 0 20px;
+        margin-bottom: 20px;
+        padding: 20px;
+        justify-content: center;
+    }
+    
+    .brand-text-container {
+        text-align: center;
     }
 
     .brand-title {
-        font-size: 48px;
+        font-size: 36px;
     }
 
     .brand-subtitle {
-        font-size: 18px;
+        font-size: 16px;
+    }
+    
+    .video-container {
+        position: relative;
+        left: 0;
+        top: 0;
+        max-width: 100%;
+        margin-bottom: 20px;
     }
 
     .auth-card {
-        padding: 40px 24px 32px;
-        border: none;
-        box-shadow: none;
+        padding: 32px 24px 24px;
     }
 
     .auth-container {
         max-width: 100%;
+        padding: 0;
     }
 
     .logo-text {
@@ -843,64 +911,78 @@
     }
 }
 
+/* 手机横屏和小屏手机 */
 @media (max-width: 480px) {
     .auth-page {
-        padding: 20px 0;
+        padding: 15px;
         justify-content: center;
-        padding-right: 0;
     }
 
     .brand-section {
-        margin-bottom: 20px;
+        margin-bottom: 15px;
+        padding: 15px;
+        height: auto;
+        min-height: 120px;
     }
 
     .brand-title {
-        font-size: 36px;
-        margin-bottom: 12px;
+        font-size: 28px;
+        margin-bottom: 8px;
     }
 
     .brand-subtitle {
-        font-size: 16px;
+        font-size: 14px;
+    }
+    
+    .video-container {
+        margin-bottom: 15px;
+        max-height: 200px;
     }
 
     .auth-container {
         padding: 0;
+        width: 100%;
     }
 
     .auth-card {
-        padding: 32px 20px 24px;
+        padding: 24px 16px 20px;
+        border-radius: 12px;
     }
 
     .logo-icon {
-        font-size: 28px;
+        font-size: 24px;
     }
 
     .logo-text {
-        font-size: 18px;
+        font-size: 16px;
     }
 
     .auth-title {
         font-size: 18px;
     }
+    
+    .auth-subtitle {
+        font-size: 12px;
+    }
 
     .form-input {
         font-size: 14px;
-        padding: 11px 13px;
-    }
-
-    .form-input:focus {
         padding: 10px 12px;
     }
 
+    .form-input:focus {
+        padding: 9px 11px;
+    }
+
     .send-code-btn {
-        font-size: 13px;
-        padding: 0 12px;
-        min-width: 90px;
+        font-size: 12px;
+        padding: 0 10px;
+        min-width: 80px;
     }
 
     .bottom-links {
         flex-wrap: wrap;
-        gap: 16px;
+        gap: 12px;
     }
 
     .bottom-links .link {
@@ -908,28 +990,91 @@
     }
 
     .divider {
-        margin: 20px 0 16px;
+        margin: 16px 0 12px;
     }
 
     .divider-text {
-        font-size: 13px;
-        padding: 0 12px;
+        font-size: 12px;
+        padding: 0 10px;
     }
 
     .social-login {
         gap: 8px;
-        margin-bottom: 20px;
+        margin-bottom: 16px;
     }
 
     .social-btn {
-        padding: 10px 16px;
-        font-size: 13px;
-        gap: 10px;
+        padding: 8px 14px;
+        font-size: 12px;
+        gap: 8px;
     }
 
     .social-icon {
+        width: 16px;
+        height: 16px;
+    }
+    
+    .social-icon-btn {
+        width: 36px;
+        height: 36px;
+    }
+    
+    .social-icon-btn .icon {
         width: 18px;
         height: 18px;
+    }
+}
+
+/* 超小屏幕（iPhone SE等） */
+@media (max-width: 375px) {
+    .brand-title {
+        font-size: 24px;
+    }
+    
+    .brand-subtitle {
+        font-size: 13px;
+    }
+    
+    .auth-card {
+        padding: 20px 12px 16px;
+    }
+    
+    .form-input {
+        font-size: 13px;
+        padding: 9px 10px;
+    }
+    
+    .btn-primary {
+        font-size: 13px;
+        padding: 8px 16px;
+    }
+}
+
+/* 横屏模式优化 */
+@media (max-height: 600px) and (orientation: landscape) {
+    .auth-page {
+        padding: 10px;
+        overflow-y: auto;
+    }
+    
+    .brand-section {
+        display: none; /* 横屏时隐藏品牌区域以节省空间 */
+    }
+    
+    .video-container {
+        display: none; /* 横屏时隐藏视频以节省空间 */
+    }
+    
+    .auth-card {
+        padding: 16px 20px;
+    }
+    
+    .auth-header {
+        margin-bottom: 8px;
+    }
+    
+    .form-group {
+        margin-bottom: 8px;
     }
 }
 
