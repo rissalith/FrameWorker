@@ -95,6 +95,11 @@ jobs:
           DEEPSEEK_API_KEY=${{ secrets.DEEPSEEK_API_KEY }}
           GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}
           
+          # Vector Engine AI 配置（登录页AI对话）
+          VECTORAPI_KEY=${{ secrets.VECTORAPI_KEY }}
+          VECTORAPI_BASE_URL=https://api.vectorengine.ai/v1
+          VECTORAPI_MODEL=gemini-2.0-flash-exp
+          
           # 短信服务配置
           ALIYUN_ACCESS_KEY_ID=${{ secrets.ALIYUN_ACCESS_KEY_ID }}
           ALIYUN_ACCESS_KEY_SECRET=${{ secrets.ALIYUN_ACCESS_KEY_SECRET }}
@@ -222,6 +227,9 @@ jobs:
                 FLASK_ENV: production
                 SECRET_KEY: ${SECRET_KEY}
                 JWT_SECRET_KEY: ${JWT_SECRET_KEY}
+                VECTORAPI_KEY: ${VECTORAPI_KEY}
+                VECTORAPI_BASE_URL: ${VECTORAPI_BASE_URL}
+                VECTORAPI_MODEL: ${VECTORAPI_MODEL}
                 PORT: 5000
                 TZ: Asia/Shanghai
               volumes:
