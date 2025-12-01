@@ -4,7 +4,7 @@
  */
 
 // 当前版本号 - 使用时间戳确保唯一性
-const APP_VERSION = '20251130190333';
+const APP_VERSION = '20251201135700';
 
 // 导出版本号
 window.APP_VERSION = APP_VERSION;
@@ -53,4 +53,7 @@ window.loadStylesheet = function(href) {
     });
 };
 
-console.log(`[版本管理] 当前版本: ${APP_VERSION}`);
+// 版本信息已在控制台显示
+if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+    console.log(`[版本管理] 当前版本: ${APP_VERSION}`);
+}
