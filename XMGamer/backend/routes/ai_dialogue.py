@@ -29,8 +29,8 @@ ai_dialogue_bp = Blueprint('ai_dialogue', __name__)
 # 从环境变量获取配置
 VECTORAPI_KEY = os.getenv('VECTORAPI_KEY')
 VECTORAPI_BASE_URL = os.getenv('VECTORAPI_BASE_URL', 'https://api.vectorengine.ai/v1')
-# 使用最新的GPT-5 Mini模型
-VECTORAPI_MODEL = os.getenv('VECTORAPI_MODEL', 'gpt-5-mini')
+# 使用gpt-4o-mini模型(更快速且成本更低)
+VECTORAPI_MODEL = os.getenv('VECTORAPI_MODEL', 'gpt-4o-mini')
 
 
 def load_character_knowledge(character_name='max', scenario='full'):
@@ -333,8 +333,8 @@ def chat():
                 {'role': 'user', 'content': prompt}
             ],
             'temperature': 0.9,  # 提高温度以增加多样性
-            'max_tokens': 100,
-            'top_p': 0.95  # 添加top_p采样以增加创造性
+            'max_tokens': 100
+            # 注意: GPT-5系列模型不支持top_p参数
         }
         
         # 发送请求
