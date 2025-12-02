@@ -312,37 +312,6 @@ const AuthManager = {
     },
     
     /**
-     * 使用微信登录（弹窗方式）
-     * @returns {Promise<Object>}
-     */
-    async loginWithWechat() {
-        try {
-            // 从环境变量或配置获取App ID
-            const appId = window.WECHAT_APP_ID || 'YOUR_WECHAT_APP_ID';
-            const redirectUri = `${window.location.origin}/oauth-callback.html`;
-            const state = this._generateState();
-            
-            // 保存state用于验证
-            sessionStorage.setItem('oauth_state', state);
-            sessionStorage.setItem('oauth_provider', 'wechat');
-            
-            const wechatAuthUrl = `https://open.weixin.qq.com/connect/qrconnect?` +
-                `appid=${encodeURIComponent(appId)}` +
-                `&redirect_uri=${encodeURIComponent(redirectUri)}` +
-                `&response_type=code` +
-                `&scope=snsapi_login` +
-                `&state=${encodeURIComponent(state)}#wechat_redirect`;
-            
-            // 使用弹窗打开登录页面
-            return this._openOAuthPopup(wechatAuthUrl, '微信登录');
-            
-        } catch (error) {
-            console.error('微信登录错误:', error);
-            throw error;
-        }
-    },
-    
-    /**
      * 使用X (Twitter)登录（弹窗方式）
      * @returns {Promise<Object>}
      */

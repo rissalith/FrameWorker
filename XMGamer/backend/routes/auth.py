@@ -1304,32 +1304,28 @@ def google_login():
             user = db.query(User).filter(User.email == email).first()
             
             if not user:
-                user = User(
-                    email=email,
-                    nickname=name or f'Google用户',
-                    avatar_url=picture,
-                    oauth_provider='google',
-                    oauth_id=google_id,
-                    status='active',
-                    last_login_at=datetime.utcnow()
-                )
-                db.add(user)
-                db.commit()
-                db.refresh(user)
-                
-                quota = UserQuota(
-                    user_id=user.id,
-                    daily_limit=10,
-                    daily_used=0,
-                    total_used=0
-                )
-                db.add(quota)
-                db.commit()
-            else:
-                user.last_login_at = datetime.utcnow()
-                if picture:
-                    user.avatar_url = picture
-                db.commit()
+                # 新用户需要注册并设置密码
+                print(f'[INFO] Google新用户需要注册: {email}')
+                return jsonify({
+                    'success': False,
+                    'error': 'need_register',
+                    'message': '该账号未注册，请先完成注册',
+                    'needRegister': True,
+                    'email': email,
+                    'name': name,
+                    'avatar_url': picture,
+                    'google_id': google_id
+                }), 400
+            
+            # 检查用户是否设置了密码
+            need_set_password = not user.password_hash
+            
+            # 更新最后登录时间和头像
+            user.last_login_at = datetime.utcnow()
+            if picture:
+                user.avatar_url = picture
+            db.commit()
+            print(f'[OK] Google用户登录: {email}')
             
             # 生成JWT token
             token = create_access_token(user.id, user.email or user.phone or '')
@@ -1366,282 +1362,112 @@ def google_login():
         }), 500
 
 
-@auth_bp.route('/wechat/callback', methods=['GET'])
-def wechat_callback():
+@auth_bp.route('/google/register', methods=['POST'])
+def google_register():
     """
-    微信OAuth回调（弹窗模式）
+    Google新用户注册（设置密码）
     
-    GET /api/auth/wechat/callback?code=xxx&state=xxx
-    """
-    try:
-        code = request.args.get('code')
-        state = request.args.get('state')
-        error = request.args.get('error')
-        
-        # 如果有错误，返回错误页面
-        if error:
-            return f'''
-                <html>
-                <script>
-                    window.opener.postMessage({{
-                        type: 'oauth_error',
-                        message: '微信登录失败'
-                    }}, window.location.origin);
-                    window.close();
-                </script>
-                </html>
-            '''
-        
-        if not code or not state:
-            return f'''
-                <html>
-                <script>
-                    window.opener.postMessage({{
-                        type: 'oauth_error',
-                        message: '缺少必要参数'
-                    }}, window.location.origin);
-                    window.close();
-                </script>
-                </html>
-            '''
-        
-        # 配置
-        app_id = os.getenv('WECHAT_APP_ID', 'YOUR_WECHAT_APP_ID')
-        app_secret = os.getenv('WECHAT_APP_SECRET', 'YOUR_WECHAT_APP_SECRET')
-        
-        # 获取access_token
-        token_url = 'https://api.weixin.qq.com/sns/oauth2/access_token'
-        token_params = {
-            'appid': app_id,
-            'secret': app_secret,
-            'code': code,
-            'grant_type': 'authorization_code'
-        }
-        
-        token_response = requests.get(token_url, params=token_params)
-        token_json = token_response.json()
-        
-        if 'errcode' in token_json:
-            return redirect(f'/login.html?error=wechat_{token_json["errcode"]}')
-        
-        access_token = token_json.get('access_token')
-        openid = token_json.get('openid')
-        
-        # 获取用户信息
-        userinfo_url = 'https://api.weixin.qq.com/sns/userinfo'
-        userinfo_params = {
-            'access_token': access_token,
-            'openid': openid,
-            'lang': 'zh_CN'
-        }
-        
-        userinfo_response = requests.get(userinfo_url, params=userinfo_params)
-        userinfo = userinfo_response.json()
-        
-        if 'errcode' in userinfo:
-            return redirect(f'/login.html?error=wechat_{userinfo["errcode"]}')
-        
-        # 处理用户登录/注册
-        db = get_db_session()
-        try:
-            nickname = userinfo.get('nickname')
-            headimgurl = userinfo.get('headimgurl')
-            
-            # 查找或创建用户（使用openid作为唯一标识）
-            user = db.query(User).filter(
-                User.oauth_provider == 'wechat',
-                User.oauth_id == openid
-            ).first()
-            
-            if not user:
-                user = User(
-                    nickname=nickname or '微信用户',
-                    avatar_url=headimgurl,
-                    oauth_provider='wechat',
-                    oauth_id=openid,
-                    status='active',
-                    last_login_at=datetime.utcnow()
-                )
-                db.add(user)
-                db.commit()
-                db.refresh(user)
-                
-                quota = UserQuota(
-                    user_id=user.id,
-                    daily_limit=10,
-                    daily_used=0,
-                    total_used=0
-                )
-                db.add(quota)
-                db.commit()
-                
-                print(f'[OK] 微信新用户注册: {openid}')
-            else:
-                user.last_login_at = datetime.utcnow()
-                if headimgurl:
-                    user.avatar_url = headimgurl
-                if nickname:
-                    user.nickname = nickname
-                db.commit()
-                print(f'[OK] 微信用户登录: {openid}')
-            
-            # 生成JWT token
-            token = create_access_token(user.id, openid)
-            
-            # 创建会话
-            expires_at = datetime.utcnow() + timedelta(seconds=604800)
-            session = Session(
-                user_id=user.id,
-                token=token[:50],
-                device_info=get_user_agent()[:200],
-                ip_address=get_client_ip(),
-                user_agent=get_user_agent(),
-                expires_at=expires_at
-            )
-            db.add(session)
-            db.commit()
-            
-            # 返回HTML页面，通过postMessage发送登录成功消息
-            return f'''
-                <html>
-                <script>
-                    window.opener.postMessage({{
-                        type: 'oauth_success',
-                        token: '{token}',
-                        user: {json.dumps(user.to_dict())}
-                    }}, window.location.origin);
-                    window.close();
-                </script>
-                </html>
-            '''
-            
-        finally:
-            db.close()
-            
-    except Exception as e:
-        print(f'微信登录错误: {e}')
-        return f'''
-            <html>
-            <script>
-                window.opener.postMessage({{
-                    type: 'oauth_error',
-                    message: '微信登录失败: {str(e)}'
-                }}, window.location.origin);
-                window.close();
-            </script>
-            </html>
-        '''
-
-
-@auth_bp.route('/wechat/login', methods=['POST'])
-def wechat_login():
-    """
-    处理微信登录的后端逻辑
-    
-    POST /api/auth/wechat/login
+    POST /api/auth/google/register
     {
-        "code": "xxx",
-        "state": "xxx"
+        "email": "user@example.com",
+        "google_id": "xxx",
+        "name": "用户名",
+        "avatar_url": "https://...",
+        "password": "password123",
+        "confirm_password": "password123"
     }
     """
     try:
         data = request.get_json()
-        code = data.get('code')
-        state = data.get('state')
+        email = data.get('email', '').strip()
+        google_id = data.get('google_id', '').strip()
+        name = data.get('name', '').strip()
+        avatar_url = data.get('avatar_url', '').strip()
+        password = data.get('password', '').strip()
+        confirm_password = data.get('confirm_password', '').strip()
         
-        if not code or not state:
+        print(f'[DEBUG] Google用户注册请求: {email}')
+        
+        # 验证必填字段
+        if not email or not google_id or not password:
             return jsonify({
                 'success': False,
                 'error': '参数错误',
-                'message': '缺少必要参数'
+                'message': '请填写完整信息'
             }), 400
         
-        # 配置
-        app_id = os.getenv('WECHAT_APP_ID', 'YOUR_WECHAT_APP_ID')
-        app_secret = os.getenv('WECHAT_APP_SECRET', 'YOUR_WECHAT_APP_SECRET')
-        
-        # 获取access_token
-        token_url = 'https://api.weixin.qq.com/sns/oauth2/access_token'
-        token_params = {
-            'appid': app_id,
-            'secret': app_secret,
-            'code': code,
-            'grant_type': 'authorization_code'
-        }
-        
-        token_response = requests.get(token_url, params=token_params)
-        token_json = token_response.json()
-        
-        if 'errcode' in token_json:
+        # 验证邮箱格式
+        import re
+        if not re.match(r'^[^\s@]+@[^\s@]+\.[^\s@]+$', email):
             return jsonify({
                 'success': False,
-                'error': '微信OAuth错误',
-                'message': token_json.get('errmsg', '获取token失败')
+                'error': '参数错误',
+                'message': '请输入正确的邮箱地址'
             }), 400
         
-        access_token = token_json.get('access_token')
-        openid = token_json.get('openid')
-        
-        # 获取用户信息
-        userinfo_url = 'https://api.weixin.qq.com/sns/userinfo'
-        userinfo_params = {
-            'access_token': access_token,
-            'openid': openid,
-            'lang': 'zh_CN'
-        }
-        
-        userinfo_response = requests.get(userinfo_url, params=userinfo_params)
-        userinfo = userinfo_response.json()
-        
-        if 'errcode' in userinfo:
+        # 验证密码
+        if len(password) < 6:
             return jsonify({
                 'success': False,
-                'error': '获取用户信息失败',
-                'message': userinfo.get('errmsg', '未知错误')
+                'error': '参数错误',
+                'message': '密码至少6位'
             }), 400
         
-        # 处理用户登录/注册
+        if len(password) > 20:
+            return jsonify({
+                'success': False,
+                'error': '参数错误',
+                'message': '密码最多20位'
+            }), 400
+        
+        # 验证密码确认
+        if password != confirm_password:
+            return jsonify({
+                'success': False,
+                'error': '参数错误',
+                'message': '两次输入的密码不一致'
+            }), 400
+        
         db = get_db_session()
         try:
-            nickname = userinfo.get('nickname')
-            headimgurl = userinfo.get('headimgurl')
+            # 检查邮箱是否已注册
+            existing_user = db.query(User).filter(User.email == email).first()
+            if existing_user:
+                return jsonify({
+                    'success': False,
+                    'error': '注册失败',
+                    'message': '该邮箱已注册'
+                }), 400
             
-            user = db.query(User).filter(
-                User.oauth_provider == 'wechat',
-                User.oauth_id == openid
-            ).first()
+            # 创建新用户
+            user = User(
+                email=email,
+                nickname=name or f'Google用户',
+                avatar_url=avatar_url,
+                password_hash=hash_password(password),
+                oauth_provider='google',
+                oauth_id=google_id,
+                status='active',
+                last_login_at=datetime.utcnow()
+            )
+            db.add(user)
+            db.commit()
+            db.refresh(user)
             
-            if not user:
-                user = User(
-                    nickname=nickname or '微信用户',
-                    avatar_url=headimgurl,
-                    oauth_provider='wechat',
-                    oauth_id=openid,
-                    status='active',
-                    last_login_at=datetime.utcnow()
-                )
-                db.add(user)
-                db.commit()
-                db.refresh(user)
-                
-                quota = UserQuota(
-                    user_id=user.id,
-                    daily_limit=10,
-                    daily_used=0,
-                    total_used=0
-                )
-                db.add(quota)
-                db.commit()
-            else:
-                user.last_login_at = datetime.utcnow()
-                if headimgurl:
-                    user.avatar_url = headimgurl
-                if nickname:
-                    user.nickname = nickname
-                db.commit()
+            # 创建用户配额
+            quota = UserQuota(
+                user_id=user.id,
+                daily_limit=10,
+                daily_used=0,
+                total_used=0
+            )
+            db.add(quota)
+            db.commit()
+            
+            print(f'[OK] Google新用户注册成功: {email}')
             
             # 生成JWT token
-            token = create_access_token(user.id, openid)
+            token = create_access_token(user.id, user.email)
             
             # 创建会话
             expires_at = datetime.utcnow() + timedelta(seconds=604800)
@@ -1660,14 +1486,16 @@ def wechat_login():
                 'success': True,
                 'token': token,
                 'user': user.to_dict(),
-                'message': '微信登录成功'
+                'message': '注册成功'
             })
             
         finally:
             db.close()
             
     except Exception as e:
-        print(f'微信登录处理错误: {e}')
+        print(f'Google用户注册错误: {e}')
+        import traceback
+        traceback.print_exc()
         return jsonify({
             'success': False,
             'error': '服务器错误',
@@ -2077,99 +1905,6 @@ def twitter_login():
         }), 500
 
         
-        # 获取用户信息
-        userinfo_url = 'https://api.weixin.qq.com/sns/userinfo'
-        userinfo_params = {
-            'access_token': access_token,
-            'openid': openid,
-            'lang': 'zh_CN'
-        }
-        
-        userinfo_response = requests.get(userinfo_url, params=userinfo_params)
-        userinfo = userinfo_response.json()
-        
-        if 'errcode' in userinfo:
-            return jsonify({
-                'success': False,
-                'error': '获取用户信息失败',
-                'message': userinfo.get('errmsg', '未知错误')
-            }), 400
-        
-        # 处理用户登录/注册
-        db = get_db_session()
-        try:
-            nickname = userinfo.get('nickname')
-            headimgurl = userinfo.get('headimgurl')
-            
-            user = db.query(User).filter(
-                User.oauth_provider == 'wechat',
-                User.oauth_id == openid
-            ).first()
-            
-            if not user:
-                user = User(
-                    nickname=nickname or '微信用户',
-                    avatar_url=headimgurl,
-                    oauth_provider='wechat',
-                    oauth_id=openid,
-                    status='active',
-                    last_login_at=datetime.utcnow()
-                )
-                db.add(user)
-                db.commit()
-                db.refresh(user)
-                
-                quota = UserQuota(
-                    user_id=user.id,
-                    daily_limit=10,
-                    daily_used=0,
-                    total_used=0
-                )
-                db.add(quota)
-                db.commit()
-            else:
-                user.last_login_at = datetime.utcnow()
-                if headimgurl:
-                    user.avatar_url = headimgurl
-                if nickname:
-                    user.nickname = nickname
-                db.commit()
-            
-            # 生成JWT token
-            token = create_access_token(user.id, openid)
-            
-            # 创建会话
-            expires_at = datetime.utcnow() + timedelta(seconds=604800)
-            session = Session(
-                user_id=user.id,
-                token=token[:50],
-                device_info=get_user_agent()[:200],
-                ip_address=get_client_ip(),
-                user_agent=get_user_agent(),
-                expires_at=expires_at
-            )
-            db.add(session)
-            db.commit()
-            
-            return jsonify({
-                'success': True,
-                'token': token,
-                'user': user.to_dict(),
-                'message': '微信登录成功'
-            })
-            
-        finally:
-            db.close()
-            
-    except Exception as e:
-        print(f'微信登录处理错误: {e}')
-        return jsonify({
-            'success': False,
-            'error': '服务器错误',
-            'message': str(e)
-        }), 500
-
-
 # ==================== 测试端点（仅开发环境） ====================
 
 @auth_bp.route('/test-token', methods=['GET'])
@@ -2210,5 +1945,5 @@ if __name__ == '__main__':
     print('  PUT  /api/auth/profile - 更新用户信息')
     print('  GET  /api/auth/google/callback - Google OAuth回调')
     print('  POST /api/auth/google/login - Google登录处理')
-    print('  GET  /api/auth/wechat/callback - 微信OAuth回调')
-    print('  POST /api/auth/wechat/login - 微信登录处理')
+    print('  GET  /api/auth/twitter/callback - Twitter OAuth回调')
+    print('  POST /api/auth/twitter/login - Twitter登录处理')

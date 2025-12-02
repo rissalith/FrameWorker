@@ -15,16 +15,11 @@ window.OAUTH_CONFIG = {
     
     // Twitter/X OAuth 2.0
     // 申请地址: https://developer.twitter.com/en/portal/dashboard
-    TWITTER_CLIENT_ID: 'Y05TdWhBWXJhdUxVdlRLQnVLcEc6MTpjaQ',
-    
-    // 微信开放平台
-    // 申请地址: https://open.weixin.qq.com/
-    WECHAT_APP_ID: 'YOUR_WECHAT_APP_ID'
+    TWITTER_CLIENT_ID: 'Y05TdWhBWXJhdUxVdlRLQnVLcEc6MTpjaQ'
 };
 
 // 将配置挂载到全局
 window.GOOGLE_CLIENT_ID = window.OAUTH_CONFIG.GOOGLE_CLIENT_ID;
 window.TWITTER_CLIENT_ID = window.OAUTH_CONFIG.TWITTER_CLIENT_ID;
-window.WECHAT_APP_ID = window.OAUTH_CONFIG.WECHAT_APP_ID;
 
 console.log('OAuth配置已加载');
