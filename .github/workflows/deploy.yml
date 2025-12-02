@@ -91,7 +91,9 @@ jobs:
           SENDGRID_API_KEY=${{ secrets.SENDGRID_API_KEY }}
           SENDGRID_FROM_EMAIL=${{ secrets.SENDGRID_FROM_EMAIL }}
           
-          # 微信登录配置
+          # 第三方登录配置
+          GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}
+          GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
           WECHAT_APP_ID=${{ secrets.WECHAT_APP_ID }}
           WECHAT_APP_SECRET=${{ secrets.WECHAT_APP_SECRET }}
           
@@ -210,6 +212,8 @@ jobs:
                 VECTORAPI_KEY: ${VECTORAPI_KEY}
                 VECTORAPI_BASE_URL: ${VECTORAPI_BASE_URL}
                 VECTORAPI_MODEL: ${VECTORAPI_MODEL}
+                GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
+                GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
                 PORT: 5000
                 TZ: Asia/Shanghai
               volumes:
