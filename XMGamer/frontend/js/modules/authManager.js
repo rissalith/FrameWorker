@@ -419,23 +419,22 @@ const AuthManager = {
                 if (event.data.type === 'oauth_success') {
                     cleanup();
                     
-                    // 保存token和用户信息
-                    self._saveTokenToStorage(event.data.token);
-                    self.currentUser = event.data.user;
-                    
-                    // 触发登录成功事件
-                    window.dispatchEvent(new CustomEvent('authStateChanged', {
-                        detail: { isAuthenticated: true, user: event.data.user }
-                    }));
-                    
-                    // 如果需要设置密码（首次登录），添加标记
+                    // 如果需要设置密码，不保存token，只返回数据
                     if (event.data.needSetPassword) {
-                        event.data.needSetPassword = true;
-                        event.data.isNewUser = event.data.isNewUser || false;
-                        event.data.googleInfo = event.data.googleInfo || {};
+                        // 不保存token，让用户先设置密码
+                        resolve(event.data);
+                    } else {
+                        // 不需要设置密码，直接保存token并登录
+                        self._saveTokenToStorage(event.data.token);
+                        self.currentUser = event.data.user;
+                        
+                        // 触发登录成功事件
+                        window.dispatchEvent(new CustomEvent('authStateChanged', {
+                            detail: { isAuthenticated: true, user: event.data.user }
+                        }));
+                        
+                        resolve(event.data);
                     }
-                    
-                    resolve(event.data);
                 } else if (event.data.type === 'oauth_error') {
                     cleanup();
                     reject(new Error(event.data.message || '登录失败'));
