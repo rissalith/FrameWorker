@@ -372,7 +372,8 @@ class GameLaunch(Base):
 
 
 # 数据库配置
-DATABASE_URL = os.getenv('DATABASE_URL', 'sqlite:///frameworker.db')
+# 使用持久化目录存储SQLite数据库
+DATABASE_URL = os.getenv('DATABASE_URL', 'sqlite:////app/data/frameworker.db')
 
 # 创建引擎
 engine = create_engine(
