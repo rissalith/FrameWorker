@@ -1094,8 +1094,8 @@ def google_callback():
         # 配置（需要在环境变量或配置文件中设置）
         client_id = os.getenv('GOOGLE_CLIENT_ID', 'YOUR_GOOGLE_CLIENT_ID')
         client_secret = os.getenv('GOOGLE_CLIENT_SECRET', 'YOUR_GOOGLE_CLIENT_SECRET')
-        # 使用固定的生产环境URL,避免HTTP/HTTPS不匹配
-        redirect_uri = "http://www.xmframer.com/oauth-callback.html"
+        # 动态构建redirect_uri，支持HTTP和HTTPS
+        redirect_uri = f"{request.scheme}://{request.host}/oauth-callback.html"
         
         # 交换授权码获取access token
         token_url = 'https://oauth2.googleapis.com/token'
@@ -1230,7 +1230,14 @@ def google_login():
         code = data.get('code')
         state = data.get('state')
         
+        print(f'[DEBUG] Google登录请求开始')
+        print(f'[DEBUG] Request host: {request.host}')
+        print(f'[DEBUG] Request scheme: {request.scheme}')
+        print(f'[DEBUG] Code length: {len(code) if code else 0}')
+        print(f'[DEBUG] State: {state}')
+        
         if not code or not state:
+            print(f'[ERROR] 缺少必要参数 - code: {bool(code)}, state: {bool(state)}')
             return jsonify({
                 'success': False,
                 'error': '参数错误',
@@ -1240,8 +1247,11 @@ def google_login():
         # 配置
         client_id = os.getenv('GOOGLE_CLIENT_ID', 'YOUR_GOOGLE_CLIENT_ID')
         client_secret = os.getenv('GOOGLE_CLIENT_SECRET', 'YOUR_GOOGLE_CLIENT_SECRET')
-        # 使用固定的生产环境URL,避免HTTP/HTTPS不匹配
-        redirect_uri = "http://www.xmframer.com/oauth-callback.html"
+        # 动态构建redirect_uri，支持HTTP和HTTPS
+        redirect_uri = f"{request.scheme}://{request.host}/oauth-callback.html"
+        
+        print(f'[DEBUG] redirect_uri: {redirect_uri}')
+        print(f'[DEBUG] client_id: {client_id}')
         
         # 交换授权码
         token_url = 'https://oauth2.googleapis.com/token'
@@ -1253,14 +1263,20 @@ def google_login():
             'grant_type': 'authorization_code'
         }
         
+        print(f'[DEBUG] 发送token请求到Google')
         token_response = requests.post(token_url, data=token_data)
+        print(f'[DEBUG] Google响应状态码: {token_response.status_code}')
+        
         token_json = token_response.json()
+        print(f'[DEBUG] Google响应: {token_json}')
         
         if 'error' in token_json:
+            error_msg = token_json.get('error_description', token_json.get('error', '获取token失败'))
+            print(f'[ERROR] Google OAuth错误: {error_msg}')
             return jsonify({
                 'success': False,
                 'error': 'OAuth错误',
-                'message': token_json.get('error_description', '获取token失败')
+                'message': error_msg
             }), 400
         
         access_token = token_json.get('access_token')
