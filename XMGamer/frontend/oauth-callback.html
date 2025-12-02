@@ -92,6 +92,12 @@
                 
                 messageEl.textContent = '正在验证登录信息...';
                 
+                // 调试信息
+                console.log('[OAuth Callback] Provider:', provider);
+                console.log('[OAuth Callback] Code length:', code.length);
+                console.log('[OAuth Callback] State:', state);
+                console.log('[OAuth Callback] Saved state:', savedState);
+                
                 // 准备请求数据
                 const requestData = { code, state };
                 
@@ -106,8 +112,21 @@
                     sessionStorage.removeItem('code_verifier');
                 }
                 
+                // 获取API基础URL
+                const hostname = window.location.hostname;
+                let apiBaseUrl;
+                if (hostname === 'localhost' || hostname === '127.0.0.1') {
+                    apiBaseUrl = 'http://localhost:5000/api';
+                } else {
+                    apiBaseUrl = `https://api.${hostname.replace('www.', '')}/api`;
+                }
+                
                 // 调用后端API处理OAuth登录
-                const response = await fetch(`/api/auth/${provider}/login`, {
+                const apiUrl = `${apiBaseUrl}/auth/${provider}/login`;
+                console.log('[OAuth Callback] API URL:', apiUrl);
+                console.log('[OAuth Callback] Request data:', requestData);
+                
+                const response = await fetch(apiUrl, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json'
@@ -115,7 +134,11 @@
                     body: JSON.stringify(requestData)
                 });
                 
+                console.log('[OAuth Callback] Response status:', response.status);
+                console.log('[OAuth Callback] Response headers:', Object.fromEntries(response.headers.entries()));
+                
                 const data = await response.json();
+                console.log('[OAuth Callback] Response data:', data);
                 
                 if (!response.ok) {
                     throw new Error(data.message || data.error || '登录失败');
