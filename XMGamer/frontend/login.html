@@ -302,6 +302,55 @@
                 </div>
             </div>
 
+            <!-- 首次登录注册模态框（第三方登录） -->
+            <div id="firstTimeLoginModal" class="modal" style="display: none;">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h3>完善账号信息</h3>
+                        <p class="modal-subtitle">首次登录，请设置密码和昵称</p>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <input
+                                type="password"
+                                id="firstTimePassword"
+                                class="form-input"
+                                placeholder="设置密码（至少6位）"
+                                minlength="6"
+                                maxlength="20"
+                            >
+                            <span class="form-error" id="firstTimePasswordError"></span>
+                        </div>
+                        <div class="form-group">
+                            <input
+                                type="password"
+                                id="firstTimeConfirmPassword"
+                                class="form-input"
+                                placeholder="确认密码"
+                                minlength="6"
+                                maxlength="20"
+                            >
+                            <span class="form-error" id="firstTimeConfirmPasswordError"></span>
+                        </div>
+                        <div class="form-group">
+                            <input
+                                type="text"
+                                id="firstTimeNickname"
+                                class="form-input"
+                                placeholder="昵称（选填）"
+                                maxlength="20"
+                            >
+                            <span class="form-error" id="firstTimeNicknameError"></span>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" id="confirmFirstTimeBtn" class="btn-primary">
+                            确定
+                        </button>
+                    </div>
+                </div>
+            </div>
+
             <!-- 底部链接 -->
             <div class="bottom-links">
                 <a href="#" class="link">简体中文</a>

@@ -1302,30 +1302,47 @@ def google_login():
             picture = userinfo.get('picture')
             
             user = db.query(User).filter(User.email == email).first()
+            is_new_user = False
+            need_set_password = False
             
             if not user:
-                # 新用户需要注册并设置密码
-                print(f'[INFO] Google新用户需要注册: {email}')
-                return jsonify({
-                    'success': False,
-                    'error': 'need_register',
-                    'message': '该账号未注册，请先完成注册',
-                    'needRegister': True,
-                    'email': email,
-                    'name': name,
-                    'avatar_url': picture,
-                    'google_id': google_id
-                }), 400
-            
-            # 检查用户是否设置了密码
-            need_set_password = not user.password_hash
-            
-            # 更新最后登录时间和头像
-            user.last_login_at = datetime.utcnow()
-            if picture:
-                user.avatar_url = picture
-            db.commit()
-            print(f'[OK] Google用户登录: {email}')
+                # 直接创建新用户（首次登录）
+                user = User(
+                    email=email,
+                    nickname=name or f'Google用户',
+                    avatar_url=picture,
+                    oauth_provider='google',
+                    oauth_id=google_id,
+                    status='active',
+                    last_login_at=datetime.utcnow()
+                )
+                db.add(user)
+                db.commit()
+                db.refresh(user)
+                
+                # 创建用户配额
+                quota = UserQuota(
+                    user_id=user.id,
+                    daily_limit=10,
+                    daily_used=0,
+                    total_used=0
+                )
+                db.add(quota)
+                db.commit()
+                
+                is_new_user = True
+                need_set_password = True
+                print(f'[OK] Google新用户首次登录: {email}')
+            else:
+                # 检查用户是否设置了密码
+                need_set_password = not user.password_hash
+                
+                # 更新最后登录时间和头像
+                user.last_login_at = datetime.utcnow()
+                if picture:
+                    user.avatar_url = picture
+                db.commit()
+                print(f'[OK] Google用户登录: {email}')
             
             # 生成JWT token
             token = create_access_token(user.id, user.email or user.phone or '')
@@ -1343,12 +1360,26 @@ def google_login():
             db.add(session)
             db.commit()
             
-            return jsonify({
+            response_data = {
                 'success': True,
                 'token': token,
                 'user': user.to_dict(),
                 'message': 'Google登录成功'
-            })
+            }
+            
+            # 如果是新用户或需要设置密码，添加标记
+            if need_set_password:
+                response_data['needSetPassword'] = True
+                response_data['isNewUser'] = is_new_user
+                if is_new_user:
+                    response_data['message'] = '首次登录，请设置密码和昵称'
+                    response_data['googleInfo'] = {
+                        'name': name,
+                        'email': email,
+                        'avatar_url': picture
+                    }
+            
+            return jsonify(response_data)
             
         finally:
             db.close()
