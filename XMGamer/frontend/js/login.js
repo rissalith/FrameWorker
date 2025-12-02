@@ -822,13 +822,22 @@ const LoginPage = {
                 confirmBtn.disabled = true;
                 confirmBtn.textContent = '提交中...';
                 
+                // 先保存token（设置密码需要认证）
+                AuthManager._saveTokenToStorage(token);
+                AuthManager.currentUser = user;
+                
                 // 调用设置密码API
-                await this.setPassword(token, password);
+                await AuthManager.setPassword(password);
                 
                 // 如果有昵称，更新用户信息
                 if (nickname && nickname !== user.nickname) {
                     await AuthManager.updateProfile({ nickname });
                 }
+                
+                // 触发登录成功事件
+                window.dispatchEvent(new CustomEvent('authStateChanged', {
+                    detail: { isAuthenticated: true, user: AuthManager.currentUser }
+                }));
                 
                 modal.style.display = 'none';
                 this.showStatus('success', '✅ 设置成功！');
@@ -838,6 +847,8 @@ const LoginPage = {
                     window.location.href = '/home.html';
                 }, 1000);
             } catch (error) {
+                // 设置失败，清除token
+                AuthManager._clearToken();
                 confirmBtn.disabled = false;
                 confirmBtn.textContent = '确定';
                 this.showStatus('error', `❌ ${error.message}`);
