@@ -150,12 +150,15 @@
                 sessionStorage.removeItem('oauth_state');
                 sessionStorage.removeItem('oauth_provider');
                 
-                // 向父窗口发送成功消息
+                // 向父窗口发送成功消息（包含所有后端返回的数据）
                 if (window.opener) {
                     window.opener.postMessage({
                         type: 'oauth_success',
                         token: data.token,
-                        user: data.user
+                        user: data.user,
+                        needSetPassword: data.needSetPassword || false,
+                        isNewUser: data.isNewUser || false,
+                        googleInfo: data.googleInfo || {}
                     }, window.location.origin);
                     
                     // 延迟关闭窗口，让用户看到成功消息

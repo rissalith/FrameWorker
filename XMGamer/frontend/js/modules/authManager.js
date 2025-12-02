@@ -428,6 +428,13 @@ const AuthManager = {
                         detail: { isAuthenticated: true, user: event.data.user }
                     }));
                     
+                    // 如果需要设置密码（首次登录），添加标记
+                    if (event.data.needSetPassword) {
+                        event.data.needSetPassword = true;
+                        event.data.isNewUser = event.data.isNewUser || false;
+                        event.data.googleInfo = event.data.googleInfo || {};
+                    }
+                    
                     resolve(event.data);
                 } else if (event.data.type === 'oauth_error') {
                     cleanup();

@@ -745,6 +745,133 @@ const LoginPage = {
     },
     
     /**
+     * 显示首次登录注册对话框（Google等第三方登录）
+     */
+    showFirstTimeLoginDialog(token, user, googleInfo) {
+        const modal = document.getElementById('firstTimeLoginModal');
+        const passwordInput = document.getElementById('firstTimePassword');
+        const confirmPasswordInput = document.getElementById('firstTimeConfirmPassword');
+        const nicknameInput = document.getElementById('firstTimeNickname');
+        const confirmBtn = document.getElementById('confirmFirstTimeBtn');
+        const passwordError = document.getElementById('firstTimePasswordError');
+        const confirmPasswordError = document.getElementById('firstTimeConfirmPasswordError');
+        const nicknameError = document.getElementById('firstTimeNicknameError');
+        
+        // 显示模态框
+        modal.style.display = 'flex';
+        
+        // 预填昵称（如果有）
+        if (googleInfo && googleInfo.name) {
+            nicknameInput.value = googleInfo.name;
+        }
+        
+        // 清空密码输入
+        passwordInput.value = '';
+        confirmPasswordInput.value = '';
+        passwordError.textContent = '';
+        confirmPasswordError.textContent = '';
+        nicknameError.textContent = '';
+        
+        // 确认按钮点击
+        const handleConfirm = async () => {
+            const password = passwordInput.value.trim();
+            const confirmPassword = confirmPasswordInput.value.trim();
+            const nickname = nicknameInput.value.trim();
+            
+            // 验证密码
+            if (!password) {
+                passwordError.textContent = '请输入密码';
+                return;
+            }
+            if (password.length < 6) {
+                passwordError.textContent = '密码至少6位';
+                return;
+            }
+            if (password.length > 20) {
+                passwordError.textContent = '密码最多20位';
+                return;
+            }
+            
+            // 验证确认密码
+            if (!confirmPassword) {
+                confirmPasswordError.textContent = '请再次输入密码';
+                return;
+            }
+            if (password !== confirmPassword) {
+                confirmPasswordError.textContent = '两次密码不一致';
+                return;
+            }
+            
+            // 验证昵称（可选）
+            if (nickname && nickname.length < 2) {
+                nicknameError.textContent = '昵称至少2个字符';
+                return;
+            }
+            if (nickname && nickname.length > 20) {
+                nicknameError.textContent = '昵称最多20个字符';
+                return;
+            }
+            
+            // 清除错误
+            passwordError.textContent = '';
+            confirmPasswordError.textContent = '';
+            nicknameError.textContent = '';
+            
+            // 提交设置
+            try {
+                confirmBtn.disabled = true;
+                confirmBtn.textContent = '提交中...';
+                
+                // 调用设置密码API
+                await this.setPassword(token, password);
+                
+                // 如果有昵称，更新用户信息
+                if (nickname && nickname !== user.nickname) {
+                    await AuthManager.updateProfile({ nickname });
+                }
+                
+                modal.style.display = 'none';
+                this.showStatus('success', '✅ 设置成功！');
+                
+                // 跳转到主页
+                setTimeout(() => {
+                    window.location.href = '/home.html';
+                }, 1000);
+            } catch (error) {
+                confirmBtn.disabled = false;
+                confirmBtn.textContent = '确定';
+                this.showStatus('error', `❌ ${error.message}`);
+            }
+        };
+        
+        // 绑定事件（移除旧的事件监听器）
+        const newConfirmBtn = confirmBtn.cloneNode(true);
+        confirmBtn.parentNode.replaceChild(newConfirmBtn, confirmBtn);
+        newConfirmBtn.addEventListener('click', handleConfirm);
+        
+        // 回车键提交
+        const handleKeyPress = (e) => {
+            if (e.key === 'Enter') {
+                handleConfirm();
+            }
+        };
+        passwordInput.addEventListener('keypress', handleKeyPress);
+        confirmPasswordInput.addEventListener('keypress', handleKeyPress);
+        nicknameInput.addEventListener('keypress', handleKeyPress);
+        
+        // 输入时清除错误
+        passwordInput.addEventListener('input', () => {
+            passwordError.textContent = '';
+        });
+        confirmPasswordInput.addEventListener('input', () => {
+            confirmPasswordError.textContent = '';
+        });
+        nicknameInput.addEventListener('input', () => {
+            nicknameError.textContent = '';
+        });
+    },
+    
+    /**
      * 设置密码
      */
     async setPassword(token, password) {
@@ -777,6 +904,18 @@ const LoginPage = {
             
             // 调用AuthManager的Google登录方法
             const result = await AuthManager.loginWithGoogle();
+            
+            // 检查是否需要设置密码（首次登录）
+            if (result.needSetPassword && result.isNewUser) {
+                googleLoginBtn.disabled = false;
+                this.showStatus('success', '✅ 首次登录，请完善信息');
+                
+                // 显示首次登录注册界面
+                setTimeout(() => {
+                    this.showFirstTimeLoginDialog(result.token, result.user, result.googleInfo);
+                }, 500);
+                return;
+            }
             
             // 登录成功
             this.showStatus('success', `✅ 登录成功！欢迎 ${result.user.nickname || result.user.email || '用户'}`);
