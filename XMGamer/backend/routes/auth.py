@@ -1336,6 +1336,7 @@ def google_login():
             else:
                 # 检查用户是否设置了密码
                 need_set_password = not user.password_hash
+                print(f'[DEBUG] 老用户 {email} - password_hash存在: {bool(user.password_hash)}, need_set_password: {need_set_password}')
                 
                 # 更新最后登录时间和头像
                 user.last_login_at = datetime.utcnow()
@@ -1368,6 +1369,7 @@ def google_login():
             }
             
             # 如果需要设置密码，添加标记（无论新老用户）
+            print(f'[DEBUG] 准备返回响应 - need_set_password: {need_set_password}, is_new_user: {is_new_user}')
             if need_set_password:
                 response_data['needSetPassword'] = True
                 response_data['isNewUser'] = is_new_user
@@ -1380,7 +1382,11 @@ def google_login():
                     response_data['message'] = '首次登录，请设置密码和昵称'
                 else:
                     response_data['message'] = '请设置密码以完善账号信息'
+                print(f'[DEBUG] 已添加needSetPassword标记到响应')
+            else:
+                print(f'[DEBUG] 用户已有密码，无需设置')
             
+            print(f'[DEBUG] 最终响应数据: {response_data}')
             return jsonify(response_data)
             
         finally:
