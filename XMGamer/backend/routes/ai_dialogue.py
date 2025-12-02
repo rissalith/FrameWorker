@@ -29,7 +29,8 @@ ai_dialogue_bp = Blueprint('ai_dialogue', __name__)
 # 从环境变量获取配置
 VECTORAPI_KEY = os.getenv('VECTORAPI_KEY')
 VECTORAPI_BASE_URL = os.getenv('VECTORAPI_BASE_URL', 'https://api.vectorengine.ai/v1')
-VECTORAPI_MODEL = os.getenv('VECTORAPI_MODEL', 'gemini-2.0-flash-exp')
+# 使用更稳定的模型，gemini-2.0-flash-exp在当前分组不可用
+VECTORAPI_MODEL = os.getenv('VECTORAPI_MODEL', 'gpt-4o-mini')
 
 
 def load_character_knowledge(character_name='max', scenario='full'):
