@@ -76,7 +76,6 @@ const LoginPage = {
             authStatus: document.getElementById('authStatus'),
             googleLoginBtn: document.getElementById('googleLoginBtn'),
             twitterLoginBtn: document.getElementById('twitterLoginBtn'),
-            wechatLoginBtn: document.getElementById('wechatLoginBtn'),
             // 表单切换
             showRegisterBtn: document.getElementById('showRegisterBtn'),
             showLoginBtn: document.getElementById('showLoginBtn'),
@@ -108,7 +107,7 @@ const LoginPage = {
         const {
             loginForm, modeBtns, sendCodeBtn,
             emailInput, codeInput, accountInput, passwordInput,
-            googleLoginBtn, twitterLoginBtn, wechatLoginBtn
+            googleLoginBtn, twitterLoginBtn
         } = this.elements;
         
         // 初始化拖动功能 - 已移至 brand-draggable.js
@@ -177,13 +176,6 @@ const LoginPage = {
         if (twitterLoginBtn) {
             twitterLoginBtn.addEventListener('click', () => {
                 this.handleTwitterLogin();
-            });
-        }
-        
-        // 微信登录
-        if (wechatLoginBtn) {
-            wechatLoginBtn.addEventListener('click', () => {
-                this.handleWechatLogin();
             });
         }
         
@@ -827,35 +819,6 @@ const LoginPage = {
             console.error('X登录失败:', error);
             this.showStatus('error', `❌ ${error.message}`);
             twitterLoginBtn.disabled = false;
-        }
-    },
-    
-    /**
-     * 处理微信登录
-     */
-    async handleWechatLogin() {
-        const { wechatLoginBtn } = this.elements;
-        
-        try {
-            wechatLoginBtn.disabled = true;
-            this.showStatus('processing', '正在打开微信登录窗口...');
-            
-            // 调用AuthManager的微信登录方法
-            const result = await AuthManager.loginWithWechat();
-            
-            if (result.success) {
-                this.showStatus('success', `✅ 登录成功！欢迎 ${result.user.nickname}`);
-                
-                // 1秒后跳转到主页
-                setTimeout(() => {
-                    window.location.href = '/home.html';
-                }, 1000);
-            }
-            
-        } catch (error) {
-            console.error('微信登录失败:', error);
-            this.showStatus('error', `❌ ${error.message}`);
-            wechatLoginBtn.disabled = false;
         }
     },
     

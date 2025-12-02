@@ -1,36 +1,17 @@
 /**
- * 版本管理 - 集中管理所有静态资源的版本号
- * 更新版本号时只需修改这一个文件
+ * 资源加载工具
+ * 提供动态加载JS和CSS的工具函数
  */
 
-// 当前版本号 - 使用时间戳确保唯一性
-const APP_VERSION = '20251201135700';
-
-// 导出版本号
-window.APP_VERSION = APP_VERSION;
-
 /**
- * 获取带版本号的资源URL
- * @param {string} url - 资源路径
- * @returns {string} 带版本号的完整URL
- */
-window.getVersionedUrl = function(url) {
-    if (!url) return url;
-    
-    // 如果URL已经包含查询参数，使用&连接
-    const separator = url.includes('?') ? '&' : '?';
-    return `${url}${separator}v=${APP_VERSION}`;
-};
-
-/**
- * 动态加载JS文件（带版本号）
+ * 动态加载JS文件
  * @param {string} src - JS文件路径
  * @returns {Promise} 加载完成的Promise
  */
 window.loadScript = function(src) {
     return new Promise((resolve, reject) => {
         const script = document.createElement('script');
-        script.src = getVersionedUrl(src);
+        script.src = src;
         script.onload = resolve;
         script.onerror = reject;
         document.head.appendChild(script);
@@ -38,7 +19,7 @@ window.loadScript = function(src) {
 };
 
 /**
- * 动态加载CSS文件（带版本号）
+ * 动态加载CSS文件
  * @param {string} href - CSS文件路径
  * @returns {Promise} 加载完成的Promise
  */
@@ -46,14 +27,9 @@ window.loadStylesheet = function(href) {
     return new Promise((resolve, reject) => {
         const link = document.createElement('link');
         link.rel = 'stylesheet';
-        link.href = getVersionedUrl(href);
+        link.href = href;
         link.onload = resolve;
         link.onerror = reject;
         document.head.appendChild(link);
     });
 };
-
-// 版本信息已在控制台显示
-if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-    console.log(`[版本管理] 当前版本: ${APP_VERSION}`);
-}
