@@ -1367,17 +1367,19 @@ def google_login():
                 'message': 'Google登录成功'
             }
             
-            # 如果是新用户或需要设置密码，添加标记
+            # 如果需要设置密码，添加标记（无论新老用户）
             if need_set_password:
                 response_data['needSetPassword'] = True
                 response_data['isNewUser'] = is_new_user
+                response_data['googleInfo'] = {
+                    'name': name,
+                    'email': email,
+                    'avatar_url': picture
+                }
                 if is_new_user:
                     response_data['message'] = '首次登录，请设置密码和昵称'
-                    response_data['googleInfo'] = {
-                        'name': name,
-                        'email': email,
-                        'avatar_url': picture
-                    }
+                else:
+                    response_data['message'] = '请设置密码以完善账号信息'
             
             return jsonify(response_data)
             
