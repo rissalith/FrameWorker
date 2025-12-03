@@ -24,8 +24,6 @@ const AuthManager = {
      * 初始化认证管理器
      */
     init() {
-        console.log('认证管理器初始化...');
-        
         // 从localStorage加载token
         this._loadTokenFromStorage();
         
@@ -39,8 +37,6 @@ const AuthManager = {
                 }
             });
         }
-        
-        console.log('认证管理器已初始化 ✅');
     },
     
     /**
