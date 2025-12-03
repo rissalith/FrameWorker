@@ -165,16 +165,24 @@
     
     .user-details {
         display: flex;
-        flex-direction: column;
+        flex-direction: row;
+        align-items: center;
+        gap: 8px;
     }
     
     .user-nickname {
         font-weight: 500;
+        color: var(--content-text, #202124);
     }
     
     .user-email {
-        font-size: 12px;
+        font-size: 13px;
         color: var(--content-text-secondary, #5f6368);
+    }
+    
+    .user-separator {
+        color: var(--content-text-secondary, #9aa0a6);
+        font-size: 12px;
     }
     
     .role-badge {
@@ -772,6 +780,7 @@ const AdminUsers = {
                         </div>
                         <div class="user-details">
                             <span class="user-nickname">${user.nickname || '未设置'}</span>
+                            <span class="user-separator">·</span>
                             <span class="user-email">${user.email || user.phone || 'ID: ' + user.id}</span>
                         </div>
                     </div>
