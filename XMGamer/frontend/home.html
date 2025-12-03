@@ -153,11 +153,13 @@
             flex-shrink: 0 !important;
         }
         .user-info {
-            display: block !important;
+            display: flex !important;
+            flex-direction: column !important;
             flex: 1 !important;
             min-width: 0 !important;
             opacity: 1 !important;
             width: auto !important;
+            gap: 2px !important;
         }
         .user-name {
             font-size: 0.9em !important;
@@ -165,6 +167,17 @@
             white-space: nowrap !important;
             overflow: hidden !important;
             text-overflow: ellipsis !important;
+        }
+        .user-role {
+            font-size: 0.75em !important;
+            color: rgba(255, 255, 255, 0.7) !important;
+            white-space: nowrap !important;
+        }
+        .user-role.admin {
+            color: #ffd700 !important;
+        }
+        .user-role.creator {
+            color: #7dd3fc !important;
         }
         .user-menu-toggle {
             display: block !important;
