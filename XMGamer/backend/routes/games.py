@@ -119,6 +119,75 @@ def verify_game_token(token):
 
 # ==================== API端点 ====================
 
+@games_bp.route('', methods=['GET'])
+def list_games():
+    """
+    获取公开的游戏列表
+    
+    GET /api/games
+    """
+    try:
+        from database import Game
+        
+        db = get_db_session()
+        try:
+            # 只返回已发布的游戏
+            games = db.query(Game).filter(Game.status == 'published').order_by(Game.sort_order).all()
+            
+            return jsonify({
+                'success': True,
+                'games': [g.to_dict() for g in games],
+                'total': len(games)
+            })
+            
+        finally:
+            db.close()
+            
+    except Exception as e:
+        print(f'获取游戏列表错误: {e}')
+        return jsonify({
+            'success': True,
+            'games': [],
+            'total': 0
+        })
+
+
+@games_bp.route('/<game_id>', methods=['GET'])
+def get_game(game_id):
+    """
+    获取单个游戏详情
+    
+    GET /api/games/<game_id>
+    """
+    try:
+        from database import Game
+        
+        db = get_db_session()
+        try:
+            game = db.query(Game).filter(Game.id == game_id).first()
+            
+            if not game:
+                return jsonify({
+                    'success': False,
+                    'error': '游戏不存在'
+                }), 404
+            
+            return jsonify({
+                'success': True,
+                'game': game.to_dict()
+            })
+            
+        finally:
+            db.close()
+            
+    except Exception as e:
+        print(f'获取游戏详情错误: {e}')
+        return jsonify({
+            'success': False,
+            'error': str(e)
+        }), 500
+
+
 @games_bp.route('/launch', methods=['POST'])
 @require_auth
 def launch_game():

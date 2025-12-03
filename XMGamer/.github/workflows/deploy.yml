@@ -101,6 +101,21 @@ jobs:
             source venv/bin/activate
             pip install -r requirements.txt
             
+            echo "数据库迁移..."
+            python -c "
+from database import Base, engine, AdminLog
+# 创建所有缺失的表
+Base.metadata.create_all(bind=engine)
+# 确保 admin_logs 表存在
+AdminLog.__table__.create(engine, checkfirst=True)
+print('[OK] 数据库迁移完成')
+" || echo "警告: 数据库迁移失败"
+            
+            echo "初始化系统数据（管理员账号、默认游戏）..."
+            export ADMIN_EMAIL="${ADMIN_EMAIL:-admin@xmframer.com}"
+            export ADMIN_PASSWORD="${ADMIN_PASSWORD:-pXw1995}"
+            python init_admin.py || echo "警告: 初始化脚本执行失败"
+            
             echo "重启Docker容器..."
             docker restart xmgamer-gateway || echo "警告: Nginx容器重启失败"
             docker restart xmgamer-api || echo "警告: API容器重启失败"
