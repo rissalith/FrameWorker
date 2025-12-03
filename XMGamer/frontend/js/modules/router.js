@@ -170,6 +170,11 @@ const Router = {
         if (this.currentRoute === 'settings' && window.SettingsManager) {
             SettingsManager.init();
         }
+        
+        // 应用多语言翻译
+        if (window.I18n) {
+            I18n.applyTranslations();
+        }
     },
     
     /**

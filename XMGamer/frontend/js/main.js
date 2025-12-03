@@ -126,10 +126,12 @@ const App = {
                 }
                 break;
             case 'wallet':
-                alert('钱包功能即将推出');
+                const walletMsg = window.I18n ? I18n.t('wallet_coming_soon') : '钱包功能即将推出';
+                alert(walletMsg);
                 break;
             case 'logout':
-                if (confirm('确定要退出登录吗？')) {
+                const logoutMsg = window.I18n ? I18n.t('logout_confirm') : '确定要退出登录吗？';
+                if (confirm(logoutMsg)) {
                     AuthManager.logout();
                 }
                 break;
