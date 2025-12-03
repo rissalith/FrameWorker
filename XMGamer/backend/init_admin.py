@@ -15,9 +15,13 @@ from utils.password_helper import hash_password
 
 def init_admin():
     """初始化管理员账号"""
-    admin_email = os.getenv('ADMIN_EMAIL', 'admin@xmframer.com')
-    admin_password = os.getenv('ADMIN_PASSWORD', 'pXw1995')
+    admin_email = os.getenv('ADMIN_EMAIL')
+    admin_password = os.getenv('ADMIN_PASSWORD')
     admin_nickname = os.getenv('ADMIN_NICKNAME', 'Admin')
+    
+    if not admin_email or not admin_password:
+        print('[SKIP] 未设置 ADMIN_EMAIL 或 ADMIN_PASSWORD 环境变量，跳过管理员初始化')
+        return None
     
     db = get_db_session()
     try:
