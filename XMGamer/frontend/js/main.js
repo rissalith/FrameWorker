@@ -120,7 +120,10 @@ const App = {
     _handleMenuAction(action) {
         switch (action) {
             case 'settings':
-                alert('个人设置功能即将推出');
+                // 导航到设置页面
+                if (window.Router) {
+                    Router.navigate('settings');
+                }
                 break;
             case 'wallet':
                 alert('钱包功能即将推出');

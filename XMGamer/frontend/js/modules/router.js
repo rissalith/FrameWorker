@@ -13,6 +13,23 @@ const Router = {
         'game-market': {
             title: '游戏市场',
             page: 'pages/game-market.html'
+        },
+        'settings': {
+            title: '个人设置',
+            page: 'pages/settings.html',
+            init: () => {
+                // 加载设置页面的CSS
+                if (!document.querySelector('link[href*="settings.css"]')) {
+                    const link = document.createElement('link');
+                    link.rel = 'stylesheet';
+                    link.href = 'css/settings.css';
+                    document.head.appendChild(link);
+                }
+                // 初始化设置管理器
+                if (window.SettingsManager) {
+                    SettingsManager.init();
+                }
+            }
         }
     },
     
@@ -147,6 +164,11 @@ const Router = {
         // 重新初始化游戏市场视图切换（如果存在）
         if (window.App && window.App._initGameMarketView) {
             window.App._initGameMarketView();
+        }
+        
+        // 如果是设置页面，初始化设置管理器
+        if (this.currentRoute === 'settings' && window.SettingsManager) {
+            SettingsManager.init();
         }
     },
     

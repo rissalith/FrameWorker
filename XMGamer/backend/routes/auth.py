@@ -898,6 +898,114 @@ def set_password():
         }), 500
 
 
+@auth_bp.route('/change-password', methods=['POST'])
+@require_auth
+def change_password():
+    """
+    修改密码
+    
+    POST /api/auth/change-password
+    Headers: Authorization: Bearer <token>
+    {
+        "current_password": "oldpassword123",
+        "new_password": "newpassword123"
+    }
+    """
+    try:
+        user_id = g.current_user_id
+        data = request.get_json()
+        current_password = data.get('current_password', '').strip()
+        new_password = data.get('new_password', '').strip()
+        
+        # 验证当前密码
+        if not current_password:
+            return jsonify({
+                'success': False,
+                'error': '参数错误',
+                'message': '请输入当前密码'
+            }), 400
+        
+        # 验证新密码
+        if not new_password:
+            return jsonify({
+                'success': False,
+                'error': '参数错误',
+                'message': '请输入新密码'
+            }), 400
+        
+        if len(new_password) < 6:
+            return jsonify({
+                'success': False,
+                'error': '参数错误',
+                'message': '新密码至少6位'
+            }), 400
+        
+        if len(new_password) > 20:
+            return jsonify({
+                'success': False,
+                'error': '参数错误',
+                'message': '新密码最多20位'
+            }), 400
+        
+        if current_password == new_password:
+            return jsonify({
+                'success': False,
+                'error': '参数错误',
+                'message': '新密码不能与当前密码相同'
+            }), 400
+        
+        db = get_db_session()
+        try:
+            user = db.query(User).filter(User.id == user_id).first()
+            
+            if not user:
+                return jsonify({
+                    'success': False,
+                    'error': '用户不存在',
+                    'message': '用户信息未找到'
+                }), 404
+            
+            # 验证当前密码
+            if not user.password_hash:
+                return jsonify({
+                    'success': False,
+                    'error': '操作失败',
+                    'message': '该账号未设置密码，请先设置密码'
+                }), 400
+            
+            if not verify_password(current_password, user.password_hash):
+                return jsonify({
+                    'success': False,
+                    'error': '验证失败',
+                    'message': '当前密码错误'
+                }), 400
+            
+            # 更新密码
+            user.password_hash = hash_password(new_password)
+            user.updated_at = datetime.utcnow()
+            db.commit()
+            db.refresh(user)
+            
+            print(f'[OK] 用户修改密码: {user.email or user.phone or user.id}')
+            
+            return jsonify({
+                'success': True,
+                'user': user.to_dict(),
+                'message': '密码修改成功'
+            })
+            
+        finally:
+            db.close()
+            
+    except Exception as e:
+        print(f'修改密码错误: {e}')
+        return jsonify({
+            'success': False,
+            'error': '服务器错误',
+            'message': str(e)
+        }), 500
+
+
 @auth_bp.route('/me', methods=['GET'])
 @require_auth
 def get_current_user():
@@ -1230,12 +1338,14 @@ def google_login():
         data = request.get_json()
         code = data.get('code')
         state = data.get('state')
+        redirect_uri = data.get('redirect_uri')
         
         print(f'[DEBUG] Google登录请求开始')
         print(f'[DEBUG] Request host: {request.host}')
         print(f'[DEBUG] Request scheme: {request.scheme}')
         print(f'[DEBUG] Code length: {len(code) if code else 0}')
         print(f'[DEBUG] State: {state}')
+        print(f'[DEBUG] Redirect URI from client: {redirect_uri}')
         
         if not code or not state:
             print(f'[ERROR] 缺少必要参数 - code: {bool(code)}, state: {bool(state)}')
@@ -1248,15 +1358,18 @@ def google_login():
         # 配置
         client_id = os.getenv('GOOGLE_CLIENT_ID', 'YOUR_GOOGLE_CLIENT_ID')
         client_secret = os.getenv('GOOGLE_CLIENT_SECRET', 'YOUR_GOOGLE_CLIENT_SECRET')
-        # 使用前端域名构建redirect_uri（从环境变量或Referer获取）
-        frontend_domain = os.getenv('FRONTEND_DOMAIN', 'www.xmframer.com')
-        # 本地开发环境特殊处理
-        if request.host.startswith('localhost') or request.host.startswith('127.0.0.1'):
-            redirect_uri = f"http://{request.host}/oauth-callback.html"
-        else:
-            redirect_uri = f"https://{frontend_domain}/oauth-callback.html"
         
-        print(f'[DEBUG] redirect_uri: {redirect_uri}')
+        # 确定redirect_uri
+        if not redirect_uri:
+            # 如果前端没传，尝试构建（兼容旧版）
+            frontend_domain = os.getenv('FRONTEND_DOMAIN', 'www.xmframer.com')
+            # 本地开发环境特殊处理
+            if request.host.startswith('localhost') or request.host.startswith('127.0.0.1'):
+                redirect_uri = f"http://{request.host}/oauth-callback.html"
+            else:
+                redirect_uri = f"https://{frontend_domain}/oauth-callback.html"
+        
+        print(f'[DEBUG] Final redirect_uri: {redirect_uri}')
         print(f'[DEBUG] client_id: {client_id}')
         
         # 交换授权码
@@ -1753,6 +1866,7 @@ def twitter_login():
         code = data.get('code')
         state = data.get('state')
         code_verifier = data.get('code_verifier')
+        redirect_uri = data.get('redirect_uri')
         
         if not code or not state:
             return jsonify({
@@ -1771,7 +1885,9 @@ def twitter_login():
         # 配置 - 优先使用环境变量，否则使用前端配置
         client_id = os.getenv('TWITTER_CLIENT_ID', 'Y05TdWhBWXJhdUxVdlRLQnVLcEc6MTpjaQ')
         client_secret = os.getenv('TWITTER_CLIENT_SECRET', 'o0hMC7-8Pe_3EEMYYIOyTlkOG8aZ56WfK8WM71PLu72vTDxMXM')
-        redirect_uri = f"{request.host_url}oauth-callback.html"
+        
+        if not redirect_uri:
+            redirect_uri = f"{request.host_url}oauth-callback.html"
         
         print(f'[DEBUG] X登录开始')
         print(f'[DEBUG] client_id: {client_id}')
