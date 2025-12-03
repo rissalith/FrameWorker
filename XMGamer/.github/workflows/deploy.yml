@@ -112,8 +112,8 @@ print('[OK] 数据库迁移完成')
 " || echo "警告: 数据库迁移失败"
             
             echo "初始化系统数据（管理员账号、默认游戏）..."
-            export ADMIN_EMAIL="${ADMIN_EMAIL:-admin@xmframer.com}"
-            export ADMIN_PASSWORD="${ADMIN_PASSWORD:-pXw1995}"
+            # 管理员账号通过 GitHub Secrets 配置
+            # 在 GitHub 仓库设置中添加 ADMIN_EMAIL 和 ADMIN_PASSWORD secrets
             python init_admin.py || echo "警告: 初始化脚本执行失败"
             
             echo "重启Docker容器..."
