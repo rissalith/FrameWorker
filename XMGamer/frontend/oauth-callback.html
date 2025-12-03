@@ -99,7 +99,11 @@
                 console.log('[OAuth Callback] Saved state:', savedState);
                 
                 // 准备请求数据
-                const requestData = { code, state };
+                const requestData = { 
+                    code, 
+                    state,
+                    redirect_uri: `${window.location.origin}/oauth-callback.html`
+                };
                 
                 // 如果是Twitter登录，需要传递code_verifier
                 if (provider === 'twitter') {

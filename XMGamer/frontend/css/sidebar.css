@@ -44,6 +44,15 @@
     margin-bottom: 6px;
     text-shadow: 0 0 20px rgba(255, 255, 255, 0.5), 2px 2px 4px rgba(0, 0, 0, 0.3);
     animation: logoGlow 2s ease-in-out infinite;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.logo-icon {
+    width: 28px;
+    height: 28px;
+    flex-shrink: 0;
 }
 
 .logo-subtitle {
@@ -106,7 +115,9 @@
 }
 
 .menu-icon {
-    font-size: 1.3em;
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
 }
 
 .menu-text {
@@ -149,9 +160,14 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 1.3em;
     flex-shrink: 0;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+}
+
+.user-avatar svg {
+    width: 20px;
+    height: 20px;
+    color: white;
 }
 
 .user-info {
@@ -168,8 +184,10 @@
 }
 
 .user-menu-toggle {
-    font-size: 0.8em;
+    width: 16px;
+    height: 16px;
     transition: transform 0.3s;
+    flex-shrink: 0;
 }
 
 .user-profile.active .user-menu-toggle {
@@ -210,7 +228,9 @@
 }
 
 .menu-option .menu-icon {
-    font-size: 1.2em;
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
 }
 
 .menu-option span:last-child {

@@ -466,13 +466,16 @@ const AuthManager = {
             // 清除保存的state
             sessionStorage.removeItem('oauth_state');
             
+            // 构造redirect_uri，确保与发起登录时一致
+            const redirectUri = `${window.location.origin}/oauth-callback.html`;
+            
             // 调用后端API处理OAuth登录
             const response = await fetch(`${this.apiBaseUrl}/auth/${provider}/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ code, state })
+                body: JSON.stringify({ code, state, redirect_uri: redirectUri })
             });
             
             const data = await response.json();

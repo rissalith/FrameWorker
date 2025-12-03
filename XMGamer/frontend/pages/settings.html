@@ -1,0 +1,277 @@
+<!-- 个人设置页面 -->
+<div class="settings-container">
+    <div class="settings-header">
+        <h2 class="settings-title">个人设置</h2>
+        <p class="settings-subtitle">管理您的账号信息和偏好设置</p>
+    </div>
+
+    <div class="settings-content">
+        <!-- 左侧导航 -->
+        <nav class="settings-nav">
+            <div class="settings-nav-item active" data-tab="profile">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                <span>个人资料</span>
+            </div>
+            <div class="settings-nav-item" data-tab="security">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+                <span>账号安全</span>
+            </div>
+            <div class="settings-nav-item" data-tab="preferences">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="3"></circle>
+                    <path d="M12 1v6m0 6v6m8.66-15.66l-4.24 4.24m-8.48 8.48l-4.24 4.24M23 12h-6m-6 0H1m20.66 8.66l-4.24-4.24m-8.48-8.48l-4.24-4.24"></path>
+                </svg>
+                <span>通用设置</span>
+            </div>
+            <div class="settings-nav-item" data-tab="language">
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                </svg>
+                <span>语言设置</span>
+            </div>
+        </nav>
+
+        <!-- 右侧内容区 -->
+        <div class="settings-panels">
+            <!-- 个人资料 -->
+            <div class="settings-panel active" id="profile-panel">
+                <div class="panel-section">
+                    <h3 class="section-title">基本信息</h3>
+                    
+                    <div class="form-group">
+                        <label class="form-label">头像</label>
+                        <div class="avatar-upload">
+                            <div class="avatar-preview" id="avatarPreview">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="12" cy="7" r="4"></circle>
+                                </svg>
+                            </div>
+                            <button type="button" class="btn-upload" id="uploadAvatarBtn">
+                                <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                    <polyline points="17 8 12 3 7 8"></polyline>
+                                    <line x1="12" y1="3" x2="12" y2="15"></line>
+                                </svg>
+                                上传头像
+                            </button>
+                            <input type="file" id="avatarInput" accept="image/*" style="display: none;">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="nicknameInput">昵称</label>
+                        <input type="text" id="nicknameInput" class="form-input" placeholder="请输入昵称" maxlength="20">
+                        <span class="form-hint">昵称长度为2-20个字符</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="emailDisplay">邮箱</label>
+                        <input type="email" id="emailDisplay" class="form-input" disabled>
+                        <span class="form-hint">邮箱不可修改</span>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn-primary" id="saveProfileBtn">
+                            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            保存修改
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 账号安全 -->
+            <div class="settings-panel" id="security-panel">
+                <div class="panel-section">
+                    <h3 class="section-title">修改密码</h3>
+                    
+                    <div class="form-group">
+                        <label class="form-label" for="currentPassword">当前密码</label>
+                        <div class="password-input-wrapper">
+                            <input type="password" id="currentPassword" class="form-input" placeholder="请输入当前密码">
+                            <button type="button" class="password-toggle" data-target="currentPassword">
+                                <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="newPassword">新密码</label>
+                        <div class="password-input-wrapper">
+                            <input type="password" id="newPassword" class="form-input" placeholder="请输入新密码（6-20位）">
+                            <button type="button" class="password-toggle" data-target="newPassword">
+                                <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                            </button>
+                        </div>
+                        <span class="form-hint">密码长度为6-20个字符</span>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label" for="confirmPassword">确认新密码</label>
+                        <div class="password-input-wrapper">
+                            <input type="password" id="confirmPassword" class="form-input" placeholder="请再次输入新密码">
+                            <button type="button" class="password-toggle" data-target="confirmPassword">
+                                <svg class="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn-primary" id="changePasswordBtn">
+                            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            修改密码
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 通用设置 -->
+            <div class="settings-panel" id="preferences-panel">
+                <div class="panel-section">
+                    <h3 class="section-title">显示设置</h3>
+                    
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-label">深色模式</div>
+                            <div class="setting-desc">启用深色主题以减少眼睛疲劳</div>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="darkModeToggle">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-label">动画效果</div>
+                            <div class="setting-desc">启用界面动画和过渡效果</div>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="animationToggle" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="panel-section">
+                    <h3 class="section-title">通知设置</h3>
+                    
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-label">桌面通知</div>
+                            <div class="setting-desc">接收重要消息的桌面通知</div>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="desktopNotificationToggle">
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="setting-item">
+                        <div class="setting-info">
+                            <div class="setting-label">声音提示</div>
+                            <div class="setting-desc">播放消息提示音</div>
+                        </div>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="soundToggle" checked>
+                            <span class="toggle-slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 语言设置 -->
+            <div class="settings-panel" id="language-panel">
+                <div class="panel-section">
+                    <h3 class="section-title">选择语言</h3>
+                    
+                    <div class="language-list">
+                        <label class="language-item">
+                            <input type="radio" name="language" value="zh-CN" checked>
+                            <div class="language-info">
+                                <div class="language-name">简体中文</div>
+                                <div class="language-native">Simplified Chinese</div>
+                            </div>
+                            <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </label>
+
+                        <label class="language-item">
+                            <input type="radio" name="language" value="zh-TW">
+                            <div class="language-info">
+                                <div class="language-name">繁體中文</div>
+                                <div class="language-native">Traditional Chinese</div>
+                            </div>
+                            <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </label>
+
+                        <label class="language-item">
+                            <input type="radio" name="language" value="en-US">
+                            <div class="language-info">
+                                <div class="language-name">English</div>
+                                <div class="language-native">English</div>
+                            </div>
+                            <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </label>
+
+                        <label class="language-item">
+                            <input type="radio" name="language" value="ja-JP">
+                            <div class="language-info">
+                                <div class="language-name">日本語</div>
+                                <div class="language-native">Japanese</div>
+                            </div>
+                            <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </label>
+
+                        <label class="language-item">
+                            <input type="radio" name="language" value="ko-KR">
+                            <div class="language-info">
+                                <div class="language-name">한국어</div>
+                                <div class="language-native">Korean</div>
+                            </div>
+                            <svg class="check-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </label>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn-primary" id="saveLanguageBtn">
+                            <svg class="btn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            保存语言设置
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
