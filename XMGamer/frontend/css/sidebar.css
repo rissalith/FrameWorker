@@ -5,7 +5,7 @@
 
 /* 左侧边栏 */
 .sidebar {
-    width: 220px;
+    width: 80px;
     background: linear-gradient(180deg, rgba(102, 126, 234, 0.95) 0%, rgba(118, 75, 162, 0.95) 100%);
     backdrop-filter: blur(10px);
     color: white;
@@ -15,6 +15,12 @@
     box-shadow: 4px 0 30px rgba(102, 126, 234, 0.3);
     flex-shrink: 0;
     position: relative;
+    transition: width 0.3s ease;
+    align-items: center;
+}
+
+.sidebar:hover {
+    width: 220px;
 }
 
 .sidebar::before {
@@ -31,7 +37,11 @@
 
 /* 侧边栏头部 */
 .sidebar-header {
-    padding: 20px 18px 15px;
+    padding: 20px 0;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     border-bottom: 1px solid rgba(255, 255, 255, 0.2);
     background: rgba(0, 0, 0, 0.2);
     position: relative;
@@ -39,96 +49,130 @@
 }
 
 .logo {
-    font-size: 1.6em;
-    font-weight: 700;
-    margin-bottom: 6px;
-    text-shadow: 0 0 20px rgba(255, 255, 255, 0.5), 2px 2px 4px rgba(0, 0, 0, 0.3);
-    animation: logoGlow 2s ease-in-out infinite;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 8px;
+    justify-content: center;
+    margin-bottom: 0;
 }
 
-.logo-icon {
-    width: 28px;
-    height: 28px;
-    flex-shrink: 0;
+.logo-icon-svg {
+    width: 40px;
+    height: 40px;
+    transition: all 0.3s ease;
+}
+
+.sidebar:hover .logo-icon-svg {
+    width: 50px;
+    height: 50px;
+    margin-bottom: 5px;
+}
+
+.logo-text {
+    font-size: 0;
+    opacity: 0;
+    font-weight: 700;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    /* 缩略状态下隐藏 */
+    transform: scale(0);
+}
+
+.sidebar:hover .logo-text {
+    font-size: 1.2em;
+    opacity: 1;
+    transform: scale(1);
 }
 
 .logo-subtitle {
-    font-size: 0.85em;
-    opacity: 0.9;
+    font-size: 0;
+    opacity: 0;
     font-weight: 400;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    margin-top: 0;
+    /* 缩略状态下隐藏 */
+    transform: scale(0);
+}
+
+.sidebar:hover .logo-subtitle {
+    font-size: 0.75em;
+    opacity: 0.8;
+    margin-top: 4px;
+    transform: scale(1);
 }
 
 /* 侧边栏菜单 */
 .sidebar-menu {
-    padding: 12px 8px;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
-    background: rgba(0, 0, 0, 0.1);
-    position: relative;
-    z-index: 1;
+    padding: 15px 10px;
+    width: 100%;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    border-bottom: none;
+    background: transparent;
 }
 
 .menu-item {
     display: flex;
+    flex-direction: row;
     align-items: center;
-    gap: 10px;
-    padding: 11px 14px;
-    margin-bottom: 6px;
-    border-radius: 8px;
+    justify-content: center; /* 默认居中 */
+    gap: 15px;
+    padding: 12px;
+    margin-bottom: 0;
+    border-radius: 12px;
     cursor: pointer;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    background: rgba(255, 255, 255, 0.1);
-    border: 2px solid transparent;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    background: transparent;
+    border: none;
     position: relative;
     overflow: hidden;
-}
-
-.menu-item::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
     width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transition: left 0.5s;
+    height: 50px;
 }
 
-.menu-item:hover::before {
-    left: 100%;
+.sidebar:hover .menu-item {
+    justify-content: flex-start; /* 展开后左对齐 */
+    padding: 12px 20px;
 }
 
 .menu-item:hover {
-    background: rgba(255, 255, 255, 0.2);
-    transform: translateX(8px) scale(1.02);
-    box-shadow: 0 4px 15px rgba(255, 255, 255, 0.2);
+    background: rgba(255, 255, 255, 0.15);
 }
 
 .menu-item.active {
-    background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(255, 255, 255, 1) 100%);
-    color: #667eea;
-    border-color: rgba(255, 255, 255, 0.5);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3), 0 0 20px rgba(102, 126, 234, 0.4);
-    transform: translateX(5px);
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
 }
 
 .menu-icon {
-    width: 20px;
-    height: 20px;
+    width: 24px;
+    height: 24px;
     flex-shrink: 0;
+    transition: all 0.3s ease;
 }
 
 .menu-text {
-    font-size: 0.9em;
+    font-size: 0;
+    opacity: 0;
     font-weight: 600;
+    white-space: nowrap;
+    transition: all 0.3s ease;
+}
+
+.sidebar:hover .menu-text {
+    font-size: 1em;
+    opacity: 1;
 }
 
 /* 侧边栏底部 */
 .sidebar-footer {
     margin-top: auto;
-    padding: 15px 12px;
+    padding: 15px 10px;
+    width: 100%;
     border-top: 1px solid rgba(255, 255, 255, 0.2);
     background: rgba(0, 0, 0, 0.2);
     position: relative;
@@ -138,18 +182,28 @@
 /* 用户资料 */
 .user-profile {
     display: flex;
+    flex-direction: row;
     align-items: center;
-    gap: 10px;
-    padding: 10px;
-    border-radius: 10px;
+    justify-content: center;
+    gap: 0;
+    padding: 8px;
+    border-radius: 12px;
     cursor: pointer;
     transition: all 0.3s;
+    background: transparent;
+    width: 100%;
+    height: 50px;
+}
+
+.sidebar:hover .user-profile {
+    gap: 12px;
+    justify-content: flex-start;
+    padding: 10px 15px;
     background: rgba(255, 255, 255, 0.1);
 }
 
 .user-profile:hover {
     background: rgba(255, 255, 255, 0.2);
-    transform: translateY(-2px);
 }
 
 .user-avatar {
@@ -173,6 +227,14 @@
 .user-info {
     flex: 1;
     min-width: 0;
+    opacity: 0;
+    width: 0;
+    transition: all 0.3s ease;
+}
+
+.sidebar:hover .user-info {
+    opacity: 1;
+    width: auto;
 }
 
 .user-name {
@@ -188,6 +250,11 @@
     height: 16px;
     transition: transform 0.3s;
     flex-shrink: 0;
+    opacity: 0;
+}
+
+.sidebar:hover .user-menu-toggle {
+    opacity: 1;
 }
 
 .user-profile.active .user-menu-toggle {
@@ -198,24 +265,32 @@
 .user-menu {
     position: absolute;
     bottom: 100%;
-    left: 12px;
-    right: 12px;
-    margin-bottom: 8px;
-    background: rgba(0, 0, 0, 0.3);
-    border-radius: 10px;
+    left: 10px;
+    right: 10px;
+    margin-bottom: 10px;
+    background: rgba(30, 30, 40, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 12px;
     overflow: hidden;
     animation: menuSlideUp 0.3s ease-out;
-    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    display: none;
+}
+
+.sidebar:hover .user-menu {
+    display: none; /* 由JS控制显示 */
 }
 
 .menu-option {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
     padding: 12px 15px;
     cursor: pointer;
-    transition: all 0.3s;
-    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    transition: all 0.2s;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    color: #eee;
 }
 
 .menu-option:last-child {
@@ -223,8 +298,9 @@
 }
 
 .menu-option:hover {
-    background: rgba(255, 255, 255, 0.15);
-    padding-left: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    padding-left: 18px;
+    color: white;
 }
 
 .menu-option .menu-icon {
@@ -234,6 +310,6 @@
 }
 
 .menu-option span:last-child {
-    font-size: 0.85em;
+    font-size: 0.9em;
     font-weight: 500;
 }

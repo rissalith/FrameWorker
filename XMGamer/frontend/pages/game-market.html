@@ -4,7 +4,7 @@
         <div class="games-container">
             <div class="market-toolbar">
                 <div class="view-mode-toggle">
-                    <button class="view-btn active" data-view="card" title="卡片视图">
+                    <button class="view-btn active" data-view="card" data-i18n-title="market_view_card" title="Card View">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                             <rect x="3" y="3" width="7" height="7" rx="1"/>
                             <rect x="14" y="3" width="7" height="7" rx="1"/>
@@ -12,7 +12,7 @@
                             <rect x="14" y="14" width="7" height="7" rx="1"/>
                         </svg>
                     </button>
-                    <button class="view-btn" data-view="list" title="列表视图">
+                    <button class="view-btn" data-view="list" data-i18n-title="market_view_list" title="List View">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
                             <rect x="3" y="4" width="18" height="3" rx="1"/>
                             <rect x="3" y="10" width="18" height="3" rx="1"/>
@@ -26,19 +26,19 @@
                 <!-- 巫女占卜游戏卡片 -->
                 <div class="game-card" data-game="fortune-game">
                     <div class="game-card-image">
-                        <img src="images/login-bg2.gif" alt="巫女占卜" class="game-icon-img">
+                        <div class="game-icon">🔮</div>
                     </div>
                     <div class="game-card-content">
-                        <h4 class="game-title">巫女占卜</h4>
-                        <p class="game-description">体验神秘的占卜之旅，探索你的运势</p>
+                        <h4 class="game-title" data-i18n="game_fortune">Fortune Teller</h4>
+                        <p class="game-description" data-i18n="game_fortune_desc">Experience a mystical fortune-telling journey</p>
                         <div class="game-tags">
-                            <span class="tag">占卜</span>
-                            <span class="tag">互动</span>
-                            <span class="tag">直播</span>
+                            <span class="tag" data-i18n="tag_fortune">Fortune</span>
+                            <span class="tag" data-i18n="tag_interactive">Interactive</span>
+                            <span class="tag" data-i18n="tag_live">Live</span>
                         </div>
                     </div>
                     <div class="game-card-footer">
-                        <button class="btn-play">开始游戏</button>
+                        <button class="btn-play" data-i18n="market_start_game">Play Now</button>
                     </div>
                 </div>
                 
@@ -48,11 +48,11 @@
                         <div class="game-icon">🎲</div>
                     </div>
                     <div class="game-card-content">
-                        <h4 class="game-title">敬请期待</h4>
-                        <p class="game-description">更多精彩游戏即将上线</p>
+                        <h4 class="game-title" data-i18n="game_coming_soon">Coming Soon</h4>
+                        <p class="game-description" data-i18n="game_coming_soon_desc">More exciting games coming soon</p>
                     </div>
                     <div class="game-card-footer">
-                        <button class="btn-play" disabled>即将推出</button>
+                        <button class="btn-play disabled" disabled data-i18n="market_coming_soon">Coming Soon</button>
                     </div>
                 </div>
             </div>

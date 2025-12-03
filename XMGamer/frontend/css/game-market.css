@@ -14,27 +14,27 @@
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    padding: 15px 20px;
-    border-bottom: 1px solid #f0f0f0;
+    padding: 15px 25px;
+    background: rgba(255, 255, 255, 0.95);
+    border-bottom: 1px solid rgba(102, 126, 234, 0.1);
     flex-shrink: 0;
 }
 
 .view-mode-toggle {
     display: flex;
     gap: 8px;
-    background: white;
+    background: rgba(102, 126, 234, 0.08);
     padding: 4px;
-    border-radius: 8px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
 }
 
 .view-btn {
-    padding: 8px 12px;
+    padding: 10px 14px;
     background: transparent;
     border: none;
-    border-radius: 6px;
+    border-radius: 8px;
     cursor: pointer;
-    color: #666;
+    color: #667eea;
     transition: all 0.3s;
     display: flex;
     align-items: center;
@@ -42,37 +42,42 @@
 }
 
 .view-btn:hover {
-    background: #f5f5f5;
-    color: #667eea;
+    background: rgba(102, 126, 234, 0.15);
 }
 
 .view-btn.active {
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
+    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
 }
 
-/* 游戏容器 - 固定尺寸白底容器，铺满整个屏幕 */
+/* 游戏容器 */
 .games-container {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg, #f8f9fc 0%, #ffffff 100%);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    /* 确保占满右侧 */
     position: absolute;
     top: 0;
     left: 0;
     right: 0;
     bottom: 0;
-    background: white;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
 }
 
 /* 卡片视图 - 横向滚动 */
 .games-grid[data-view-mode="card"] {
     display: flex;
-    gap: 15px;
+    gap: 20px;
     overflow-x: auto;
     overflow-y: hidden;
-    padding: 20px;
+    padding: 25px;
     scroll-behavior: smooth;
     flex: 1;
+    align-items: flex-start;
+    align-content: flex-start; /* 修复卡片对齐 */
 }
 
 .games-grid[data-view-mode="card"]::-webkit-scrollbar {
@@ -80,7 +85,7 @@
 }
 
 .games-grid[data-view-mode="card"]::-webkit-scrollbar-track {
-    background: #f1f1f1;
+    background: rgba(102, 126, 234, 0.1);
     border-radius: 4px;
 }
 
@@ -97,10 +102,10 @@
 .games-grid[data-view-mode="list"] {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 15px;
     overflow-y: auto;
     overflow-x: hidden;
-    padding: 20px;
+    padding: 25px;
     flex: 1;
 }
 
@@ -109,7 +114,7 @@
 }
 
 .games-grid[data-view-mode="list"]::-webkit-scrollbar-track {
-    background: #f1f1f1;
+    background: rgba(102, 126, 234, 0.1);
     border-radius: 4px;
 }
 
@@ -124,20 +129,21 @@
 
 /* 卡片样式 */
 .game-card {
-    background: #fafafa;
-    border-radius: 16px;
+    background: white;
+    border-radius: 20px;
     overflow: hidden;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 8px 30px rgba(102, 126, 234, 0.12);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     cursor: pointer;
     position: relative;
     flex-shrink: 0;
+    border: 1px solid rgba(102, 126, 234, 0.08);
 }
 
-/* 卡片视图下的卡片 - 缩小尺寸并固定高度 */
+/* 卡片视图下的卡片 */
 .games-grid[data-view-mode="card"] .game-card {
-    width: 240px;
-    height: 340px;
+    width: 240px; /* 缩小宽度 */
+    height: 340px; /* 缩小高度 */
     display: flex;
     flex-direction: column;
 }
@@ -147,22 +153,23 @@
     width: 100%;
     display: flex;
     flex-direction: row;
-    height: 120px;
+    height: 120px; /* 缩小高度 */
 }
 
 .game-card:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 12px 40px rgba(102, 126, 234, 0.3);
+    transform: translateY(-8px) scale(1.02);
+    box-shadow: 0 15px 40px rgba(102, 126, 234, 0.2);
+    border-color: rgba(102, 126, 234, 0.3);
 }
 
 .game-card.coming-soon {
-    opacity: 0.6;
+    opacity: 0.7;
     cursor: not-allowed;
 }
 
 .game-card.coming-soon:hover {
     transform: none;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    box-shadow: 0 8px 30px rgba(102, 126, 234, 0.12);
 }
 
 .game-card-image {
@@ -175,12 +182,12 @@
 }
 
 .games-grid[data-view-mode="card"] .game-card-image {
-    height: 150px;
+    height: 150px; /* 缩小高度 */
     width: 100%;
 }
 
 .games-grid[data-view-mode="list"] .game-card-image {
-    width: 120px;
+    width: 140px;
     height: 100%;
     flex-shrink: 0;
 }
@@ -192,20 +199,40 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: radial-gradient(circle at 30% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 60%);
+    background: 
+        radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.2) 0%, transparent 50%),
+        radial-gradient(circle at 70% 70%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+}
+
+.game-card-image::after {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(45deg, transparent 40%, rgba(255, 255, 255, 0.1) 50%, transparent 60%);
+    animation: shimmer 3s infinite;
+}
+
+@keyframes shimmer {
+    0% { transform: translateX(-100%) translateY(-100%); }
+    100% { transform: translateX(100%) translateY(100%); }
 }
 
 .game-icon {
-    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+    filter: drop-shadow(0 4px 15px rgba(0, 0, 0, 0.3));
+    position: relative;
+    z-index: 1;
 }
 
 .games-grid[data-view-mode="card"] .game-icon {
-    font-size: 3.5em;
+    font-size: 4.5em;
     animation: float 3s ease-in-out infinite;
 }
 
 .games-grid[data-view-mode="list"] .game-icon {
-    font-size: 2.5em;
+    font-size: 3em;
 }
 
 /* GIF图标样式 */
@@ -213,7 +240,9 @@
     max-width: 80%;
     max-height: 80%;
     object-fit: contain;
-    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+    filter: drop-shadow(0 4px 15px rgba(0, 0, 0, 0.3));
+    position: relative;
+    z-index: 1;
 }
 
 .games-grid[data-view-mode="card"] .game-icon-img {
@@ -225,7 +254,7 @@
         transform: translateY(0px);
     }
     50% {
-        transform: translateY(-10px);
+        transform: translateY(-12px);
     }
 }
 
@@ -233,40 +262,45 @@
     flex: 1;
     display: flex;
     flex-direction: column;
+    background: white;
 }
 
 .games-grid[data-view-mode="card"] .game-card-content {
-    padding: 16px;
+    padding: 20px;
 }
 
 .games-grid[data-view-mode="list"] .game-card-content {
-    padding: 12px;
+    padding: 15px 20px;
     justify-content: center;
 }
 
 .game-title {
     font-weight: 700;
     color: #2c3e50;
-    margin-bottom: 8px;
+    margin-bottom: 10px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
 }
 
 .games-grid[data-view-mode="card"] .game-title {
-    font-size: 1.2em;
+    font-size: 1.3em;
 }
 
 .games-grid[data-view-mode="list"] .game-title {
-    font-size: 1.1em;
+    font-size: 1.15em;
 }
 
 .game-description {
     color: #666;
-    line-height: 1.5;
-    margin-bottom: 12px;
+    line-height: 1.6;
+    margin-bottom: 15px;
 }
 
 .games-grid[data-view-mode="card"] .game-description {
-    font-size: 0.85em;
-    min-height: 40px;
+    font-size: 0.9em;
+    min-height: 45px;
 }
 
 .games-grid[data-view-mode="list"] .game-description {
@@ -280,17 +314,18 @@
 
 .game-tags {
     display: flex;
-    gap: 6px;
+    gap: 8px;
     flex-wrap: wrap;
 }
 
 .tag {
-    padding: 3px 10px;
-    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    padding: 5px 12px;
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.12) 0%, rgba(118, 75, 162, 0.12) 100%);
     color: #667eea;
-    border-radius: 10px;
-    font-size: 0.75em;
-    font-weight: 500;
+    border-radius: 20px;
+    font-size: 0.8em;
+    font-weight: 600;
+    border: 1px solid rgba(102, 126, 234, 0.2);
 }
 
 .game-card-footer {
@@ -299,11 +334,11 @@
 }
 
 .games-grid[data-view-mode="card"] .game-card-footer {
-    padding: 0 16px 16px;
+    padding: 0 20px 20px;
 }
 
 .games-grid[data-view-mode="list"] .game-card-footer {
-    padding: 12px;
+    padding: 15px 20px;
     padding-left: 0;
 }
 
@@ -311,36 +346,37 @@
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
     border: none;
-    border-radius: 6px;
-    font-weight: 600;
+    border-radius: 12px;
+    font-weight: 700;
     cursor: pointer;
     transition: all 0.3s;
-    box-shadow: 0 3px 10px rgba(102, 126, 234, 0.3);
+    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.35);
     white-space: nowrap;
+    letter-spacing: 0.5px;
 }
 
 .games-grid[data-view-mode="card"] .btn-play {
     width: 100%;
-    padding: 10px 20px;
-    font-size: 0.9em;
+    padding: 14px 24px;
+    font-size: 1em;
 }
 
 .games-grid[data-view-mode="list"] .btn-play {
-    padding: 8px 16px;
-    font-size: 0.85em;
+    padding: 12px 24px;
+    font-size: 0.95em;
 }
 
 .btn-play:hover:not(:disabled) {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.45);
 }
 
 .btn-play:active:not(:disabled) {
-    transform: translateY(0);
+    transform: translateY(-1px);
 }
 
 .btn-play:disabled {
-    background: #ccc;
+    background: linear-gradient(135deg, #bdc3c7 0%, #95a5a6 100%);
     cursor: not-allowed;
     box-shadow: none;
 }
@@ -348,19 +384,21 @@
 /* 响应式设计 */
 @media (max-width: 768px) {
     .games-grid[data-view-mode="card"] {
-        padding: 15px;
+        padding: 20px;
+        gap: 20px;
     }
     
     .games-grid[data-view-mode="list"] {
-        padding: 15px;
+        padding: 20px;
     }
     
     .games-grid[data-view-mode="card"] .game-card {
-        width: 200px;
+        width: 240px;
+        height: 340px;
     }
     
     .games-grid[data-view-mode="card"] .game-card-image {
-        height: 120px;
+        height: 150px;
     }
     
     .games-grid[data-view-mode="list"] .game-card {
