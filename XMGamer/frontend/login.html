@@ -1,12 +1,12 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en-US">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="format-detection" content="telephone=no">
-    <title>登录 - XMGamer</title>
+    <title>Sign in - XMGamer</title>
     
     <!-- 版本管理系统 -->
     <script src="js/version.js"></script>
@@ -17,6 +17,9 @@
         loadStylesheet('css/interaction-buttons.css');
         loadStylesheet('css/ai-dialogue.css');
     </script>
+    
+    <!-- 多语言模块 - 提前加载 -->
+    <script src="js/modules/loginI18n.js?v=20251203"></script>
 </head>
 <body class="auth-page">
     <!-- 流光溢彩光晕效果 -->
@@ -35,10 +38,10 @@
     <div class="video-container">
         <video class="brand-video" autoplay loop muted playsinline id="loginVideo">
             <source src="/videos/login.mp4" type="video/mp4">
-            您的浏览器不支持视频播放
+            Your browser does not support video playback
         </video>
         <div class="video-controls">
-            <button class="volume-toggle" id="volumeToggle" aria-label="切换音量">
+            <button class="volume-toggle" id="volumeToggle" aria-label="Toggle volume">
                 <svg id="volumeIcon" viewBox="0 0 24 24">
                     <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"/>
                 </svg>
@@ -57,14 +60,14 @@
                         <h1 class="logo-text">XMGamer</h1>
                     </div>
                 </div>
-                <h2 class="auth-title">登录</h2>
-                <p class="auth-subtitle">欢迎回来</p>
+                <h2 class="auth-title">Sign in</h2>
+                <p class="auth-subtitle">Welcome back</p>
             </div>
 
             <!-- 登录方式切换 -->
             <div class="login-mode-switch">
-                <button type="button" class="mode-btn active" data-mode="password">账号密码</button>
-                <button type="button" class="mode-btn" data-mode="email">邮箱验证码</button>
+                <button type="button" class="mode-btn active" data-mode="password">Password</button>
+                <button type="button" class="mode-btn" data-mode="email">Email Code</button>
             </div>
 <!-- 登录表单 -->
 <form id="loginForm" class="auth-form">
@@ -77,7 +80,7 @@
                             type="email"
                             id="accountInput"
                             class="form-input"
-                            placeholder="邮箱"
+                            placeholder="Email"
                             required
                         >
                         <span class="form-error" id="accountError"></span>
@@ -89,7 +92,7 @@
                             type="password"
                             id="passwordInput"
                             class="form-input"
-                            placeholder="密码"
+                            placeholder="Password"
                             required
                         >
                         <span class="form-error" id="passwordError"></span>
@@ -104,7 +107,7 @@
                             type="email"
                             id="emailInput"
                             class="form-input"
-                            placeholder="邮箱地址"
+                            placeholder="Email address"
                             required
                         >
                         <span class="form-error" id="emailError"></span>
@@ -117,7 +120,7 @@
                                 type="text"
                                 id="codeInput"
                                 class="form-input code-input-flex"
-                                placeholder="验证码"
+                                placeholder="Verification code"
                                 maxlength="6"
                                 required
                             >
@@ -126,7 +129,7 @@
                                 id="sendCodeBtn"
                                 class="send-code-btn"
                             >
-                                获取验证码
+                                Send Code
                             </button>
                         </div>
                         <span class="form-error" id="codeError"></span>
@@ -135,9 +138,9 @@
 
                 <!-- 第三方登录图标 -->
                 <div class="social-login-icons">
-                    <div class="social-login-title">或使用第三方账号登录</div>
+                    <div class="social-login-title">Or sign in with</div>
                     <div class="login-input-wrapper">
-                        <button type="button" id="googleLoginBtn" class="social-icon-btn google-btn" title="使用 Google 登录">
+                        <button type="button" id="googleLoginBtn" class="social-icon-btn google-btn" title="Sign in with Google">
                             <svg class="icon" viewBox="0 0 24 24">
                                 <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
                                 <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
@@ -145,7 +148,7 @@
                                 <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/>
                             </svg>
                         </button>
-                        <button type="button" id="twitterLoginBtn" class="social-icon-btn twitter-btn" title="使用 X 登录">
+                        <button type="button" id="twitterLoginBtn" class="social-icon-btn twitter-btn" title="Sign in with X">
                             <svg class="icon" viewBox="0 0 24 24">
                                 <path fill="#000000" d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
                             </svg>
@@ -159,22 +162,22 @@
                 <!-- 底部操作 -->
                 <div class="form-actions">
                     <button type="submit" id="loginBtn" class="btn-primary">
-                        登录
+                        Sign in
                     </button>
                 </div>
 
                 <!-- 注册链接 -->
                 <div class="auth-footer" id="loginFooter">
-                    <span class="footer-text">还没有账号？</span>
-                    <a href="#" class="footer-link" id="showRegisterBtn">立即注册</a>
+                    <span class="footer-text">Don't have an account?</span>
+                    <a href="#" class="footer-link" id="showRegisterBtn">Sign up</a>
                 </div>
             </form>
 <!-- 注册表单 -->
 <form id="registerForm" class="auth-form" style="display: none;">
                 
                 <div class="auth-header" style="margin-bottom: 12px; display: none;">
-                    <h2 class="auth-title">创建账号</h2>
-                    <p class="auth-subtitle">加入我们，开始创作</p>
+                    <h2 class="auth-title">Create account</h2>
+                    <p class="auth-subtitle">Join us and start creating</p>
                 </div>
 
                 <!-- 邮箱输入 -->
@@ -183,7 +186,7 @@
                         type="email"
                         id="registerEmailInput"
                         class="form-input"
-                        placeholder="邮箱地址"
+                        placeholder="Email address"
                     >
                     <span class="form-error" id="registerEmailError"></span>
                 </div>
@@ -195,7 +198,7 @@
                             type="text"
                             id="registerCodeInput"
                             class="form-input code-input-flex"
-                            placeholder="验证码"
+                            placeholder="Verification code"
                             maxlength="6"
                         >
                         <button
@@ -203,7 +206,7 @@
                             id="registerSendCodeBtn"
                             class="send-code-btn"
                         >
-                            获取验证码
+                            Send Code
                         </button>
                     </div>
                     <span class="form-error" id="registerCodeError"></span>
@@ -215,7 +218,7 @@
                         type="password"
                         id="registerPasswordInput"
                         class="form-input"
-                        placeholder="设置密码（至少6位）"
+                        placeholder="Set password (min 6 chars)"
                     >
                     <span class="form-error" id="registerPasswordError"></span>
                 </div>
@@ -226,7 +229,7 @@
                         type="password"
                         id="registerConfirmPasswordInput"
                         class="form-input"
-                        placeholder="确认密码"
+                        placeholder="Confirm password"
                     >
                     <span class="form-error" id="registerConfirmPasswordError"></span>
                 </div>
@@ -237,7 +240,7 @@
                         type="text"
                         id="registerNicknameInput"
                         class="form-input"
-                        placeholder="昵称（可选）"
+                        placeholder="Nickname (optional)"
                         maxlength="20"
                     >
                     <span class="form-error" id="registerNicknameError"></span>
@@ -249,14 +252,14 @@
                 <!-- 底部操作 -->
                 <div class="form-actions">
                     <button type="submit" id="registerBtn" class="btn-primary">
-                        注册
+                        Sign up
                     </button>
                 </div>
 
                 <!-- 登录链接 -->
                 <div class="auth-footer" id="registerFooter">
-                    <span class="footer-text">已有账号？</span>
-                    <a href="#" class="footer-link" id="showLoginBtn">立即登录</a>
+                    <span class="footer-text">Already have an account?</span>
+                    <a href="#" class="footer-link" id="showLoginBtn">Sign in</a>
                 </div>
             </form>
 
@@ -264,8 +267,8 @@
             <div id="setPasswordModal" class="modal" style="display: none;">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h3>设置登录密码</h3>
-                        <p class="modal-subtitle">首次登录，请设置您的密码</p>
+                        <h3>Set Password</h3>
+                        <p class="modal-subtitle">First time login, please set your password</p>
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
@@ -273,7 +276,7 @@
                                 type="password"
                                 id="newPassword"
                                 class="form-input"
-                                placeholder="请输入密码（至少6位）"
+                                placeholder="Enter password (min 6 chars)"
                                 minlength="6"
                                 maxlength="20"
                             >
@@ -284,7 +287,7 @@
                                 type="password"
                                 id="confirmPassword"
                                 class="form-input"
-                                placeholder="请再次输入密码"
+                                placeholder="Re-enter password"
                                 minlength="6"
                                 maxlength="20"
                             >
@@ -293,10 +296,10 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" id="skipPasswordBtn" class="btn-secondary">
-                            跳过
+                            Skip
                         </button>
                         <button type="button" id="confirmPasswordBtn" class="btn-primary">
-                            确定
+                            Confirm
                         </button>
                     </div>
                 </div>
@@ -306,8 +309,8 @@
             <div id="firstTimeLoginModal" class="modal" style="display: none;">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h3>完善账号信息</h3>
-                        <p class="modal-subtitle">首次登录，请设置密码和昵称</p>
+                        <h3>Complete Profile</h3>
+                        <p class="modal-subtitle">First time login, please set password and nickname</p>
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
@@ -315,7 +318,7 @@
                                 type="password"
                                 id="firstTimePassword"
                                 class="form-input"
-                                placeholder="设置密码（至少6位）"
+                                placeholder="Set password (min 6 chars)"
                                 minlength="6"
                                 maxlength="20"
                             >
@@ -326,7 +329,7 @@
                                 type="password"
                                 id="firstTimeConfirmPassword"
                                 class="form-input"
-                                placeholder="确认密码"
+                                placeholder="Confirm password"
                                 minlength="6"
                                 maxlength="20"
                             >
@@ -337,7 +340,7 @@
                                 type="text"
                                 id="firstTimeNickname"
                                 class="form-input"
-                                placeholder="昵称（选填）"
+                                placeholder="Nickname (optional)"
                                 maxlength="20"
                             >
                             <span class="form-error" id="firstTimeNicknameError"></span>
@@ -345,7 +348,7 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" id="confirmFirstTimeBtn" class="btn-primary">
-                            确定
+                            Confirm
                         </button>
                     </div>
                 </div>
@@ -353,10 +356,10 @@
 
             <!-- 底部链接 -->
             <div class="bottom-links">
-                <a href="#" class="link">简体中文</a>
-                <a href="#" class="link">帮助</a>
-                <a href="#" class="link">隐私权</a>
-                <a href="#" class="link">条款</a>
+                <a href="#" class="link">English</a>
+                <a href="#" class="link">Help</a>
+                <a href="#" class="link">Privacy</a>
+                <a href="#" class="link">Terms</a>
             </div>
         </div>
     </div>
