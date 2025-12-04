@@ -6,3 +6,4 @@ print('已将 xanderpxw@gmail.com 设为管理员，余额 99999 MP')
 conn.close()
 
 
+

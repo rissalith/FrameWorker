@@ -24,6 +24,16 @@ const I18n = {
             
             // 侧边栏
             sidebar_game_market: '游戏市场',
+            sidebar_my_apps: '我的应用',
+            sidebar_analytics: '数据统计',
+            sidebar_logs: '游戏日志',
+            sidebar_creator_games: '我的游戏库',
+            sidebar_admin_games: '游戏库管理',
+            sidebar_admin_users: '用户管理',
+            sidebar_admin_logs: '管理日志',
+            sidebar_group_broadcaster: '主播',
+            sidebar_group_creator: '创作',
+            sidebar_group_admin: '管理',
             sidebar_guest: '访客用户',
             
             // 用户菜单
@@ -111,7 +121,30 @@ const I18n = {
             sound_off: '声音提示已关闭',
             
             // 钱包
-            wallet_coming_soon: '钱包功能即将推出'
+            wallet_coming_soon: '钱包功能即将推出',
+            
+            // 购买弹窗
+            purchase_title: '选择订阅方案',
+            purchase_choose_plan: '选择方案',
+            purchase_balance: '余额',
+            purchase_total: '合计',
+            purchase_subscribe: '立即订阅',
+            purchase_processing: '处理中...',
+            purchase_insufficient: '余额不足',
+            purchase_select_plan: '请选择方案',
+            purchase_success: '🎉 购买成功！',
+            purchase_failed: '购买失败',
+            purchase_best_value: '超值',
+            purchase_starter: '入门',
+            purchase_save: '省 {0}%',
+            purchase_1month: '1个月',
+            purchase_3months: '3个月',
+            purchase_12months: '12个月',
+            purchase_lifetime: '永久',
+            purchase_period_mo: '/月',
+            purchase_period_3mo: '/季',
+            purchase_period_yr: '/年',
+            purchase_period_once: '一次性'
         },
         
         'zh-TW': {
@@ -127,6 +160,16 @@ const I18n = {
             warning: '警告',
             
             sidebar_game_market: '遊戲市場',
+            sidebar_my_apps: '我的應用',
+            sidebar_analytics: '數據統計',
+            sidebar_logs: '遊戲日誌',
+            sidebar_creator_games: '我的遊戲庫',
+            sidebar_admin_games: '遊戲庫管理',
+            sidebar_admin_users: '用戶管理',
+            sidebar_admin_logs: '管理日誌',
+            sidebar_group_broadcaster: '主播',
+            sidebar_group_creator: '創作',
+            sidebar_group_admin: '管理',
             sidebar_guest: '訪客用戶',
             
             menu_settings: '個人設定',
@@ -203,7 +246,30 @@ const I18n = {
             sound_on: '聲音提示已開啟',
             sound_off: '聲音提示已關閉',
             
-            wallet_coming_soon: '錢包功能即將推出'
+            wallet_coming_soon: '錢包功能即將推出',
+            
+            // 購買彈窗
+            purchase_title: '選擇訂閱方案',
+            purchase_choose_plan: '選擇方案',
+            purchase_balance: '餘額',
+            purchase_total: '合計',
+            purchase_subscribe: '立即訂閱',
+            purchase_processing: '處理中...',
+            purchase_insufficient: '餘額不足',
+            purchase_select_plan: '請選擇方案',
+            purchase_success: '🎉 購買成功！',
+            purchase_failed: '購買失敗',
+            purchase_best_value: '超值',
+            purchase_starter: '入門',
+            purchase_save: '省 {0}%',
+            purchase_1month: '1個月',
+            purchase_3months: '3個月',
+            purchase_12months: '12個月',
+            purchase_lifetime: '永久',
+            purchase_period_mo: '/月',
+            purchase_period_3mo: '/季',
+            purchase_period_yr: '/年',
+            purchase_period_once: '一次性'
         },
         
         'en-US': {
@@ -219,6 +285,16 @@ const I18n = {
             warning: 'Warning',
             
             sidebar_game_market: 'Game Market',
+            sidebar_my_apps: 'My Apps',
+            sidebar_analytics: 'Analytics',
+            sidebar_logs: 'Game Logs',
+            sidebar_creator_games: 'My Games',
+            sidebar_admin_games: 'Game Library',
+            sidebar_admin_users: 'User Management',
+            sidebar_admin_logs: 'Admin Logs',
+            sidebar_group_broadcaster: 'Broadcaster',
+            sidebar_group_creator: 'Creator',
+            sidebar_group_admin: 'Admin',
             sidebar_guest: 'Guest',
             
             menu_settings: 'Settings',
@@ -295,7 +371,30 @@ const I18n = {
             sound_on: 'Sound enabled',
             sound_off: 'Sound disabled',
             
-            wallet_coming_soon: 'Wallet feature coming soon'
+            wallet_coming_soon: 'Wallet feature coming soon',
+            
+            // Purchase Modal
+            purchase_title: 'Choose Your Plan',
+            purchase_choose_plan: 'Choose your plan',
+            purchase_balance: 'Balance',
+            purchase_total: 'Total',
+            purchase_subscribe: 'Subscribe',
+            purchase_processing: 'Processing...',
+            purchase_insufficient: 'Insufficient Balance',
+            purchase_select_plan: 'Select a plan',
+            purchase_success: '🎉 Purchase successful!',
+            purchase_failed: 'Purchase failed',
+            purchase_best_value: 'BEST VALUE',
+            purchase_starter: 'STARTER',
+            purchase_save: 'Save {0}%',
+            purchase_1month: '1 Month',
+            purchase_3months: '3 Months',
+            purchase_12months: '12 Months',
+            purchase_lifetime: 'Lifetime',
+            purchase_period_mo: '/mo',
+            purchase_period_3mo: '/3mo',
+            purchase_period_yr: '/yr',
+            purchase_period_once: 'once'
         },
         
         'ja-JP': {
@@ -311,6 +410,16 @@ const I18n = {
             warning: '警告',
             
             sidebar_game_market: 'ゲームマーケット',
+            sidebar_my_apps: 'マイアプリ',
+            sidebar_analytics: '統計',
+            sidebar_logs: 'ゲームログ',
+            sidebar_creator_games: 'マイゲーム',
+            sidebar_admin_games: 'ゲーム管理',
+            sidebar_admin_users: 'ユーザー管理',
+            sidebar_admin_logs: '管理ログ',
+            sidebar_group_broadcaster: '配信者',
+            sidebar_group_creator: 'クリエイター',
+            sidebar_group_admin: '管理',
             sidebar_guest: 'ゲスト',
             
             menu_settings: '設定',
@@ -387,7 +496,30 @@ const I18n = {
             sound_on: 'サウンドが有効になりました',
             sound_off: 'サウンドが無効になりました',
             
-            wallet_coming_soon: 'ウォレット機能は近日公開'
+            wallet_coming_soon: 'ウォレット機能は近日公開',
+            
+            // 購入モーダル
+            purchase_title: 'プランを選択',
+            purchase_choose_plan: 'プランを選択してください',
+            purchase_balance: '残高',
+            purchase_total: '合計',
+            purchase_subscribe: '購入する',
+            purchase_processing: '処理中...',
+            purchase_insufficient: '残高不足',
+            purchase_select_plan: 'プランを選択してください',
+            purchase_success: '🎉 購入完了！',
+            purchase_failed: '購入に失敗しました',
+            purchase_best_value: 'お得',
+            purchase_starter: '入門',
+            purchase_save: '{0}%お得',
+            purchase_1month: '1ヶ月',
+            purchase_3months: '3ヶ月',
+            purchase_12months: '12ヶ月',
+            purchase_lifetime: '永久',
+            purchase_period_mo: '/月',
+            purchase_period_3mo: '/3ヶ月',
+            purchase_period_yr: '/年',
+            purchase_period_once: '買い切り'
         },
         
         'ko-KR': {
@@ -403,6 +535,16 @@ const I18n = {
             warning: '경고',
             
             sidebar_game_market: '게임 마켓',
+            sidebar_my_apps: '내 앱',
+            sidebar_analytics: '통계',
+            sidebar_logs: '게임 로그',
+            sidebar_creator_games: '내 게임',
+            sidebar_admin_games: '게임 관리',
+            sidebar_admin_users: '사용자 관리',
+            sidebar_admin_logs: '관리 로그',
+            sidebar_group_broadcaster: '스트리머',
+            sidebar_group_creator: '크리에이터',
+            sidebar_group_admin: '관리',
             sidebar_guest: '게스트',
             
             menu_settings: '설정',
@@ -479,7 +621,30 @@ const I18n = {
             sound_on: '소리가 활성화되었습니다',
             sound_off: '소리가 비활성화되었습니다',
             
-            wallet_coming_soon: '지갑 기능 출시 예정'
+            wallet_coming_soon: '지갑 기능 출시 예정',
+            
+            // 구매 모달
+            purchase_title: '구독 플랜 선택',
+            purchase_choose_plan: '플랜을 선택하세요',
+            purchase_balance: '잔액',
+            purchase_total: '합계',
+            purchase_subscribe: '구독하기',
+            purchase_processing: '처리 중...',
+            purchase_insufficient: '잔액 부족',
+            purchase_select_plan: '플랜을 선택하세요',
+            purchase_success: '🎉 구매 완료!',
+            purchase_failed: '구매 실패',
+            purchase_best_value: '최고 가치',
+            purchase_starter: '입문',
+            purchase_save: '{0}% 할인',
+            purchase_1month: '1개월',
+            purchase_3months: '3개월',
+            purchase_12months: '12개월',
+            purchase_lifetime: '평생',
+            purchase_period_mo: '/월',
+            purchase_period_3mo: '/3개월',
+            purchase_period_yr: '/년',
+            purchase_period_once: '일회성'
         }
     },
     
@@ -568,10 +733,39 @@ const I18n = {
         // 侧边栏 - logo-subtitle 固定显示 "Max Gamer"，不翻译
         // const logoSubtitle = document.querySelector('.logo-subtitle');
         // if (logoSubtitle) logoSubtitle.textContent = this.t('app_subtitle');
-        
-        const menuText = document.querySelector('.menu-text');
-        if (menuText) menuText.textContent = this.t('sidebar_game_market');
-        
+
+        // 侧边栏菜单分组标题
+        const menuGroupTitles = document.querySelectorAll('.menu-group-title');
+        menuGroupTitles.forEach(title => {
+            const text = title.textContent.trim();
+            // 根据原始文本或父元素判断是哪个分组
+            const parent = title.closest('.menu-group');
+            if (parent) {
+                if (parent.querySelector('[data-page="game-market"]')) {
+                    title.textContent = this.t('sidebar_group_broadcaster');
+                } else if (parent.querySelector('[data-page="creator-games"]')) {
+                    title.textContent = this.t('sidebar_group_creator');
+                } else if (parent.querySelector('[data-page="admin-games"]')) {
+                    title.textContent = this.t('sidebar_group_admin');
+                }
+            }
+        });
+
+        // 侧边栏所有菜单项
+        const menuItems = document.querySelectorAll('.menu-item');
+        menuItems.forEach(item => {
+            const page = item.dataset.page;
+            const menuText = item.querySelector('.menu-text');
+            if (menuText && page) {
+                const key = 'sidebar_' + page.replace(/-/g, '_');
+                const translation = this.t(key);
+                // 只有当翻译存在且不是返回key本身时才更新
+                if (translation && translation !== key) {
+                    menuText.textContent = translation;
+                }
+            }
+        });
+
         const userName = document.querySelector('.user-name');
         if (userName && userName.textContent === '访客用户') {
             userName.textContent = this.t('sidebar_guest');

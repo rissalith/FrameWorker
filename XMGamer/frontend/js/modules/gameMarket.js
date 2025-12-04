@@ -288,6 +288,18 @@ const GameMarket = {
     },
 
     /**
+     * 获取翻译文本
+     */
+    t(key, ...args) {
+        let text = window.I18n ? I18n.t(key) : key;
+        // 替换占位符 {0}, {1} 等
+        args.forEach((arg, i) => {
+            text = text.replace(`{${i}}`, arg);
+        });
+        return text;
+    },
+
+    /**
      * 打开购买弹窗
      */
     openPurchaseModal(gameId) {
@@ -297,49 +309,77 @@ const GameMarket = {
         // 获取该游戏的套餐
         const gameProducts = this.products.filter(p => p.game_id === gameId);
         
-        // 如果没有套餐，使用默认套餐
+        // 如果没有套餐，使用默认套餐（包含多个时长选项）
         const plans = gameProducts.length > 0 ? gameProducts : [
-            { id: `${gameId}_30d`, name: '月度版', price: game.price, duration_days: 30 }
+            { id: `${gameId}_30d`, nameKey: 'purchase_1month', price: game.price, duration_days: 30, periodKey: 'purchase_period_mo' },
+            { id: `${gameId}_90d`, nameKey: 'purchase_3months', price: Math.round(game.price * 2.7), duration_days: 90, save: 10, periodKey: 'purchase_period_3mo' },
+            { id: `${gameId}_365d`, nameKey: 'purchase_12months', price: Math.round(game.price * 8.4), duration_days: 365, save: 30, recommended: true, periodKey: 'purchase_period_yr' },
+            { id: `${gameId}_forever`, nameKey: 'purchase_lifetime', price: Math.round(game.price * 20), duration_days: null, periodKey: 'purchase_period_once' }
         ];
 
         // SVG 图标
-        const iconSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="width:40px;height:40px;color:#667eea;">
+        const iconSvg = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
             <circle cx="12" cy="12" r="10"/>
             <path d="M12 6v2M12 16v2M6 12h2M16 12h2"/>
             <circle cx="12" cy="12" r="3"/>
         </svg>`;
 
-        // 更新弹窗内容
+        // 更新弹窗标题和内容
+        const modalTitle = document.querySelector('#purchaseModal .plans-title');
+        if (modalTitle) modalTitle.textContent = this.t('purchase_choose_plan');
+        
+        const balanceLabel = document.querySelector('#purchaseModal .balance-label');
+        if (balanceLabel) balanceLabel.textContent = this.t('purchase_balance');
+        
+        const totalLabel = document.querySelector('#purchaseModal .total-label');
+        if (totalLabel) totalLabel.textContent = this.t('purchase_total');
+
         document.getElementById('purchaseGameIcon').innerHTML = iconSvg;
         document.getElementById('purchaseGameName').textContent = game.name;
         document.getElementById('purchaseGameDesc').textContent = game.description;
         document.getElementById('purchaseBalance').textContent = `${this.userBalance.toLocaleString()} MP`;
 
-        // 渲染套餐选项
+        // 找到推荐的套餐索引（默认选中推荐套餐，否则选第一个）
+        const recommendedIndex = plans.findIndex(p => p.recommended);
+        const defaultSelectedIndex = recommendedIndex >= 0 ? recommendedIndex : 0;
+
+        // 渲染套餐卡片
         const plansHtml = plans.map((plan, index) => {
-            const duration = plan.duration_days ? `${plan.duration_days}天` : '永久';
+            const isSelected = index === defaultSelectedIndex;
+            const planName = plan.nameKey ? this.t(plan.nameKey) : plan.name;
+            const period = plan.periodKey ? this.t(plan.periodKey) : (plan.period || '');
+            const saveHtml = plan.save ? `<div class="plan-save">${this.t('purchase_save', plan.save)}</div>` : '';
+            const recommendBadge = plan.recommended ? `<div class="recommend-badge">${this.t('purchase_best_value')}</div>` : '';
+            const popularBadge = index === 0 ? `<div class="popular-badge">${this.t('purchase_starter')}</div>` : '';
+            
             return `
-                <div class="plan-option ${index === 0 ? 'selected' : ''}" 
+                <div class="plan-card ${isSelected ? 'selected' : ''} ${plan.recommended ? 'recommended' : ''}" 
                      data-product-id="${plan.id}" 
                      data-price="${plan.price}"
                      onclick="GameMarket.selectPlan(this)">
-                    <div class="plan-radio"></div>
-                    <div class="plan-info">
-                        <div class="plan-name">${plan.name}</div>
-                        <div class="plan-duration">${duration}</div>
+                    ${recommendBadge}
+                    ${!plan.recommended && index === 0 ? popularBadge : ''}
+                    <div class="check-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                            <polyline points="20 6 9 17 4 12"/>
+                        </svg>
                     </div>
-                    <div class="plan-price">${plan.price.toLocaleString()} MP</div>
+                    <div class="plan-name">${planName}</div>
+                    <div class="plan-price">
+                        <span class="price-value">${plan.price.toLocaleString()}</span>
+                        <span class="price-unit">MP</span>
+                    </div>
+                    <div class="plan-period">${period}</div>
+                    ${saveHtml}
                 </div>
             `;
         }).join('');
 
         document.getElementById('purchasePlans').innerHTML = plansHtml;
         
-        // 更新总价
-        if (plans.length > 0) {
-            this.selectedProduct = plans[0];
-            document.getElementById('purchaseTotal').textContent = `${plans[0].price.toLocaleString()} MP`;
-        }
+        // 更新总价（选中推荐或第一个）
+        this.selectedProduct = plans[defaultSelectedIndex];
+        document.getElementById('purchaseTotal').textContent = `${plans[defaultSelectedIndex].price.toLocaleString()} MP`;
 
         // 检查余额是否足够
         this.updatePurchaseButton();
@@ -353,7 +393,7 @@ const GameMarket = {
      */
     selectPlan(element) {
         // 移除其他选中状态
-        document.querySelectorAll('.plan-option').forEach(el => {
+        document.querySelectorAll('.plan-card').forEach(el => {
             el.classList.remove('selected');
         });
         
@@ -380,13 +420,15 @@ const GameMarket = {
         const btn = document.getElementById('btnConfirmPurchase');
         if (!this.selectedProduct) {
             btn.disabled = true;
-            btn.textContent = '请选择套餐';
+            btn.innerHTML = `<span>${this.t('purchase_select_plan')}</span>`;
             return;
         }
         
         const canAfford = this.userBalance >= this.selectedProduct.price;
         btn.disabled = !canAfford;
-        btn.textContent = canAfford ? '确认购买' : '余额不足';
+        btn.innerHTML = canAfford 
+            ? `<span>${this.t('purchase_subscribe')}</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>`
+            : `<span>${this.t('purchase_insufficient')}</span>`;
     },
 
     /**
@@ -405,7 +447,7 @@ const GameMarket = {
 
         const btn = document.getElementById('btnConfirmPurchase');
         btn.disabled = true;
-        btn.textContent = '处理中...';
+        btn.innerHTML = `<span>${this.t('purchase_processing')}</span>`;
 
         try {
             const response = await AuthManager.authenticatedFetch(
@@ -421,7 +463,7 @@ const GameMarket = {
 
             if (data.success) {
                 this.closePurchaseModal();
-                this.showMessage('🎉 购买成功！', 'success');
+                this.showMessage(this.t('purchase_success'), 'success');
                 
                 // 刷新数据
                 await this.loadData();
@@ -437,13 +479,13 @@ const GameMarket = {
                     balanceEl.textContent = data.balance.toLocaleString();
                 }
             } else {
-                throw new Error(data.message || '购买失败');
+                throw new Error(data.message || this.t('purchase_failed'));
             }
         } catch (error) {
             console.error('[GameMarket] 购买失败:', error);
-            this.showMessage(error.message || '购买失败', 'error');
+            this.showMessage(error.message || this.t('purchase_failed'), 'error');
             btn.disabled = false;
-            btn.textContent = '确认购买';
+            btn.innerHTML = `<span>${this.t('purchase_subscribe')}</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>`;
         }
     },
 
