@@ -46,41 +46,56 @@
 
 <!-- 购买确认弹窗 -->
 <div class="modal-overlay" id="purchaseModal" style="display: none;">
-    <div class="modal-dialog">
-        <div class="modal-header">
-            <h3>购买游戏</h3>
-            <button class="btn-close" onclick="GameMarket.closePurchaseModal()">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <line x1="18" y1="6" x2="6" y2="18"></line>
-                    <line x1="6" y1="6" x2="18" y2="18"></line>
-                </svg>
-            </button>
-        </div>
+    <div class="modal-dialog purchase-modal">
+        <button class="btn-close-float" onclick="GameMarket.closePurchaseModal()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </button>
         <div class="modal-body">
-            <div class="purchase-game-info">
+            <!-- 游戏信息头部 -->
+            <div class="purchase-hero">
                 <div class="purchase-game-icon" id="purchaseGameIcon"></div>
-                <div class="purchase-game-details">
-                    <h4 id="purchaseGameName">游戏名称</h4>
-                    <p id="purchaseGameDesc">游戏描述</p>
-                </div>
+                <h2 id="purchaseGameName">游戏名称</h2>
+                <p id="purchaseGameDesc">游戏描述</p>
             </div>
             
-            <div class="purchase-plans" id="purchasePlans"></div>
-            
-            <div class="purchase-summary">
-                <div class="summary-row">
-                    <span>当前余额</span>
-                    <span id="purchaseBalance">0 MP</span>
-                </div>
-                <div class="summary-row total">
-                    <span>需支付</span>
-                    <span id="purchaseTotal">0 MP</span>
+            <div class="purchase-content">
+                <h3 class="plans-title" data-i18n="purchase_choose_plan">选择方案</h3>
+                
+                <!-- 套餐选项网格 -->
+                <div class="purchase-plans-grid" id="purchasePlans"></div>
+                
+                <!-- 购买摘要 -->
+                <div class="purchase-summary-bar">
+                    <div class="summary-left">
+                        <span class="wallet-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="2" y="4" width="20" height="16" rx="2"/>
+                                <circle cx="16" cy="12" r="2"/>
+                            </svg>
+                        </span>
+                        <div class="balance-info">
+                            <span class="balance-label" data-i18n="purchase_balance">余额</span>
+                            <span class="balance-value" id="purchaseBalance">0 MP</span>
+                        </div>
+                    </div>
+                    <div class="summary-right">
+                        <div class="total-block">
+                            <span class="total-label" data-i18n="purchase_total">合计</span>
+                            <span class="total-value" id="purchaseTotal">0 MP</span>
+                        </div>
+                        <button class="btn-purchase" id="btnConfirmPurchase" onclick="GameMarket.confirmPurchase()">
+                            <span data-i18n="purchase_subscribe">立即订阅</span>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <line x1="5" y1="12" x2="19" y2="12"/>
+                                <polyline points="12 5 19 12 12 19"/>
+                            </svg>
+                        </button>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="modal-footer">
-            <button class="btn-secondary" onclick="GameMarket.closePurchaseModal()">取消</button>
-            <button class="btn-primary" id="btnConfirmPurchase" onclick="GameMarket.confirmPurchase()">确认购买</button>
         </div>
     </div>
 </div>
@@ -457,153 +472,409 @@
     border-top: 1px solid #e8eaed;
 }
 
-/* 购买信息 */
-.purchase-game-info {
+/* ========== 购买弹窗样式 ========== */
+.purchase-modal {
+    max-width: 560px;
+    border-radius: 20px;
+    overflow: hidden;
+    position: relative;
+}
+
+.purchase-modal .modal-body {
+    padding: 0;
+}
+
+/* 浮动关闭按钮 */
+.btn-close-float {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 36px;
+    height: 36px;
+    border: none;
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(10px);
+    border-radius: 50%;
+    cursor: pointer;
     display: flex;
-    gap: 16px;
     align-items: center;
-    padding: 16px;
-    background: #f8f9fa;
-    border-radius: 8px;
-    margin-bottom: 20px;
+    justify-content: center;
+    color: white;
+    transition: all 0.2s ease;
+    z-index: 10;
+}
+
+.btn-close-float:hover {
+    background: rgba(255, 255, 255, 0.25);
+    transform: rotate(90deg);
+}
+
+.btn-close-float svg {
+    width: 18px;
+    height: 18px;
+}
+
+/* 英雄区域 */
+.purchase-hero {
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 50%, #a855f7 100%);
+    padding: 40px 32px 32px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.purchase-hero::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 60%);
+    animation: shimmer 15s linear infinite;
+}
+
+@keyframes shimmer {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
 
 .purchase-game-icon {
-    width: 56px;
-    height: 56px;
+    width: 72px;
+    height: 72px;
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border-radius: 12px;
-    flex-shrink: 0;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 18px;
+    margin: 0 auto 16px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    position: relative;
 }
 
 .purchase-game-icon svg {
-    width: 32px;
-    height: 32px;
+    width: 36px;
+    height: 36px;
     color: white;
 }
 
-.purchase-game-details h4 {
-    font-size: 16px;
-    font-weight: 500;
-    color: #202124;
-    margin: 0 0 4px 0;
+.purchase-hero h2 {
+    font-size: 24px;
+    font-weight: 600;
+    color: white;
+    margin: 0 0 8px 0;
+    position: relative;
 }
 
-.purchase-game-details p {
-    font-size: 13px;
-    color: #5f6368;
+.purchase-hero p {
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.85);
     margin: 0;
+    line-height: 1.5;
+    max-width: 320px;
+    margin: 0 auto;
+    position: relative;
 }
 
-/* 套餐选项 */
-.purchase-plans {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin-bottom: 20px;
+/* 内容区域 */
+.purchase-content {
+    padding: 24px;
+    background: #fafbfc;
 }
 
-.plan-option {
-    cursor: pointer;
+.plans-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin: 0 0 16px 4px;
 }
 
-.plan-option input {
-    display: none;
-}
-
-.plan-option .plan-content {
-    display: flex;
-    align-items: center;
+/* 套餐网格 */
+.purchase-plans-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
     gap: 12px;
-    padding: 14px 16px;
-    border: 2px solid #e8eaed;
-    border-radius: 8px;
-    transition: all 0.15s ease;
 }
 
-.plan-option:hover .plan-content {
-    border-color: #dadce0;
-    background: #fafafa;
+/* 套餐卡片 */
+.plan-card {
+    position: relative;
+    border: 2px solid #e2e8f0;
+    border-radius: 16px;
+    padding: 20px 16px 16px;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    background: #fff;
+    text-align: center;
 }
 
-.plan-option input:checked + .plan-content {
-    border-color: #1a73e8;
-    background: #e8f0fe;
+.plan-card:hover {
+    border-color: #c7d2fe;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(99, 102, 241, 0.12);
 }
 
-.plan-radio {
-    width: 18px;
-    height: 18px;
-    border: 2px solid #dadce0;
+.plan-card.selected {
+    border-color: #6366f1;
+    background: linear-gradient(180deg, #faf5ff 0%, #fff 100%);
+    box-shadow: 0 4px 20px rgba(99, 102, 241, 0.2);
+}
+
+.plan-card.recommended {
+    border-color: #6366f1;
+}
+
+/* 徽章样式 */
+.plan-card .recommend-badge,
+.plan-card .popular-badge {
+    position: absolute;
+    top: -11px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 10px;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    white-space: nowrap;
+}
+
+.plan-card .recommend-badge {
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    color: white;
+    box-shadow: 0 2px 8px rgba(99, 102, 241, 0.4);
+}
+
+.plan-card .popular-badge {
+    background: #f1f5f9;
+    color: #64748b;
+    border: 1px solid #e2e8f0;
+}
+
+.plan-card .plan-name {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1e293b;
+    margin-bottom: 4px;
+    margin-top: 8px;
+}
+
+.plan-card .plan-price {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 2px;
+    margin: 8px 0 4px;
+}
+
+.plan-card .price-value {
+    font-size: 28px;
+    font-weight: 700;
+    color: #6366f1;
+    font-family: 'Inter', 'SF Pro Display', -apple-system, sans-serif;
+    letter-spacing: -1px;
+}
+
+.plan-card .price-unit {
+    font-size: 14px;
+    font-weight: 500;
+    color: #94a3b8;
+}
+
+.plan-card .plan-period {
+    font-size: 12px;
+    color: #94a3b8;
+    margin-bottom: 4px;
+}
+
+.plan-card .plan-save {
+    display: inline-block;
+    margin-top: 8px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #10b981;
+    background: #ecfdf5;
+    padding: 4px 10px;
+    border-radius: 20px;
+}
+
+/* 选中指示器 */
+.plan-card .check-icon {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 22px;
+    height: 22px;
+    border: 2px solid #e2e8f0;
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
-    flex-shrink: 0;
+    transition: all 0.2s ease;
 }
 
-.plan-option input:checked + .plan-content .plan-radio {
-    border-color: #1a73e8;
+.plan-card.selected .check-icon {
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    border-color: transparent;
+    box-shadow: 0 2px 6px rgba(99, 102, 241, 0.4);
 }
 
-.plan-option input:checked + .plan-content .plan-radio::after {
-    content: '';
-    width: 8px;
-    height: 8px;
-    background: #1a73e8;
-    border-radius: 50%;
+.plan-card.selected .check-icon svg {
+    display: block;
 }
 
-.plan-info {
-    flex: 1;
+.plan-card .check-icon svg {
+    width: 12px;
+    height: 12px;
+    color: white;
+    display: none;
 }
 
-.plan-name {
-    font-size: 14px;
-    font-weight: 500;
-    color: #202124;
-}
-
-.plan-duration {
-    font-size: 12px;
-    color: #5f6368;
-}
-
-.plan-price {
-    font-size: 16px;
-    font-weight: 500;
-    color: #1a73e8;
-}
-
-/* 购买摘要 */
-.purchase-summary {
-    background: #f8f9fa;
-    border-radius: 8px;
-    padding: 16px;
-}
-
-.summary-row {
+/* 购买摘要栏 */
+.purchase-summary-bar {
     display: flex;
     justify-content: space-between;
-    padding: 8px 0;
-    font-size: 14px;
-    color: #5f6368;
+    align-items: center;
+    margin-top: 20px;
+    padding: 16px 20px;
+    background: white;
+    border-radius: 14px;
+    border: 1px solid #e2e8f0;
 }
 
-.summary-row.total {
-    border-top: 1px solid #e8eaed;
-    margin-top: 8px;
-    padding-top: 12px;
+.summary-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.wallet-icon {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f1f5f9;
+    border-radius: 10px;
+    color: #64748b;
+}
+
+.wallet-icon svg {
+    width: 20px;
+    height: 20px;
+}
+
+.balance-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.balance-label {
+    font-size: 11px;
     font-weight: 500;
-    color: #202124;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
-.summary-row.total span:last-child {
-    color: #d93025;
-    font-size: 16px;
+.balance-value {
+    font-size: 15px;
+    font-weight: 600;
+    color: #1e293b;
+}
+
+.summary-right {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.total-block {
+    text-align: right;
+}
+
+.total-label {
+    font-size: 11px;
+    font-weight: 500;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.total-value {
+    font-size: 20px;
+    font-weight: 700;
+    color: #6366f1;
+}
+
+.btn-purchase {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    white-space: nowrap;
+}
+
+.btn-purchase svg {
+    width: 18px;
+    height: 18px;
+    transition: transform 0.2s ease;
+}
+
+.btn-purchase:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 8px 20px rgba(99, 102, 241, 0.4);
+}
+
+.btn-purchase:hover:not(:disabled) svg {
+    transform: translateX(3px);
+}
+
+.btn-purchase:disabled {
+    background: #e2e8f0;
+    color: #94a3b8;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+/* 响应式 */
+@media (max-width: 520px) {
+    .purchase-plans-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .purchase-summary-bar {
+        flex-direction: column;
+        gap: 16px;
+        text-align: center;
+    }
+    
+    .summary-left,
+    .summary-right {
+        width: 100%;
+        justify-content: center;
+    }
+    
+    .total-block {
+        text-align: center;
+    }
+    
+    .btn-purchase {
+        width: 100%;
+        justify-content: center;
+    }
 }
 
 /* 按钮 */

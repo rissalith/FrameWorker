@@ -4,10 +4,17 @@
 """
 
 import os
+from pathlib import Path
 from datetime import datetime
 from sqlalchemy import create_engine, Column, Integer, String, Text, Boolean, Float, DateTime, ForeignKey
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, relationship
+
+# 在模块导入时加载 .env（确保环境变量在 database 模块中可用）
+from dotenv import load_dotenv
+env_path = Path(__file__).parent.parent.parent / '.env'
+if env_path.exists():
+    load_dotenv(env_path, override=True)
 
 # 创建基类
 Base = declarative_base()

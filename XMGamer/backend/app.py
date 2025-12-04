@@ -8,15 +8,18 @@ from flask_socketio import SocketIO, emit, join_room, leave_room
 from werkzeug.middleware.proxy_fix import ProxyFix
 from dotenv import load_dotenv
 
+# 项目根目录（XMGamer 和 GameLibrary 的父目录）
+PROJECT_ROOT = Path(__file__).parent.parent.parent
+
 # 导入游戏的直播服务
 LIVE_SERVICE_AVAILABLE = False
 live_service = None
 try:
     # 添加游戏后端路径到 sys.path
-    game_backend_path = str(Path(__file__).parent.parent / 'GameLibrary' / 'games' / 'fortune-game' / 'backend')
+    game_backend_path = str(PROJECT_ROOT / 'GameLibrary' / 'games' / 'fortune-game' / 'backend')
     if game_backend_path not in sys.path:
         sys.path.insert(0, game_backend_path)
-    
+
     from services.live_service import LiveService
     LIVE_SERVICE_AVAILABLE = True
     print('[OK] 游戏直播服务模块已加载')
@@ -50,7 +53,7 @@ except ImportError as e:
     obs_bp = None
 
 # 导入游戏管理器和会话管理器
-sys.path.insert(0, str(Path(__file__).parent.parent))
+sys.path.insert(0, str(PROJECT_ROOT))
 try:
     from GameLibrary.game_manager import game_manager
     from GameLibrary.game_session_manager import game_session_manager

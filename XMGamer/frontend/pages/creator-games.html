@@ -1,535 +1,94 @@
-<!-- 我的游戏管理页面 (创作者) -->
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
-<style>
-    .creator-games-page {
-        padding: 24px;
-        font-family: 'Noto Sans SC', sans-serif;
-        background: var(--content-bg, #f8f9fa);
-        min-height: 100%;
-    }
-    
-    .page-header {
-        background: var(--content-card-bg, #fff);
-        border-radius: 12px;
-        padding: 24px;
-        margin-bottom: 24px;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    }
-    
-    .page-header h1 {
-        font-size: 24px;
-        font-weight: 700;
-        margin: 0 0 8px 0;
-        background: linear-gradient(135deg, #34a853 0%, #1a73e8 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
-    }
-    
-    .page-header p {
-        color: var(--content-text-secondary, #5f6368);
-        margin: 0;
-    }
-    
-    .toolbar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 20px;
-    }
-    
-    .btn-upload {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        padding: 10px 20px;
-        background: #34a853;
-        color: white;
-        border: none;
-        border-radius: 8px;
-        font-size: 14px;
-        font-weight: 500;
-        cursor: pointer;
-        transition: all 0.2s;
-    }
-    
-    .btn-upload:hover {
-        filter: brightness(0.9);
-        transform: translateY(-1px);
-    }
-    
-    .btn-upload svg {
-        width: 20px;
-        height: 20px;
-    }
-    
-    .games-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-        gap: 20px;
-    }
-    
-    .game-card {
-        background: var(--content-card-bg, #fff);
-        border-radius: 12px;
-        overflow: hidden;
-        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        transition: all 0.2s;
-    }
-    
-    .game-card:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 4px 16px rgba(0,0,0,0.1);
-    }
-    
-    .game-card-header {
-        height: 120px;
-        background: linear-gradient(135deg, #34a853 0%, #1a73e8 100%);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        position: relative;
-    }
-    
-    .game-card-header img {
-        max-height: 80px;
-        max-width: 80px;
-        border-radius: 12px;
-    }
-    
-    .game-status-badge {
-        position: absolute;
-        top: 10px;
-        right: 10px;
-        padding: 4px 10px;
-        border-radius: 20px;
-        font-size: 11px;
-        font-weight: 500;
-    }
-    
-    .status-published { background: #34a853; color: white; }
-    .status-draft { background: #f9ab00; color: white; }
-    .status-offline { background: #ea4335; color: white; }
-    
-    .game-card-body {
-        padding: 16px;
-    }
-    
-    .game-name {
-        font-size: 16px;
-        font-weight: 600;
-        color: var(--content-text, #202124);
-        margin: 0 0 4px 0;
-    }
-    
-    .game-id {
-        font-size: 12px;
-        color: var(--content-text-secondary, #5f6368);
-        font-family: monospace;
-        margin-bottom: 12px;
-    }
-    
-    .game-meta {
-        display: flex;
-        gap: 16px;
-        margin-bottom: 12px;
-        font-size: 13px;
-    }
-    
-    .meta-item {
-        display: flex;
-        align-items: center;
-        gap: 4px;
-        color: var(--content-text-secondary, #5f6368);
-    }
-    
-    .game-actions-count {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        padding: 8px 12px;
-        background: var(--btn-secondary-bg, #f1f3f4);
-        border-radius: 8px;
-        font-size: 13px;
-        color: var(--content-text, #202124);
-        margin-bottom: 12px;
-    }
-    
-    .game-card-actions {
-        display: flex;
-        gap: 8px;
-        padding-top: 12px;
-        border-top: 1px solid var(--content-border, #e8eaed);
-    }
-    
-    .btn-action {
-        flex: 1;
-        padding: 8px;
-        border: none;
-        border-radius: 6px;
-        font-size: 13px;
-        cursor: pointer;
-        transition: all 0.2s;
-    }
-    
-    .btn-edit { background: var(--btn-secondary-bg, #f1f3f4); color: var(--content-text, #202124); }
-    .btn-edit:hover { background: #e8eaed; }
-    .btn-delete { background: #fce8e6; color: #c5221f; }
-    .btn-delete:hover { background: #fad2cf; }
-    
-    /* 上传模态框 */
-    .upload-modal {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: rgba(0,0,0,0.5);
-        z-index: 10000;
-        justify-content: center;
-        align-items: center;
-    }
-    
-    .upload-modal.active { display: flex; }
-    
-    .upload-dialog {
-        background: var(--content-card-bg, #fff);
-        border-radius: 16px;
-        width: 90%;
-        max-width: 700px;
-        max-height: 90vh;
-        overflow: hidden;
-        display: flex;
-        flex-direction: column;
-    }
-    
-    .upload-header {
-        padding: 20px 24px;
-        border-bottom: 1px solid var(--content-border, #e8eaed);
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-    
-    .upload-header h2 {
-        margin: 0;
-        font-size: 18px;
-        color: var(--content-text, #202124);
-    }
-    
-    .btn-close {
-        background: none;
-        border: none;
-        padding: 8px;
-        cursor: pointer;
-        color: var(--content-text-secondary, #5f6368);
-        border-radius: 50%;
-    }
-    
-    .btn-close:hover { background: var(--btn-secondary-bg, #f1f3f4); }
-    
-    .upload-body {
-        padding: 24px;
-        overflow-y: auto;
-        flex: 1;
-    }
-    
-    .upload-steps {
-        display: flex;
-        gap: 8px;
-        margin-bottom: 24px;
-    }
-    
-    .step {
-        flex: 1;
-        text-align: center;
-        padding: 12px;
-        background: var(--btn-secondary-bg, #f1f3f4);
-        border-radius: 8px;
-        font-size: 13px;
-        color: var(--content-text-secondary, #5f6368);
-    }
-    
-    .step.active { background: #34a853; color: white; }
-    .step.completed { background: #1a73e8; color: white; }
-    
-    /* 拖拽上传区域 */
-    .drop-zone {
-        border: 2px dashed var(--content-border, #dadce0);
-        border-radius: 12px;
-        padding: 48px;
-        text-align: center;
-        transition: all 0.2s;
-        cursor: pointer;
-    }
-    
-    .drop-zone:hover, .drop-zone.dragover {
-        border-color: #34a853;
-        background: #e8f5e9;
-    }
-    
-    .drop-zone svg {
-        width: 48px;
-        height: 48px;
-        color: var(--content-text-secondary, #5f6368);
-        margin-bottom: 16px;
-    }
-    
-    .drop-zone h3 {
-        margin: 0 0 8px 0;
-        font-size: 16px;
-        color: var(--content-text, #202124);
-    }
-    
-    .drop-zone p {
-        margin: 0;
-        font-size: 13px;
-        color: var(--content-text-secondary, #5f6368);
-    }
-    
-    /* 解析结果 */
-    .parse-result { display: none; }
-    .parse-result.active { display: block; }
-    
-    .parse-section {
-        background: var(--btn-secondary-bg, #f1f3f4);
-        border-radius: 12px;
-        padding: 16px;
-        margin-bottom: 16px;
-    }
-    
-    .parse-section h4 {
-        margin: 0 0 12px 0;
-        font-size: 14px;
-        color: var(--content-text, #202124);
-    }
-    
-    .parse-info {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 12px;
-    }
-    
-    .info-item {
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-    }
-    
-    .info-label {
-        font-size: 12px;
-        color: var(--content-text-secondary, #5f6368);
-    }
-    
-    .info-value {
-        font-size: 14px;
-        color: var(--content-text, #202124);
-        font-weight: 500;
-    }
-    
-    .actions-list {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-    }
-    
-    .action-tag {
-        padding: 6px 12px;
-        background: var(--content-card-bg, #fff);
-        border-radius: 20px;
-        font-size: 13px;
-        color: var(--content-text, #202124);
-    }
-    
-    /* 配置表单 */
-    .config-form { display: none; }
-    .config-form.active { display: block; }
-    
-    .form-group {
-        margin-bottom: 16px;
-    }
-    
-    .form-group label {
-        display: block;
-        font-size: 13px;
-        font-weight: 500;
-        color: var(--content-text, #202124);
-        margin-bottom: 6px;
-    }
-    
-    .form-group input,
-    .form-group select {
-        width: 100%;
-        padding: 10px 12px;
-        border: 1px solid var(--input-border, #dadce0);
-        border-radius: 8px;
-        font-size: 14px;
-        background: var(--input-bg, #fff);
-        color: var(--content-text, #202124);
-        box-sizing: border-box;
-    }
-    
-    .form-group input:focus,
-    .form-group select:focus {
-        outline: none;
-        border-color: #34a853;
-    }
-    
-    .form-row {
-        display: grid;
-        grid-template-columns: repeat(2, 1fr);
-        gap: 16px;
-    }
-    
-    .upload-footer {
-        padding: 16px 24px;
-        border-top: 1px solid var(--content-border, #e8eaed);
-        display: flex;
-        justify-content: flex-end;
-        gap: 12px;
-    }
-    
-    .btn-cancel {
-        padding: 10px 20px;
-        border: 1px solid var(--content-border, #dadce0);
-        background: var(--content-card-bg, #fff);
-        color: var(--content-text, #202124);
-        border-radius: 8px;
-        font-size: 14px;
-        cursor: pointer;
-    }
-    
-    .btn-submit {
-        padding: 10px 20px;
-        background: #34a853;
-        color: white;
-        border: none;
-        border-radius: 8px;
-        font-size: 14px;
-        font-weight: 500;
-        cursor: pointer;
-    }
-    
-    .btn-submit:disabled {
-        opacity: 0.5;
-        cursor: not-allowed;
-    }
-    
-    /* 空状态 */
-    .empty-state {
-        text-align: center;
-        padding: 60px 20px;
-        background: var(--content-card-bg, #fff);
-        border-radius: 12px;
-    }
-    
-    .empty-state svg {
-        width: 64px;
-        height: 64px;
-        color: var(--content-text-secondary, #5f6368);
-        margin-bottom: 16px;
-    }
-    
-    .empty-state h3 {
-        margin: 0 0 8px 0;
-        color: var(--content-text, #202124);
-    }
-    
-    .empty-state p {
-        margin: 0 0 20px 0;
-        color: var(--content-text-secondary, #5f6368);
-    }
-    
-    /* 提示信息 */
-    .creator-notice {
-        background: #e8f5e9;
-        border: 1px solid #c8e6c9;
-        border-radius: 8px;
-        padding: 12px 16px;
-        margin-bottom: 20px;
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        font-size: 14px;
-        color: #2e7d32;
-    }
-    
-    .creator-notice svg {
-        width: 20px;
-        height: 20px;
-        flex-shrink: 0;
-    }
-</style>
-
-<div class="creator-games-page">
+<!-- 我的游戏库页面 (创作者) - 统一风格 -->
+<div class="page-container">
+    <!-- 页面头部 -->
     <div class="page-header">
-        <h1>🎮 我的游戏库</h1>
-        <p>管理您创建和上传的游戏</p>
+        <h1 class="page-title">我的游戏库</h1>
+        <p class="page-subtitle">管理您创建和上传的游戏</p>
     </div>
-    
-    <div class="creator-notice">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="10"/>
-            <line x1="12" y1="16" x2="12" y2="12"/>
-            <line x1="12" y1="8" x2="12.01" y2="8"/>
-        </svg>
-        <span>作为创作者，您上传的游戏将专属于您的账号，其他创作者无法看到或管理您的游戏。</span>
-    </div>
-    
-    <div class="toolbar">
-        <span id="gamesCount">0 款游戏</span>
-        <button class="btn-upload" onclick="CreatorGames.openUploadModal()">
+
+    <!-- 页面内容 -->
+    <div class="page-body">
+        <!-- 提示信息 -->
+        <div class="notice-box">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                <polyline points="17,8 12,3 7,8"/>
-                <line x1="12" y1="3" x2="12" y2="15"/>
+                <circle cx="12" cy="12" r="10"/>
+                <line x1="12" y1="16" x2="12" y2="12"/>
+                <line x1="12" y1="8" x2="12.01" y2="8"/>
             </svg>
-            上传游戏
-        </button>
-    </div>
-    
-    <div class="games-grid" id="gamesGrid">
-        <!-- 游戏卡片将动态渲染 -->
-    </div>
-    
-    <div class="empty-state" id="emptyState" style="display: none;">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-            <rect x="2" y="6" width="20" height="12" rx="2"/>
-            <circle cx="8" cy="12" r="2"/>
-            <path d="M14 10h4M16 8v4"/>
-        </svg>
-        <h3>还没有游戏</h3>
-        <p>点击上方"上传游戏"按钮开始创建您的第一款游戏</p>
-        <button class="btn-upload" onclick="CreatorGames.openUploadModal()">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                <polyline points="17,8 12,3 7,8"/>
-                <line x1="12" y1="3" x2="12" y2="15"/>
+            <span>作为创作者，您上传的游戏将专属于您的账号，其他创作者无法看到或管理您的游戏。</span>
+        </div>
+
+        <!-- 工具栏 -->
+        <div class="content-toolbar">
+            <div class="toolbar-left">
+                <span class="result-count" id="gamesCount">0 款游戏</span>
+            </div>
+            <div class="toolbar-right">
+                <button class="btn-primary" onclick="CreatorGames.openUploadModal()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="17,8 12,3 7,8"/>
+                        <line x1="12" y1="3" x2="12" y2="15"/>
+                    </svg>
+                    上传游戏
+                </button>
+            </div>
+        </div>
+
+        <!-- 游戏网格 -->
+        <div class="games-grid" id="gamesGrid">
+            <!-- 游戏卡片将动态渲染 -->
+        </div>
+        
+        <!-- 空状态 -->
+        <div class="empty-state" id="emptyState" style="display: none;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <rect x="2" y="6" width="20" height="12" rx="2"/>
+                <circle cx="8" cy="12" r="2"/>
+                <path d="M14 10h4M16 8v4"/>
             </svg>
-            上传游戏
-        </button>
+            <h3>还没有游戏</h3>
+            <p>点击上方"上传游戏"按钮开始创建您的第一款游戏</p>
+            <button class="btn-primary" onclick="CreatorGames.openUploadModal()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="17,8 12,3 7,8"/>
+                    <line x1="12" y1="3" x2="12" y2="15"/>
+                </svg>
+                上传游戏
+            </button>
+        </div>
     </div>
 </div>
 
 <!-- 上传模态框 -->
-<div class="upload-modal" id="uploadModal">
-    <div class="upload-dialog">
-        <div class="upload-header">
-            <h2>上传游戏</h2>
+<div class="modal-overlay" id="uploadModal" style="display: none;">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-header">
+            <h3>上传游戏</h3>
             <button class="btn-close" onclick="CreatorGames.closeUploadModal()">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <line x1="18" y1="6" x2="6" y2="18"/>
                     <line x1="6" y1="6" x2="18" y2="18"/>
                 </svg>
             </button>
         </div>
         
-        <div class="upload-body">
+        <div class="modal-body">
+            <!-- 步骤指示器 -->
             <div class="upload-steps">
-                <div class="step active" id="step1">1. 上传 ZIP</div>
-                <div class="step" id="step2">2. 解析预览</div>
-                <div class="step" id="step3">3. 配置发布</div>
+                <div class="step active" id="step1">
+                    <div class="step-number">1</div>
+                    <span>上传 ZIP</span>
+                </div>
+                <div class="step" id="step2">
+                    <div class="step-number">2</div>
+                    <span>解析预览</span>
+                </div>
+                <div class="step" id="step3">
+                    <div class="step-number">3</div>
+                    <span>配置发布</span>
+                </div>
             </div>
             
             <!-- Step 1: 上传 -->
@@ -545,15 +104,15 @@
                 </div>
                 <input type="file" id="fileInput" accept=".zip" style="display: none;" onchange="CreatorGames.handleFileSelect(event)">
                 <div id="uploadProgress" style="display: none; margin-top: 16px;">
-                    <p>上传中... <span id="progressText">0%</span></p>
-                    <div style="height: 4px; background: #e8eaed; border-radius: 2px;">
-                        <div id="progressBar" style="height: 100%; background: #34a853; border-radius: 2px; width: 0; transition: width 0.3s;"></div>
+                    <p style="font-size: 14px; color: #5f6368; margin: 0 0 8px 0;">上传中... <span id="progressText">0%</span></p>
+                    <div class="progress-bar">
+                        <div class="progress-fill" id="progressBar"></div>
                     </div>
                 </div>
             </div>
             
             <!-- Step 2: 解析结果 -->
-            <div id="parseStep" class="parse-result">
+            <div id="parseStep" class="parse-result" style="display: none;">
                 <div class="parse-section">
                     <h4>📦 基础信息</h4>
                     <div class="parse-info">
@@ -578,7 +137,9 @@
                 
                 <div class="parse-section">
                     <h4>🎮 识别到的动作 (<span id="actionsCount">0</span> 个)</h4>
-                    <div class="actions-list" id="actionsList"></div>
+                    <div class="actions-list" id="actionsList">
+                        <!-- 动作标签 -->
+                    </div>
                 </div>
                 
                 <div class="parse-section">
@@ -595,14 +156,14 @@
                     </div>
                 </div>
                 
-                <div id="updateWarning" style="display: none; padding: 12px; background: #fef7e0; border-radius: 8px; margin-top: 16px;">
+                <div id="updateWarning" class="warning-box" style="display: none;">
                     <strong>⚠️ 更新模式</strong>
-                    <p style="margin: 8px 0 0 0; font-size: 13px;">检测到该游戏已存在，将更新版本。原有的定价和配置将保留。</p>
+                    <p>检测到该游戏已存在，将更新版本。原有的定价和配置将保留。</p>
                 </div>
             </div>
             
             <!-- Step 3: 配置 -->
-            <div id="configStep" class="config-form">
+            <div id="configStep" class="config-form" style="display: none;">
                 <div class="form-row">
                     <div class="form-group">
                         <label>展示名称</label>
@@ -635,12 +196,619 @@
             </div>
         </div>
         
-        <div class="upload-footer">
-            <button class="btn-cancel" onclick="CreatorGames.closeUploadModal()">取消</button>
-            <button class="btn-submit" id="btnNext" onclick="CreatorGames.nextStep()" disabled>下一步</button>
+        <div class="modal-footer">
+            <button class="btn-secondary" onclick="CreatorGames.closeUploadModal()">取消</button>
+            <button class="btn-primary" id="btnNext" onclick="CreatorGames.nextStep()" disabled>下一步</button>
         </div>
     </div>
 </div>
+
+<style>
+/* ========== 全局字体 ========== */
+* {
+    font-family: 'Noto Sans SC', 'Segoe UI', Roboto, -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+}
+
+/* ========== 统一页面容器 ========== */
+.page-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* 页面头部 */
+.page-header {
+    padding: 24px 32px 20px;
+    border-bottom: 1px solid #e8eaed;
+    background: #fff;
+    flex-shrink: 0;
+}
+
+.page-title {
+    font-size: 22px;
+    font-weight: 400;
+    color: #202124;
+    margin: 0 0 4px 0;
+    letter-spacing: -0.2px;
+}
+
+.page-subtitle {
+    font-size: 14px;
+    color: #5f6368;
+    margin: 0;
+    font-weight: 400;
+}
+
+/* 页面主体 */
+.page-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 24px 32px;
+}
+
+/* ========== 提示框 ========== */
+.notice-box {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 16px;
+    background: #e8f0fe;
+    border: 1px solid #c2d9f7;
+    border-radius: 8px;
+    margin-bottom: 24px;
+    font-size: 14px;
+    color: #1967d2;
+}
+
+.notice-box svg {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
+/* ========== 工具栏 ========== */
+.content-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 24px;
+}
+
+.toolbar-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.result-count {
+    font-size: 14px;
+    color: #5f6368;
+}
+
+.toolbar-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* ========== 按钮 ========== */
+.btn-primary {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: #1a73e8;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.btn-primary:hover {
+    background: #1557b0;
+    box-shadow: 0 2px 6px rgba(26, 115, 232, 0.3);
+}
+
+.btn-primary:disabled {
+    background: #dadce0;
+    color: #9aa0a6;
+    cursor: not-allowed;
+    box-shadow: none;
+}
+
+.btn-primary svg {
+    width: 18px;
+    height: 18px;
+}
+
+.btn-secondary {
+    padding: 10px 20px;
+    background: #fff;
+    color: #5f6368;
+    border: 1px solid #dadce0;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.btn-secondary:hover {
+    background: #f8f9fa;
+    border-color: #c6c9cc;
+}
+
+/* ========== 游戏网格 ========== */
+.games-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+/* ========== 游戏卡片 ========== */
+.game-card {
+    background: #fff;
+    border: 1px solid #e8eaed;
+    border-radius: 12px;
+    overflow: hidden;
+    transition: all 0.2s ease;
+}
+
+.game-card:hover {
+    border-color: #dadce0;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+.game-card-header {
+    height: 120px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.game-card-header img {
+    max-height: 72px;
+    max-width: 72px;
+    border-radius: 12px;
+}
+
+.game-status-badge {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    padding: 4px 10px;
+    border-radius: 12px;
+    font-size: 11px;
+    font-weight: 500;
+}
+
+.status-published { background: #34a853; color: white; }
+.status-draft { background: #f9ab00; color: white; }
+.status-offline { background: #ea4335; color: white; }
+
+.game-card-body {
+    padding: 16px;
+}
+
+.game-name {
+    font-size: 15px;
+    font-weight: 500;
+    color: #202124;
+    margin: 0 0 4px 0;
+}
+
+.game-id {
+    font-size: 12px;
+    color: #5f6368;
+    font-family: 'Consolas', 'Monaco', monospace;
+    margin-bottom: 12px;
+}
+
+.game-meta {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 12px;
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 13px;
+    color: #5f6368;
+}
+
+.game-actions-count {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 12px;
+    background: #f1f3f4;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #202124;
+    margin-bottom: 12px;
+}
+
+.game-card-actions {
+    display: flex;
+    gap: 8px;
+    padding-top: 12px;
+    border-top: 1px solid #e8eaed;
+}
+
+.btn-action {
+    flex: 1;
+    padding: 8px;
+    border: none;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.btn-edit { background: #f1f3f4; color: #202124; }
+.btn-edit:hover { background: #e8eaed; }
+.btn-delete { background: #ffebee; color: #c62828; }
+.btn-delete:hover { background: #ffcdd2; }
+
+/* ========== 空状态 ========== */
+.empty-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: #5f6368;
+}
+
+.empty-state svg {
+    width: 64px;
+    height: 64px;
+    color: #9aa0a6;
+    margin-bottom: 16px;
+}
+
+.empty-state h3 {
+    margin: 0 0 8px 0;
+    font-size: 16px;
+    font-weight: 500;
+    color: #202124;
+}
+
+.empty-state p {
+    margin: 0 0 24px 0;
+    font-size: 14px;
+    color: #5f6368;
+}
+
+/* ========== 弹窗 ========== */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-dialog {
+    background: #fff;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 500px;
+    max-height: 90vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+}
+
+.modal-dialog.modal-lg {
+    max-width: 700px;
+}
+
+.modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px;
+    border-bottom: 1px solid #e8eaed;
+}
+
+.modal-header h3 {
+    font-size: 18px;
+    font-weight: 500;
+    color: #202124;
+    margin: 0;
+}
+
+.btn-close {
+    width: 36px;
+    height: 36px;
+    border: none;
+    background: none;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #5f6368;
+    transition: background 0.15s ease;
+}
+
+.btn-close:hover {
+    background: #f1f3f4;
+}
+
+.btn-close svg {
+    width: 20px;
+    height: 20px;
+}
+
+.modal-body {
+    padding: 24px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 16px 24px;
+    border-top: 1px solid #e8eaed;
+}
+
+/* ========== 上传步骤 ========== */
+.upload-steps {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 24px;
+}
+
+.step {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px;
+    background: #f1f3f4;
+    border-radius: 8px;
+    font-size: 13px;
+    color: #5f6368;
+    transition: all 0.2s ease;
+}
+
+.step-number {
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: #dadce0;
+    color: #5f6368;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.step.active {
+    background: #e8f0fe;
+    color: #1a73e8;
+}
+
+.step.active .step-number {
+    background: #1a73e8;
+    color: white;
+}
+
+.step.completed {
+    background: #e6f4ea;
+    color: #1e8e3e;
+}
+
+.step.completed .step-number {
+    background: #1e8e3e;
+    color: white;
+}
+
+/* 拖拽上传区域 */
+.drop-zone {
+    border: 2px dashed #dadce0;
+    border-radius: 12px;
+    padding: 48px;
+    text-align: center;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.drop-zone:hover, .drop-zone.dragover {
+    border-color: #1a73e8;
+    background: #e8f0fe;
+}
+
+.drop-zone svg {
+    width: 48px;
+    height: 48px;
+    color: #9aa0a6;
+    margin-bottom: 16px;
+}
+
+.drop-zone h3 {
+    margin: 0 0 8px 0;
+    font-size: 16px;
+    font-weight: 500;
+    color: #202124;
+}
+
+.drop-zone p {
+    margin: 0;
+    font-size: 13px;
+    color: #5f6368;
+}
+
+/* 进度条 */
+.progress-bar {
+    height: 4px;
+    background: #e8eaed;
+    border-radius: 2px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    background: #1a73e8;
+    width: 0;
+    transition: width 0.3s ease;
+}
+
+/* 解析结果 */
+.parse-section {
+    background: #f8f9fa;
+    border-radius: 12px;
+    padding: 16px;
+    margin-bottom: 16px;
+}
+
+.parse-section h4 {
+    margin: 0 0 12px 0;
+    font-size: 14px;
+    font-weight: 500;
+    color: #202124;
+}
+
+.parse-info {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+}
+
+.info-item {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.info-label {
+    font-size: 12px;
+    color: #5f6368;
+}
+
+.info-value {
+    font-size: 14px;
+    color: #202124;
+    font-weight: 500;
+}
+
+.actions-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.action-tag {
+    padding: 6px 12px;
+    background: #fff;
+    border: 1px solid #e8eaed;
+    border-radius: 16px;
+    font-size: 13px;
+    color: #202124;
+}
+
+.warning-box {
+    padding: 12px 16px;
+    background: #fef7e0;
+    border: 1px solid #f9ab00;
+    border-radius: 8px;
+    margin-top: 16px;
+}
+
+.warning-box strong {
+    color: #b06000;
+}
+
+.warning-box p {
+    margin: 8px 0 0 0;
+    font-size: 13px;
+    color: #5f6368;
+}
+
+/* ========== 表单 ========== */
+.form-group {
+    margin-bottom: 16px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 500;
+    color: #202124;
+    margin-bottom: 6px;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid #dadce0;
+    border-radius: 8px;
+    font-size: 14px;
+    background: #fff;
+    color: #202124;
+    box-sizing: border-box;
+    transition: border-color 0.15s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: #1a73e8;
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
+}
+
+/* ========== 响应式 ========== */
+@media (max-width: 768px) {
+    .page-header {
+        padding: 20px;
+    }
+    
+    .page-body {
+        padding: 20px;
+    }
+    
+    .games-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .upload-steps {
+        flex-direction: column;
+    }
+    
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+}
+</style>
 
 <script>
 const CreatorGames = {
@@ -747,17 +915,22 @@ const CreatorGames = {
     },
     
     getStatusText(status) {
-        const texts = { 'draft': '草稿', 'published': '已发布', 'offline': '已下架' };
+        const texts = {
+            'draft': '草稿',
+            'published': '已发布',
+            'offline': '已下架'
+        };
         return texts[status] || status;
     },
     
     openUploadModal() {
-        document.getElementById('uploadModal').classList.add('active');
+        document.getElementById('uploadModal').style.display = 'flex';
         this.resetUploadModal();
+        setTimeout(() => this.setupDropZone(), 100);
     },
     
     closeUploadModal() {
-        document.getElementById('uploadModal').classList.remove('active');
+        document.getElementById('uploadModal').style.display = 'none';
         if (this.tempId) {
             AuthManager.authenticatedFetch(
                 `${AuthManager.apiBaseUrl}/game-library/cancel-upload/${this.tempId}`,
@@ -778,8 +951,8 @@ const CreatorGames = {
         });
         
         document.getElementById('uploadStep').style.display = 'block';
-        document.getElementById('parseStep').classList.remove('active');
-        document.getElementById('configStep').classList.remove('active');
+        document.getElementById('parseStep').style.display = 'none';
+        document.getElementById('configStep').style.display = 'none';
         document.getElementById('uploadProgress').style.display = 'none';
         document.getElementById('btnNext').disabled = true;
         document.getElementById('btnNext').textContent = '下一步';
@@ -812,7 +985,10 @@ const CreatorGames = {
             
             const response = await AuthManager.authenticatedFetch(
                 `${AuthManager.apiBaseUrl}/game-library/upload`,
-                { method: 'POST', body: formData }
+                {
+                    method: 'POST',
+                    body: formData
+                }
             );
             
             clearInterval(interval);
@@ -842,7 +1018,7 @@ const CreatorGames = {
         document.getElementById('step2').classList.add('active');
         
         document.getElementById('uploadStep').style.display = 'none';
-        document.getElementById('parseStep').classList.add('active');
+        document.getElementById('parseStep').style.display = 'block';
         
         const parsed = data.parsed;
         document.getElementById('parseId').textContent = parsed.id;
@@ -874,8 +1050,8 @@ const CreatorGames = {
             document.getElementById('step2').classList.add('completed');
             document.getElementById('step3').classList.add('active');
             
-            document.getElementById('parseStep').classList.remove('active');
-            document.getElementById('configStep').classList.add('active');
+            document.getElementById('parseStep').style.display = 'none';
+            document.getElementById('configStep').style.display = 'block';
             
             const parsed = this.uploadData.parsed;
             document.getElementById('configName').value = parsed.name;
@@ -964,4 +1140,3 @@ const CreatorGames = {
 
 window.CreatorGames = CreatorGames;
 </script>
-
