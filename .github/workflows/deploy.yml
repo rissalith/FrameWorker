@@ -9,7 +9,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_PREFIX: ${{ github.repository_owner }}/xmgamer
+  IMAGE_PREFIX: ${{ github.repository_owner }}/maxgamer
 
 jobs:
   build-and-push:
@@ -36,8 +36,8 @@ jobs:
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
-          context: ./XMGamer
-          file: ./XMGamer/Dockerfile
+          context: ./MaxGamer
+          file: ./MaxGamer/Dockerfile
           push: true
           tags: |
             ${{ env.REGISTRY }}/${{ env.IMAGE_PREFIX }}-platform-api:latest
@@ -148,7 +148,7 @@ jobs:
           services:
             nginx:
               image: nginx:alpine
-              container_name: xmgamer-gateway
+              container_name: maxgamer-gateway
               restart: always
               ports:
                 - "80:80"
@@ -157,15 +157,15 @@ jobs:
                 - ./nginx/conf.d:/etc/nginx/conf.d:ro
                 - ./nginx/ssl:/etc/nginx/ssl:ro
                 - ./logs/nginx:/var/log/nginx
-                - ./XMGamer/frontend:/usr/share/nginx/html/platform:ro
+                - ./MaxGamer/frontend:/usr/share/nginx/html/platform:ro
               depends_on:
                 - platform-api
               networks:
-                - xmgamer-net
+                - maxgamer-net
           
             mysql:
               image: mysql:8.0
-              container_name: xmgamer-db
+              container_name: maxgamer-db
               restart: always
               environment:
                 MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
@@ -176,7 +176,7 @@ jobs:
               volumes:
                 - ./data/mysql:/var/lib/mysql
               networks:
-                - xmgamer-net
+                - maxgamer-net
               command: 
                 - --character-set-server=utf8mb4
                 - --collation-server=utf8mb4_unicode_ci
@@ -185,17 +185,17 @@ jobs:
           
             redis:
               image: redis:7-alpine
-              container_name: xmgamer-redis
+              container_name: maxgamer-redis
               restart: always
               command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD}
               volumes:
                 - ./data/redis:/data
               networks:
-                - xmgamer-net
+                - maxgamer-net
           
             platform-api:
-              image: ghcr.io/${{ github.repository_owner }}/xmgamer-platform-api:latest
-              container_name: xmgamer-api
+              image: ghcr.io/${{ github.repository_owner }}/maxgamer-platform-api:latest
+              container_name: maxgamer-api
               restart: always
               environment:
                 DB_HOST: mysql
@@ -218,7 +218,7 @@ jobs:
                 EMAIL_SERVICE: sendgrid
                 SENDGRID_API_KEY: ${SENDGRID_API_KEY}
                 SENDGRID_FROM_EMAIL: ${SENDGRID_FROM_EMAIL}
-                SENDGRID_FROM_NAME: XMGamer
+                SENDGRID_FROM_NAME: MaxGamer
                 ALIYUN_ACCESS_KEY_ID: ${ALIYUN_ACCESS_KEY_ID}
                 ALIYUN_ACCESS_KEY_SECRET: ${ALIYUN_ACCESS_KEY_SECRET}
                 ALIYUN_SMS_SIGN_NAME: ${ALIYUN_SMS_SIGN_NAME}
@@ -232,11 +232,11 @@ jobs:
                 - mysql
                 - redis
               networks:
-                - xmgamer-net
+                - maxgamer-net
           
           
           networks:
-            xmgamer-net:
+            maxgamer-net:
               driver: bridge
           EOF
       
@@ -247,7 +247,7 @@ jobs:
           username: ${{ secrets.SERVER_USER }}
           password: ${{ secrets.SERVER_SSH_KEY }}
           port: ${{ secrets.SERVER_PORT || 22 }}
-          source: ".env,docker-compose.prod.yml,nginx/,XMGamer/frontend/"
+          source: ".env,docker-compose.prod.yml,nginx/,MaxGamer/frontend/"
           target: ${{ secrets.DEPLOY_PATH || '/var/www/FrameWorker' }}
           strip_components: 0
       
@@ -271,7 +271,7 @@ jobs:
             
             # 拉取最新镜像
             echo "拉取最新镜像..."
-            docker pull ghcr.io/${{ github.repository_owner }}/xmgamer-platform-api:latest
+            docker pull ghcr.io/${{ github.repository_owner }}/maxgamer-platform-api:latest
             
             # 停止并删除旧容器
             echo "停止旧容器..."

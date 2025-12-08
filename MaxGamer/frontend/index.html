@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MaxGamer - 直播互动游戏平台</title>
+    <script>
+        // 入口文件 - 自动跳转到相应页面
+        (function() {
+            // 检查是否已登录
+            const token = localStorage.getItem('token');
+            
+            if (token) {
+                // 已登录，跳转到主页
+                window.location.href = '/home.html';
+            } else {
+                // 未登录，跳转到登录页
+                window.location.href = '/login.html';
+            }
+        })();
+    </script>
+</head>
+<body>
+    <div style="display: flex; align-items: center; justify-content: center; height: 100vh; font-family: sans-serif;">
+        <p>正在加载...</p>
+    </div>
+</body>
+</html>

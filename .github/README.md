@@ -243,7 +243,7 @@ docker-compose -f docker-compose.prod.yml restart
 
 ## 📚 相关文档
 
-- [部署指南](../XMGamer/DEPLOYMENT.md)
+- [部署指南](../MaxGamer/DEPLOYMENT.md)
 - [Docker 配置](../docker-compose.yml)
 - [环境变量模板](../.env.example)
 - [Secrets 配置指南](SECRETS_SETUP.md)
@@ -253,7 +253,7 @@ docker-compose -f docker-compose.prod.yml restart
 如有问题，请：
 1. 查看 [SECRETS_SETUP.md](SECRETS_SETUP.md) 详细配置指南
 2. 访问 [GitHub Issues](https://github.com/rissalith/FrameWorker/issues)
-3. 查看 [部署文档](../XMGamer/DEPLOYMENT.md)
+3. 查看 [部署文档](../MaxGamer/DEPLOYMENT.md)
 
 ## 📝 更新日志
 

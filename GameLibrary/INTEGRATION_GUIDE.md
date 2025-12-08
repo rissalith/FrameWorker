@@ -1,12 +1,12 @@
 # 游戏库集成指南
 
-本文档说明如何将游戏库集成到XMGamer平台中。
+本文档说明如何将游戏库集成到MaxGamer平台中。
 
 ## 后端集成
 
 ### 1. 导入游戏管理器
 
-在 `XMGamer/backend/app.py` 中添加：
+在 `MaxGamer/backend/app.py` 中添加：
 
 ```python
 import sys
@@ -289,7 +289,7 @@ sendToPlatform('GAME_READY', {
 ### 1. 测试后端
 
 ```bash
-cd XMGamer/backend
+cd MaxGamer/backend
 python app.py
 ```
 

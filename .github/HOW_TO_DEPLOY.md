@@ -100,8 +100,8 @@ https://github.com/rissalith/FrameWorker/actions
 ```
 
 **构建的镜像：**
-- `ghcr.io/rissalith/xmgamer-platform-api:latest`
-- `ghcr.io/rissalith/xmgamer-game-witch:latest`
+- `ghcr.io/rissalith/maxgamer-platform-api:latest`
+- `ghcr.io/rissalith/maxgamer-game-witch:latest`
 
 ### 阶段 2：部署到服务器（约 2-3 分钟）
 
@@ -182,7 +182,7 @@ http://YOUR_SERVER_IP
 或者如果配置了域名：
 
 ```
-https://xmgamer.com
+https://maxgamer.com
 ```
 
 **应该能看到：**
@@ -220,11 +220,11 @@ docker-compose -f docker-compose.prod.yml ps
 **所有服务应该显示 "Up"：**
 ```
 NAME                STATUS
-xmgamer-gateway     Up
-xmgamer-api         Up
+maxgamer-gateway     Up
+maxgamer-api         Up
 game-witch          Up
-xmgamer-db          Up
-xmgamer-redis       Up
+maxgamer-db          Up
+maxgamer-redis       Up
 ```
 
 ---
@@ -245,7 +245,7 @@ xmgamer-redis       Up
 2. 检查 Dockerfile 配置
 3. 本地测试构建：
    ```bash
-   docker build -t test-image ./XMGamer
+   docker build -t test-image ./MaxGamer
    ```
 
 ### 问题 2：SSH 连接失败
@@ -335,7 +335,7 @@ cd /var/www/FrameWorker
 docker images | grep xmgamer
 
 # 修改 docker-compose.prod.yml 使用特定版本
-# 例如：image: ghcr.io/rissalith/xmgamer-platform-api:main-abc123
+# 例如：image: ghcr.io/rissalith/maxgamer-platform-api:main-abc123
 
 # 重启服务
 docker-compose -f docker-compose.prod.yml up -d

@@ -15,7 +15,7 @@ echo ==========================================
 echo.
 
 set SERVER=root@149.88.69.87
-set SCRIPT_PATH=XMGamer/update-deployment.sh
+set SCRIPT_PATH=MaxGamer/update-deployment.sh
 
 echo 步骤 1/3: 上传更新脚本到服务器...
 scp %SCRIPT_PATH% %SERVER%:/tmp/update-deployment.sh

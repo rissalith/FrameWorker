@@ -1,0 +1,19 @@
+{
+  "name": "maxgamer",
+  "version": "1.0.0",
+  "description": "MaxGamer - 直播互动游戏平台",
+  "scripts": {
+    "start": "cd backend && python app.py",
+    "backend": "cd backend && python app.py",
+    "dev": "cd backend && python app.py"
+  },
+  "keywords": [
+    "gaming",
+    "live-streaming",
+    "interactive-games",
+    "fortune-telling",
+    "web-app"
+  ],
+  "author": "",
+  "license": "MIT"
+}

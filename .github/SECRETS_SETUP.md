@@ -23,8 +23,8 @@
 | Secret 名称 | 说明 | 示例值 |
 |------------|------|--------|
 | `MYSQL_ROOT_PASSWORD` | MySQL root 密码 | `your_strong_password_123` |
-| `MYSQL_DATABASE` | 数据库名称 | `xmgamer` |
-| `MYSQL_USER` | 数据库用户名 | `xmgamer_user` |
+| `MYSQL_DATABASE` | 数据库名称 | `maxgamer` |
+| `MYSQL_USER` | 数据库用户名 | `maxgamer_user` |
 | `MYSQL_PASSWORD` | 数据库用户密码 | `user_password_456` |
 
 ### 3. Redis 配置（必需）
@@ -53,7 +53,7 @@
 |------------|------|--------|
 | `ALIYUN_ACCESS_KEY_ID` | 阿里云 Access Key ID | `LTAI5txxxxxxxxxx` |
 | `ALIYUN_ACCESS_KEY_SECRET` | 阿里云 Access Key Secret | `xxxxxxxxxxxxxxxx` |
-| `ALIYUN_SMS_SIGN_NAME` | 短信签名 | `XMGamer平台` |
+| `ALIYUN_SMS_SIGN_NAME` | 短信签名 | `MaxGamer平台` |
 | `ALIYUN_SMS_TEMPLATE_CODE` | 短信模板代码 | `SMS_123456789` |
 
 ### 7. 邮件服务配置（可选）
@@ -61,7 +61,7 @@
 | Secret 名称 | 说明 | 示例值 |
 |------------|------|--------|
 | `SENDGRID_API_KEY` | SendGrid API 密钥 | `SG.xxxxxxxxxxxxxxxx` |
-| `SENDGRID_FROM_EMAIL` | 发件人邮箱 | `noreply@xmgamer.com` |
+| `SENDGRID_FROM_EMAIL` | 发件人邮箱 | `noreply@maxgamer.com` |
 
 ### 8. 微信登录配置（可选）
 
@@ -84,10 +84,10 @@
 
 | Secret 名称 | 说明 | 示例值 |
 |------------|------|--------|
-| `DOMAIN` | 主域名 | `xmgamer.com` |
-| `API_DOMAIN` | API 域名 | `api.xmgamer.com` |
-| `GAME_WITCH_DOMAIN` | 游戏域名 | `play-witch.xmgamer.com` |
-| `CORS_ORIGINS` | CORS 允许的源（逗号分隔） | `https://xmgamer.com,https://api.xmgamer.com` |
+| `DOMAIN` | 主域名 | `maxgamer.com` |
+| `API_DOMAIN` | API 域名 | `api.maxgamer.com` |
+| `GAME_WITCH_DOMAIN` | 游戏域名 | `play-witch.maxgamer.com` |
+| `CORS_ORIGINS` | CORS 允许的源（逗号分隔） | `https://maxgamer.com,https://api.maxgamer.com` |
 
 ## 📝 配置步骤
 
@@ -97,7 +97,7 @@
 
 ```bash
 # 生成新的 SSH 密钥对
-ssh-keygen -t rsa -b 4096 -C "github-actions@xmgamer.com" -f ~/.ssh/github_actions_deploy
+ssh-keygen -t rsa -b 4096 -C "github-actions@maxgamer.com" -f ~/.ssh/github_actions_deploy
 
 # 查看公钥（需要添加到服务器）
 cat ~/.ssh/github_actions_deploy.pub
@@ -266,4 +266,4 @@ sudo tail -f /var/log/auth.log
 
 如有问题，请访问：
 - GitHub Issues: https://github.com/rissalith/FrameWorker/issues
-- 部署文档: [DEPLOYMENT.md](../XMGamer/DEPLOYMENT.md)
+- 部署文档: [DEPLOYMENT.md](../MaxGamer/DEPLOYMENT.md)

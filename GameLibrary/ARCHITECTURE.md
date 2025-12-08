@@ -48,7 +48,7 @@ GameLibrary/
   "name": "巫女占卜",
   "version": "1.0.0",
   "description": "体验神秘的占卜之旅，探索你的运势",
-  "author": "XMGamer Team",
+  "author": "MaxGamer Team",
   "icon": "assets/icon.png",
   "thumbnail": "assets/thumbnail.gif",
   "tags": ["占卜", "互动", "直播"],

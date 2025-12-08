@@ -1,15 +1,64 @@
 {
-  "version": "1.0.0",
-  "lastUpdated": "2024-11-25T03:51:00Z",
+  "version": "2.0.0",
+  "lastUpdated": "2024-12-06T14:50:00Z",
+  "platforms": {
+    "douyin": {
+      "id": "douyin",
+      "name": "抖音",
+      "icon": "fab fa-tiktok",
+      "color": "#000000",
+      "enabled": true,
+      "description": "抖音直播平台"
+    },
+    "tiktok": {
+      "id": "tiktok",
+      "name": "TikTok",
+      "icon": "fab fa-tiktok",
+      "color": "#69C9D0",
+      "enabled": true,
+      "description": "TikTok Live Platform"
+    },
+    "twitch": {
+      "id": "twitch",
+      "name": "Twitch",
+      "icon": "fab fa-twitch",
+      "color": "#9146FF",
+      "enabled": true,
+      "description": "Twitch Live Platform"
+    }
+  },
   "games": [
     {
       "id": "fortune-game",
-      "name": "巫女占卜",
+      "name": "巫女上上签",
+      "nameEn": "Miko Fortune",
       "version": "1.0.0",
-      "path": "games/fortune-game",
-      "enabled": true,
-      "installedAt": "2024-11-25T03:51:00Z",
-      "lastUpdated": "2024-11-25T03:51:00Z"
+      "description": "AI驱动的直播互动占卜游戏",
+      "descriptionEn": "AI-powered fortune telling game for Live streaming",
+      "icon": "fortune-game/frontend/assets/待机2.png",
+      "platforms": {
+        "douyin": {
+          "path": "douyin/fortune-game",
+          "enabled": true,
+          "status": "published",
+          "installedAt": "2024-11-25T03:51:00Z"
+        },
+        "tiktok": {
+          "path": "tiktok/fortune-game",
+          "enabled": true,
+          "status": "published",
+          "installedAt": "2024-12-05T10:00:00Z"
+        },
+        "twitch": {
+          "path": "twitch/fortune-game",
+          "enabled": false,
+          "status": "coming_soon",
+          "installedAt": "2024-12-06T14:50:00Z"
+        }
+      },
+      "price": 500,
+      "category": "live-interactive",
+      "tags": ["AI", "占卜", "直播", "互动"]
     }
   ]
 }

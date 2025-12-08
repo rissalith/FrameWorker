@@ -1,0 +1,42 @@
+{
+  "id": "fortune-game-twitch",
+  "name": "Miko Fortune",
+  "version": "1.0.0",
+  "platform": "twitch",
+  "description": "AI-powered fortune telling game for Twitch Live. Experience the mystical fortune journey with 5 fortune types and AI conversations.",
+  "author": "MaxGamer Team",
+  "icon": "frontend/assets/待机2.png",
+  "thumbnail": "frontend/assets/待机2.png",
+  "tags": [
+    "Fortune",
+    "Interactive",
+    "Live",
+    "AI"
+  ],
+  "category": "entertainment",
+  "type": "iframe",
+  "entry": {
+    "frontend": "frontend/index.html",
+    "backend": "backend/api.py"
+  },
+  "status": "coming_soon",
+  "api": {
+    "prefix": "/api/fortune-twitch",
+    "endpoints": []
+  },
+  "websocket": {
+    "enabled": true,
+    "events": [
+      "fortune_chat",
+      "join",
+      "leave",
+      "connect",
+      "disconnect"
+    ]
+  },
+  "permissions": [
+    "websocket",
+    "api",
+    "live-stream"
+  ]
+}

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>注册 - MaxGamer</title>
+    <!-- Google Fonts - 统一字体 -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/auth.css">
+</head>
+<body class="auth-page">
+    <div class="auth-container">
+        <!-- 注册卡片 -->
+        <div class="auth-card">
+            <div class="auth-header">
+                <div class="logo-container">
+                    <img src="/images/logo.png" alt="MaxGamer" class="logo-image" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+                    <div class="logo-fallback" style="display:none;">
+                        <span class="logo-icon">🎬</span>
+                        <h1 class="logo-text">MaxGamer</h1>
+                    </div>
+                </div>
+                <h2 class="auth-title">创建账号</h2>
+                <p class="auth-subtitle">加入我们，开始创作</p>
+            </div>
+
+            <!-- 注册表单 -->
+            <form id="registerForm" class="auth-form">
+                <!-- 邮箱输入 -->
+                <div class="form-group">
+                    <input
+                        type="email"
+                        id="emailInput"
+                        class="form-input"
+                        placeholder="邮箱地址"
+                        required
+                    >
+                    <span class="form-error" id="emailError"></span>
+                </div>
+
+                <!-- 验证码输入 -->
+                <div class="form-group">
+                    <div class="login-input-wrapper">
+                        <input
+                            type="text"
+                            id="codeInput"
+                            class="form-input code-input-flex"
+                            placeholder="验证码"
+                            maxlength="6"
+                            required
+                        >
+                        <button
+                            type="button"
+                            id="sendCodeBtn"
+                            class="send-code-btn"
+                        >
+                            获取验证码
+                        </button>
+                    </div>
+                    <span class="form-error" id="codeError"></span>
+                </div>
+
+                <!-- 密码输入 -->
+                <div class="form-group">
+                    <input
+                        type="password"
+                        id="passwordInput"
+                        class="form-input"
+                        placeholder="设置密码（至少6位）"
+                        required
+                    >
+                    <span class="form-error" id="passwordError"></span>
+                </div>
+
+                <!-- 确认密码输入 -->
+                <div class="form-group">
+                    <input
+                        type="password"
+                        id="confirmPasswordInput"
+                        class="form-input"
+                        placeholder="确认密码"
+                        required
+                    >
+                    <span class="form-error" id="confirmPasswordError"></span>
+                </div>
+
+                <!-- 昵称输入（可选） -->
+                <div class="form-group">
+                    <input
+                        type="text"
+                        id="nicknameInput"
+                        class="form-input"
+                        placeholder="昵称（可选）"
+                        maxlength="20"
+                    >
+                    <span class="form-error" id="nicknameError"></span>
+                </div>
+
+                <!-- 状态消息 -->
+                <div id="authStatus" class="auth-status" style="display: none;"></div>
+
+                <!-- 底部操作 -->
+                <div class="form-actions">
+                    <button type="submit" id="registerBtn" class="btn-primary">
+                        注册
+                    </button>
+                </div>
+
+                <!-- 登录链接 -->
+                <div class="auth-footer">
+                    <span class="footer-text">已有账号？</span>
+                    <a href="login.html" class="footer-link">立即登录</a>
+                </div>
+            </form>
+
+            <!-- 底部链接 -->
+            <div class="bottom-links">
+                <a href="#" class="link">简体中文</a>
+                <a href="#" class="link">帮助</a>
+                <a href="#" class="link">隐私权</a>
+                <a href="#" class="link">条款</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- 引入认证管理模块 -->
+    <script src="js/modules/authManager.js"></script>
+    
+    <!-- 注册页面脚本 -->
+    <script src="js/register.js"></script>
+</body>
+</html>

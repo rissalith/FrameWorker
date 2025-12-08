@@ -436,7 +436,7 @@ class GameLoader {
 在前端路由中添加认证检查：
 
 ```javascript
-// XMGamer/frontend/js/modules/router.js (增强版)
+// MaxGamer/frontend/js/modules/router.js (增强版)
 
 const routes = {
     'game-market': {

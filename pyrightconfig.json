@@ -1,7 +1,7 @@
 {
   "include": [
     "GameLibrary",
-    "XMGamer"
+    "MaxGamer"
   ],
   "exclude": [
     "**/node_modules",
@@ -35,11 +35,11 @@
       ]
     },
     {
-      "root": "XMGamer/backend",
+      "root": "MaxGamer/backend",
       "pythonVersion": "3.8",
       "extraPaths": [
         ".",
-        "XMGamer/backend",
+        "MaxGamer/backend",
         "GameLibrary",
         "GameLibrary/games/fortune-game/backend"
       ]
