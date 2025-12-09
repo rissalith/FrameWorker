@@ -1,325 +1,81 @@
-name: Build and Deploy to Production
+name: Deploy to Production
 
 on:
   push:
     branches:
       - main
-      - master
-  workflow_dispatch:
-
-env:
-  REGISTRY: ghcr.io
-  IMAGE_PREFIX: ${{ github.repository_owner }}/maxgamer
+  workflow_dispatch:  # 允许手动触发
 
 jobs:
-  build-and-push:
-    name: Build and Push Docker Images
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-      packages: write
-    
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-      
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-      
-      - name: Log in to GitHub Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-      
-      - name: Build and push Docker image
-        uses: docker/build-push-action@v5
-        with:
-          context: ./MaxGamer
-          file: ./MaxGamer/Dockerfile
-          push: true
-          tags: |
-            ${{ env.REGISTRY }}/${{ env.IMAGE_PREFIX }}-platform-api:latest
-            ${{ env.REGISTRY }}/${{ env.IMAGE_PREFIX }}-platform-api:${{ github.sha }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-
   deploy:
     name: Deploy to Server
-    needs: build-and-push
     runs-on: ubuntu-latest
-    if: needs.build-and-push.result == 'success' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master')
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-      
-      - name: Create .env file
-        run: |
-          cat > .env << EOF
-          # 数据库配置
-          MYSQL_ROOT_PASSWORD=${{ secrets.MYSQL_ROOT_PASSWORD }}
-          MYSQL_DATABASE=${{ secrets.MYSQL_DATABASE }}
-          MYSQL_USER=${{ secrets.MYSQL_USER }}
-          MYSQL_PASSWORD=${{ secrets.MYSQL_PASSWORD }}
-          
-          # Redis 配置
-          REDIS_PASSWORD=${{ secrets.REDIS_PASSWORD }}
-          
-          # Flask 应用配置
-          FLASK_ENV=production
-          SECRET_KEY=${{ secrets.SECRET_KEY }}
-          JWT_SECRET_KEY=${{ secrets.JWT_SECRET_KEY }}
-          
-          # 游戏 API 配置
-          DEEPSEEK_API_KEY=${{ secrets.DEEPSEEK_API_KEY }}
-          GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY }}
-          
-          # Vector Engine AI 配置（登录页AI对话）
-          VECTORAPI_KEY=${{ secrets.VECTORAPI_KEY }}
-          VECTORAPI_BASE_URL=${{ secrets.VECTORAPI_BASE_URL || 'https://api.vectorengine.ai/v1' }}
-          VECTORAPI_MODEL=${{ secrets.VECTORAPI_MODEL || 'gpt-4o-mini' }}
-          
-          # 短信服务配置
-          ALIYUN_ACCESS_KEY_ID=${{ secrets.ALIYUN_ACCESS_KEY_ID }}
-          ALIYUN_ACCESS_KEY_SECRET=${{ secrets.ALIYUN_ACCESS_KEY_SECRET }}
-          ALIYUN_SMS_SIGN_NAME=${{ secrets.ALIYUN_SMS_SIGN_NAME }}
-          ALIYUN_SMS_TEMPLATE_CODE=${{ secrets.ALIYUN_SMS_TEMPLATE_CODE }}
-          
-          # 邮件服务配置
-          SENDGRID_API_KEY=${{ secrets.SENDGRID_API_KEY }}
-          SENDGRID_FROM_EMAIL=${{ secrets.SENDGRID_FROM_EMAIL }}
-          
-          # 第三方登录配置
-          GOOGLE_CLIENT_ID=${{ secrets.GOOGLE_CLIENT_ID }}
-          GOOGLE_CLIENT_SECRET=${{ secrets.GOOGLE_CLIENT_SECRET }}
-          WECHAT_APP_ID=${{ secrets.WECHAT_APP_ID }}
-          WECHAT_APP_SECRET=${{ secrets.WECHAT_APP_SECRET }}
-          
-          # 支付配置
-          ALIPAY_APP_ID=${{ secrets.ALIPAY_APP_ID }}
-          ALIPAY_PRIVATE_KEY=${{ secrets.ALIPAY_PRIVATE_KEY }}
-          ALIPAY_PUBLIC_KEY=${{ secrets.ALIPAY_PUBLIC_KEY }}
-          WECHAT_PAY_MCH_ID=${{ secrets.WECHAT_PAY_MCH_ID }}
-          WECHAT_PAY_API_KEY=${{ secrets.WECHAT_PAY_API_KEY }}
-          
-          # 域名配置
-          DOMAIN=${{ secrets.DOMAIN }}
-          API_DOMAIN=${{ secrets.API_DOMAIN }}
-          GAME_WITCH_DOMAIN=${{ secrets.GAME_WITCH_DOMAIN }}
-          
-          # 服务器配置
-          PLATFORM_API_PORT=5000
-          GAME_WITCH_PORT=5001
-          
-          # 日志配置
-          LOG_LEVEL=INFO
-          LOG_FILE_MAX_BYTES=10485760
-          LOG_FILE_BACKUP_COUNT=10
-          
-          # 安全配置
-          CORS_ORIGINS=${{ secrets.CORS_ORIGINS }}
-          SESSION_LIFETIME=86400
-          JWT_ACCESS_TOKEN_EXPIRES=3600
-          JWT_REFRESH_TOKEN_EXPIRES=2592000
-          
-          # 性能配置
-          DB_POOL_SIZE=10
-          DB_MAX_OVERFLOW=20
-          REDIS_POOL_SIZE=10
-          WORKERS=4
-          
-          # 开发/调试配置
-          DEBUG=false
-          TESTING=false
-          
-          # 备份配置
-          BACKUP_ENABLED=true
-          BACKUP_SCHEDULE=0 2 * * *
-          BACKUP_RETENTION_DAYS=7
-          EOF
-      
-      - name: Create docker-compose.prod.yml
-        run: |
-          cat > docker-compose.prod.yml << 'EOF'
-          version: '3.8'
-          
-          services:
-            nginx:
-              image: nginx:alpine
-              container_name: maxgamer-gateway
-              restart: always
-              ports:
-                - "80:80"
-                - "443:443"
-              volumes:
-                - ./nginx/conf.d:/etc/nginx/conf.d:ro
-                - ./nginx/ssl:/etc/nginx/ssl:ro
-                - ./logs/nginx:/var/log/nginx
-                - ./MaxGamer/frontend:/usr/share/nginx/html/platform:ro
-              depends_on:
-                - platform-api
-              networks:
-                - maxgamer-net
-          
-            mysql:
-              image: mysql:8.0
-              container_name: maxgamer-db
-              restart: always
-              environment:
-                MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
-                MYSQL_DATABASE: ${MYSQL_DATABASE}
-                MYSQL_USER: ${MYSQL_USER}
-                MYSQL_PASSWORD: ${MYSQL_PASSWORD}
-                TZ: Asia/Shanghai
-              volumes:
-                - ./data/mysql:/var/lib/mysql
-              networks:
-                - maxgamer-net
-              command: 
-                - --character-set-server=utf8mb4
-                - --collation-server=utf8mb4_unicode_ci
-                - --max_connections=500
-                - --innodb_buffer_pool_size=1G
-          
-            redis:
-              image: redis:7-alpine
-              container_name: maxgamer-redis
-              restart: always
-              command: redis-server --appendonly yes --requirepass ${REDIS_PASSWORD}
-              volumes:
-                - ./data/redis:/data
-              networks:
-                - maxgamer-net
-          
-            platform-api:
-              image: ghcr.io/${{ github.repository_owner }}/maxgamer-platform-api:latest
-              container_name: maxgamer-api
-              restart: always
-              environment:
-                DB_HOST: mysql
-                DB_PORT: 3306
-                DB_NAME: ${MYSQL_DATABASE}
-                DB_USER: ${MYSQL_USER}
-                DB_PASSWORD: ${MYSQL_PASSWORD}
-                REDIS_HOST: redis
-                REDIS_PORT: 6379
-                REDIS_PASSWORD: ${REDIS_PASSWORD}
-                FLASK_ENV: production
-                SECRET_KEY: ${SECRET_KEY}
-                JWT_SECRET_KEY: ${JWT_SECRET_KEY}
-                VECTORAPI_KEY: ${VECTORAPI_KEY}
-                VECTORAPI_BASE_URL: ${VECTORAPI_BASE_URL}
-                VECTORAPI_MODEL: ${VECTORAPI_MODEL}
-                GOOGLE_CLIENT_ID: ${GOOGLE_CLIENT_ID}
-                GOOGLE_CLIENT_SECRET: ${GOOGLE_CLIENT_SECRET}
-                ENVIRONMENT: production
-                EMAIL_SERVICE: sendgrid
-                SENDGRID_API_KEY: ${SENDGRID_API_KEY}
-                SENDGRID_FROM_EMAIL: ${SENDGRID_FROM_EMAIL}
-                SENDGRID_FROM_NAME: MaxGamer
-                ALIYUN_ACCESS_KEY_ID: ${ALIYUN_ACCESS_KEY_ID}
-                ALIYUN_ACCESS_KEY_SECRET: ${ALIYUN_ACCESS_KEY_SECRET}
-                ALIYUN_SMS_SIGN_NAME: ${ALIYUN_SMS_SIGN_NAME}
-                ALIYUN_SMS_TEMPLATE_CODE: ${ALIYUN_SMS_TEMPLATE_CODE}
-                FRONTEND_DOMAIN: ${DOMAIN}
-                PORT: 5000
-                TZ: Asia/Shanghai
-              volumes:
-                - ./logs/platform:/app/logs
-              depends_on:
-                - mysql
-                - redis
-              networks:
-                - maxgamer-net
-          
-          
-          networks:
-            maxgamer-net:
-              driver: bridge
-          EOF
-      
-      - name: Copy configuration files to server
-        uses: appleboy/scp-action@v0.1.4
         with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USER }}
-          password: ${{ secrets.SERVER_SSH_KEY }}
-          port: ${{ secrets.SERVER_PORT || 22 }}
-          source: ".env,docker-compose.prod.yml,nginx/,MaxGamer/frontend/"
-          target: ${{ secrets.DEPLOY_PATH || '/var/www/FrameWorker' }}
-          strip_components: 0
-      
-      - name: Deploy to server via SSH
-        uses: appleboy/ssh-action@v1.0.0
-        with:
-          host: ${{ secrets.SERVER_HOST }}
-          username: ${{ secrets.SERVER_USER }}
-          password: ${{ secrets.SERVER_SSH_KEY }}
-          port: ${{ secrets.SERVER_PORT || 22 }}
-          script: |
-            # 进入项目目录
-            cd ${{ secrets.DEPLOY_PATH || '/var/www/FrameWorker' }}
-            
-            # 创建必要的目录
-            mkdir -p data/mysql data/redis logs/nginx logs/platform logs/game-witch nginx/ssl backups vector_db
-            
-            # 登录到GitHub Container Registry
-            echo "登录到GitHub Container Registry..."
-            echo "${{ secrets.GITHUB_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-            
-            # 拉取最新镜像
-            echo "拉取最新镜像..."
-            docker pull ghcr.io/${{ github.repository_owner }}/maxgamer-platform-api:latest
-            
-            # 停止并删除旧容器
-            echo "停止旧容器..."
-            docker-compose -f docker-compose.prod.yml down 2>/dev/null || true
-            
-            # 使用docker-compose启动所有服务
-            echo "启动服务..."
-            docker-compose -f docker-compose.prod.yml up -d
-            
-            # 等待服务启动
-            echo "等待服务启动..."
-            sleep 15
-            
-            # 显示运行状态
-            echo "容器运行状态："
-            docker-compose -f docker-compose.prod.yml ps
-            
-            # 清理未使用的镜像
-            docker image prune -af
-      
-      - name: Health check
-        run: |
-          echo "等待服务启动..."
-          sleep 30
-          
-          # 检查服务健康状态（如果失败不中断部署）
-          if curl -f http://${{ secrets.SERVER_HOST }}/health 2>/dev/null; then
-            echo "✅ 健康检查通过！服务运行正常"
-          else
-            echo "⚠️ 健康检查失败，但容器可能仍在启动中"
-            echo "请手动验证服务状态"
-          fi
+          fetch-depth: 0  # 获取完整历史记录
 
-  notify:
-    name: Send Notification
-    needs: deploy
-    runs-on: ubuntu-latest
-    if: always()
-    
-    steps:
-      - name: Send deployment notification
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.8.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Add server to known hosts
         run: |
-          if [ "${{ needs.deploy.result }}" == "success" ]; then
-            echo "🎉 部署成功！"
-            echo "分支: ${{ github.ref_name }}"
-            echo "提交: ${{ github.sha }}"
-            echo "作者: ${{ github.actor }}"
+          mkdir -p ~/.ssh
+          ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Deploy to server
+        env:
+          SERVER_USER: ${{ secrets.SERVER_USER }}
+          SERVER_HOST: ${{ secrets.SERVER_HOST }}
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+        run: |
+          ssh $SERVER_USER@$SERVER_HOST << 'ENDSSH'
+            set -e
+
+            echo "🚀 Starting deployment..."
+
+            # 进入项目目录
+            cd ${{ secrets.DEPLOY_PATH }}
+
+            # 拉取最新代码
+            echo "📥 Pulling latest code..."
+            git fetch origin
+            git reset --hard origin/main
+
+            # 赋予部署脚本执行权限
+            chmod +x deploy.sh
+
+            # 执行部署
+            echo "⚙️ Running deployment script..."
+            ./deploy.sh --skip-backup
+
+            echo "✅ Deployment completed successfully!"
+          ENDSSH
+
+      - name: Verify deployment
+        env:
+          SERVER_USER: ${{ secrets.SERVER_USER }}
+          SERVER_HOST: ${{ secrets.SERVER_HOST }}
+        run: |
+          ssh $SERVER_USER@$SERVER_HOST << 'ENDSSH'
+            # 检查服务状态
+            docker-compose ps
+
+            # 检查 API 健康状态
+            curl -f http://localhost:3000/api/health || exit 1
+
+            echo "🎉 Deployment verified successfully!"
+          ENDSSH
+
+      - name: Send notification
+        if: always()
+        run: |
+          if [ ${{ job.status }} == 'success' ]; then
+            echo "✅ Deployment successful!"
           else
-            echo "❌ 部署失败！"
-            echo "请检查日志"
+            echo "❌ Deployment failed!"
           fi
