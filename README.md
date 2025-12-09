@@ -3,6 +3,8 @@
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Docker](https://img.shields.io/badge/docker-ready-brightgreen.svg)](docker-compose.yml)
 [![Python](https://img.shields.io/badge/python-3.11-blue.svg)](https://www.python.org/)
+[![CI Tests](https://github.com/WistonPeng/Max-Gamer-Platform/actions/workflows/ci.yml/badge.svg)](https://github.com/WistonPeng/Max-Gamer-Platform/actions/workflows/ci.yml)
+[![Deploy](https://github.com/WistonPeng/Max-Gamer-Platform/actions/workflows/deploy.yml/badge.svg)](https://github.com/WistonPeng/Max-Gamer-Platform/actions/workflows/deploy.yml)
 
 MaxGamer 是一个支持多平台（抖音、TikTok、Twitch、YouTube）的直播互动游戏平台，提供完整的游戏管理、用户认证和平台绑定功能。
 
@@ -26,9 +28,10 @@ MaxGamer 是一个支持多平台（抖音、TikTok、Twitch、YouTube）的直�
 ### 技术架构
 - 🐳 **完全容器化**: Docker + Docker Compose
 - 🔒 **多层隔离**: 前后端、数据库、游戏完全隔离
-- 📦 **自动化部署**: 一键部署脚本
+- 📦 **自动化部署**: 一键部署脚本 + GitHub Actions CI/CD
 - 💾 **数据持久化**: PostgreSQL + Redis
 - 🚀 **高性能**: Nginx 反向代理、缓存优化
+- ✅ **自动化测试**: CI/CD 流水线、单元测试
 
 ## 🚀 快速开始
 
@@ -200,6 +203,38 @@ docker-compose exec maxgamer-backend bash
 docker stats
 ```
 
+## 🔄 GitHub Actions CI/CD
+
+项目已配置自动化部署流水线，每次推送到 `main` 分支时自动触发。
+
+### 自动化流程
+
+**CI 测试流程：**
+1. ✅ Python 单元测试
+2. ✅ 代码质量检查 (flake8)
+3. ✅ Docker 镜像构建
+4. ✅ 配置文件验证
+
+**自动部署流程：**
+1. 🚀 SSH 连接到服务器
+2. 📥 拉取最新代码
+3. 🔨 执行部署脚本
+4. ✅ 健康检查验证
+
+### 配置 Actions
+
+参考 [GitHub Actions 设置指南](.github/ACTIONS_SETUP.md) 配置自动化部署。
+
+**必须配置的 Secrets：**
+- `SSH_PRIVATE_KEY` - SSH 私钥
+- `SERVER_HOST` - 服务器地址
+- `SERVER_USER` - SSH 用户名
+- `DEPLOY_PATH` - 项目路径
+
+### 手动触发部署
+
+访问仓库的 **Actions** 页面，选择 **Deploy to Production**，点击 **Run workflow** 即可手动触发部署。
+
 ## 📊 项目结构
 
 ```
@@ -223,6 +258,9 @@ MaxGamer/
 ├── deploy.sh               # 自动化部署脚本
 ├── nginx.conf              # Nginx 配置
 ├── .env.example            # 环境变量模板
+├── .github/                # GitHub Actions
+│   ├── workflows/          # CI/CD 工作流
+│   └── ACTIONS_SETUP.md    # Actions 配置指南
 ├── DEPLOYMENT.md           # 部署文档
 └── DEPLOY_GUIDE.md         # 自动化部署指南
 ```
