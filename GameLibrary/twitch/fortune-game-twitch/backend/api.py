@@ -273,11 +273,11 @@ def _refresh_twitch_token(binding, db):
 
     try:
         # Twitch OAuth 配置
-        client_id = '3tfkf4ohu90fmn5v6r339cgim5task'
+        client_id = os.getenv('TWITCH_CLIENT_ID')
         client_secret = os.getenv('TWITCH_CLIENT_SECRET')
 
-        if not client_secret:
-            print('[Fortune Twitch] 缺少 TWITCH_CLIENT_SECRET 环境变量')
+        if not client_id or not client_secret:
+            print('[Fortune Twitch] 缺少 TWITCH_CLIENT_ID 或 TWITCH_CLIENT_SECRET 环境变量')
             return False
 
         # 请求新的 access token

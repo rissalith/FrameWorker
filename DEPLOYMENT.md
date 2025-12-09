@@ -105,7 +105,7 @@ git pull origin main
 
 ```bash
 # Twitch OAuth 配置
-TWITCH_CLIENT_ID=3tfkf4ohu90fmn5v6r339cgim5task
+TWITCH_CLIENT_ID=你的_twitch_client_id
 TWITCH_CLIENT_SECRET=your_twitch_client_secret_here
 TWITCH_REDIRECT_URI=https://your-domain.com/api/auth/platform-callback/twitch
 ```

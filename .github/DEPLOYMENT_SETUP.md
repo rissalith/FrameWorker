@@ -77,7 +77,7 @@ REDIS_HOST=maxgamer-redis
 REDIS_PORT=6379
 
 # Twitch OAuth 配置
-TWITCH_CLIENT_ID=3tfkf4ohu90fmn5v6r339cgim5task
+TWITCH_CLIENT_ID=你的_twitch_client_id
 TWITCH_CLIENT_SECRET=从 Twitch 开发者控制台获取
 TWITCH_REDIRECT_URI=https://your-domain.com/api/auth/platform-callback/twitch
 ```
