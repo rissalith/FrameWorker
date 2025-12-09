@@ -58,3 +58,18 @@ __pycache__/
 # 忽略 Windows 保留设备名文件
 nul
 NUL
+
+# 忽略包含敏感信息的配置文件
+GITHUB_SECRETS_*.md
+GITHUB_ACTIONS_CONFIG.md
+*_PRIVATE_*.md
+*.pem
+*.key
+id_rsa*
+*.pub
+.ssh/
+
+# 忽略本地配置和凭证
+credentials.json
+secrets.json
+.secrets/
