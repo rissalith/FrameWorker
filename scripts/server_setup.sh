@@ -87,6 +87,14 @@ echo "步骤 3: 配置 Twitch OAuth"
 echo "=========================================="
 echo ""
 
+echo "请输入 Twitch Client ID（从 https://dev.twitch.tv/console/apps 获取）："
+read -r TWITCH_CLIENT_ID
+echo ""
+
+if [[ -z "$TWITCH_CLIENT_ID" ]]; then
+    echo -e "${YELLOW}警告: Twitch Client ID 为空，Twitch 功能将无法使用${NC}"
+fi
+
 echo "请输入 Twitch Client Secret（从 https://dev.twitch.tv/console/apps 获取）："
 read -s TWITCH_CLIENT_SECRET
 echo ""
@@ -147,7 +155,9 @@ REDIS_HOST=maxgamer-redis
 REDIS_PORT=6379
 
 # ========== Twitch OAuth 配置 ==========
-TWITCH_CLIENT_ID=3tfkf4ohu90fmn5v6r339cgim5task
+# 注意：请从 Twitch Developer Console 获取您的 Client ID
+# 访问: https://dev.twitch.tv/console/apps
+TWITCH_CLIENT_ID=$TWITCH_CLIENT_ID
 TWITCH_CLIENT_SECRET=$TWITCH_CLIENT_SECRET
 TWITCH_REDIRECT_URI=https://$DOMAIN/api/auth/platform-callback/twitch
 
