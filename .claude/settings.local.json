@@ -64,7 +64,13 @@
       "Bash(git fetch:*)",
       "Bash(git checkout:*)",
       "Bash(git branch:*)",
-      "Bash(git subtree:*)"
+      "Bash(git subtree:*)",
+      "Bash(git init:*)",
+      "Bash(gh run list:*)",
+      "Bash(nslookup:*)",
+      "Bash(dig:*)",
+      "Bash(git rev-parse:*)",
+      "Bash(gh workflow run:*)"
     ],
     "deny": [],
     "ask": []

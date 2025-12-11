@@ -8,6 +8,7 @@ python-socketio==5.10.0
 # 数据库
 SQLAlchemy==2.0.23
 Flask-SQLAlchemy==3.1.1
+psycopg2-binary==2.9.9
 
 # 认证
 Flask-JWT-Extended==4.6.0

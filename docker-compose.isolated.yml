@@ -57,6 +57,11 @@ services:
       # 数据库连接（使用 PostgreSQL）
       - DATABASE_URL=postgresql://${DB_USER:-maxgamer_user}:${DB_PASSWORD:-change_this_password}@maxgamer-db:5432/${DB_NAME:-maxgamer}
 
+      # OAuth 第三方登录配置
+      - FRONTEND_DOMAIN=${FRONTEND_DOMAIN:-www.max-gamer.com}
+      - GOOGLE_CLIENT_ID=${GOOGLE_CLIENT_ID:-}
+      - GOOGLE_CLIENT_SECRET=${GOOGLE_CLIENT_SECRET:-}
+
       # Twitch OAuth 配置
       - TWITCH_CLIENT_ID=${TWITCH_CLIENT_ID:-your-twitch-client-id}
       - TWITCH_CLIENT_SECRET=${TWITCH_CLIENT_SECRET}
@@ -64,6 +69,11 @@ services:
 
       # 游戏库路径（只读挂载）
       - GAME_LIBRARY_PATH=/app/GameLibrary
+
+      # DeepSeek AI API 配置
+      - VECTORAPI_KEY=${VECTORAPI_KEY:-}
+      - VECTORAPI_BASE_URL=${VECTORAPI_BASE_URL:-https://api.deepseek.com/v1}
+      - VECTORAPI_MODEL=${VECTORAPI_MODEL:-deepseek-chat}
 
     volumes:
       # 【隔离】游戏库目录（只读，防止游戏修改平台代码）

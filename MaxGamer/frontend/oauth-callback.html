@@ -116,14 +116,8 @@
                     sessionStorage.removeItem('code_verifier');
                 }
                 
-                // 获取API基础URL
-                const hostname = window.location.hostname;
-                let apiBaseUrl;
-                if (hostname === 'localhost' || hostname === '127.0.0.1') {
-                    apiBaseUrl = 'http://localhost:5000/api';
-                } else {
-                    apiBaseUrl = `https://api.${hostname.replace('www.', '')}/api`;
-                }
+                // 获取API基础URL（API在同域名下通过nginx代理）
+                const apiBaseUrl = `${window.location.origin}/api`;
                 
                 // 调用后端API处理OAuth登录
                 const apiUrl = `${apiBaseUrl}/auth/${provider}/login`;
