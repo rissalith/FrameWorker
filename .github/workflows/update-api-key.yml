@@ -1,0 +1,111 @@
+name: Update API Key
+
+on:
+  workflow_dispatch:  # 允许手动触发
+
+jobs:
+  update-key:
+    name: Update DeepSeek API Key
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.8.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Add server to known hosts
+        run: |
+          mkdir -p ~/.ssh
+          ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Update API key on server
+        env:
+          SERVER_USER: ${{ secrets.SERVER_USER }}
+          SERVER_HOST: ${{ secrets.SERVER_HOST }}
+          DEPLOY_PATH: ${{ secrets.DEPLOY_PATH }}
+          DEEPSEEK_API_KEY: ${{ secrets.DEEPSEEK_API_KEY }}
+        run: |
+          ssh $SERVER_USER@$SERVER_HOST "bash -s" << EOF
+            set -e
+
+            echo "🔑 Updating DeepSeek API key..."
+
+            # 进入项目目录
+            cd $DEPLOY_PATH
+
+            # 检查 .env 文件是否存在
+            if [ ! -f "MaxGamer/backend/.env" ]; then
+              echo "❌ .env file not found at MaxGamer/backend/.env"
+              exit 1
+            fi
+
+            # 备份当前 .env 文件
+            cp MaxGamer/backend/.env MaxGamer/backend/.env.backup
+
+            # 更新 API 密钥
+            sed -i "s|VECTORAPI_KEY=.*|VECTORAPI_KEY=$DEEPSEEK_API_KEY|g" MaxGamer/backend/.env
+
+            # 验证更新
+            if grep -q "VECTORAPI_KEY=$DEEPSEEK_API_KEY" MaxGamer/backend/.env; then
+              echo "✅ API key updated successfully"
+            else
+              echo "❌ Failed to update API key"
+              # 恢复备份
+              mv MaxGamer/backend/.env.backup MaxGamer/backend/.env
+              exit 1
+            fi
+
+            # 重启后端容器
+            echo "🔄 Restarting backend container..."
+            docker restart maxgamer-api
+
+            # 等待容器启动
+            echo "⏳ Waiting for container to start..."
+            sleep 15
+
+            # 测试 API
+            echo "🧪 Testing AI API..."
+            response=\$(curl -s -X POST http://localhost:3000/api/ai/chat \
+              -H 'Content-Type: application/json' \
+              -d '{"interaction_type":"comment","message":"test","context":{"platform":"MaxGamer","page":"test","count":1,"language":"en-US"}}')
+
+            if echo "\$response" | grep -q '"success":true'; then
+              echo "✅ AI API is working!"
+              echo "Response: \$response"
+            else
+              echo "⚠️  API response: \$response"
+              if echo "\$response" | grep -q "API密钥未配置"; then
+                echo "❌ API key still not configured properly"
+                exit 1
+              fi
+            fi
+
+            echo "🎉 API key update completed!"
+          EOF
+
+      - name: Verify update
+        env:
+          SERVER_USER: ${{ secrets.SERVER_USER }}
+          SERVER_HOST: ${{ secrets.SERVER_HOST }}
+        run: |
+          ssh $SERVER_USER@$SERVER_HOST "bash -s" << 'EOF'
+            # 检查容器状态
+            if docker ps | grep -q maxgamer-api; then
+              echo "✅ Backend container is running"
+            else
+              echo "❌ Backend container is not running"
+              exit 1
+            fi
+
+            echo "🎉 Verification successful!"
+          EOF
+
+      - name: Send notification
+        if: always()
+        run: |
+          if [ ${{ job.status }} == 'success' ]; then
+            echo "✅ API key updated successfully!"
+          else
+            echo "❌ Failed to update API key!"
+          fi
