@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI聊天窗口测试 - MaxGamer</title>
+
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: 'Noto Sans SC', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .test-container {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            max-width: 500px;
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+
+        .test-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 16px;
+            border-radius: 30px;
+            cursor: pointer;
+            margin: 10px;
+            transition: transform 0.2s;
+        }
+
+        .test-btn:hover {
+            transform: scale(1.05);
+        }
+
+        .status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            background: #f0f0f0;
+        }
+
+        .success {
+            color: #10b981;
+        }
+
+        .error {
+            color: #ef4444;
+        }
+    </style>
+
+    <!-- 加载AI聊天窗口CSS -->
+    <link rel="stylesheet" href="css/ai-chat-window.css">
+</head>
+<body>
+    <div class="test-container">
+        <h1>🤖 AI聊天窗口测试</h1>
+        <p>点击下面的按钮测试聊天窗口功能</p>
+
+        <button class="test-btn" onclick="openChat()">打开聊天窗口</button>
+        <button class="test-btn" onclick="testAPI()">测试AI API</button>
+
+        <div class="status" id="status">
+            等待测试...
+        </div>
+
+        <div style="margin-top: 30px; padding: 20px; background: #f9fafb; border-radius: 10px; text-align: left;">
+            <h3 style="margin-top: 0;">📋 检查清单：</h3>
+            <div id="checklist"></div>
+        </div>
+    </div>
+
+    <!-- 加载AI聊天窗口脚本 -->
+    <script src="js/ai-chat-window.js"></script>
+
+    <script>
+        // 页面加载时检查
+        window.addEventListener('load', function() {
+            const checklist = document.getElementById('checklist');
+            const checks = [];
+
+            // 检查AI聊天窗口是否加载
+            if (window.aiChatWindow) {
+                checks.push('✅ ai-chat-window.js 已加载');
+            } else {
+                checks.push('❌ ai-chat-window.js 未加载');
+            }
+
+            // 检查AI聊天窗口是否初始化
+            if (window.aiChatWindow && window.aiChatWindow.container) {
+                checks.push('✅ 聊天窗口已初始化');
+            } else {
+                checks.push('❌ 聊天窗口未初始化');
+            }
+
+            // 检查CSS是否加载
+            const chatWindow = document.querySelector('.ai-chat-window');
+            if (chatWindow) {
+                checks.push('✅ 聊天窗口DOM已创建');
+            } else {
+                checks.push('❌ 聊天窗口DOM未创建');
+            }
+
+            checklist.innerHTML = checks.join('<br>');
+        });
+
+        function openChat() {
+            const status = document.getElementById('status');
+
+            if (window.aiChatWindow) {
+                window.aiChatWindow.open();
+                status.innerHTML = '<span class="success">✅ 聊天窗口已打开！</span>';
+            } else {
+                status.innerHTML = '<span class="error">❌ AI聊天窗口未加载</span>';
+            }
+        }
+
+        async function testAPI() {
+            const status = document.getElementById('status');
+            status.innerHTML = '⏳ 正在测试AI API...';
+
+            try {
+                const response = await fetch('/api/ai/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        interaction_type: 'comment',
+                        message: '你好',
+                        context: {
+                            platform: 'MaxGamer',
+                            page: 'test',
+                            count: 1,
+                            language: 'zh-CN'
+                        }
+                    })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success) {
+                        status.innerHTML = `<span class="success">✅ API测试成功！<br>AI回复: ${data.message}</span>`;
+                    } else {
+                        status.innerHTML = `<span class="error">❌ API返回失败: ${data.message || '未知错误'}</span>`;
+                    }
+                } else {
+                    status.innerHTML = `<span class="error">❌ HTTP错误: ${response.status} ${response.statusText}</span>`;
+                }
+            } catch (error) {
+                status.innerHTML = `<span class="error">❌ 网络错误: ${error.message}</span>`;
+            }
+        }
+    </script>
+</body>
+</html>
