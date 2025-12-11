@@ -183,10 +183,10 @@ class FortuneConfigManager {
             if (savedApiKey) {
                 this.apiKeyInput.value = savedApiKey;
             } else {
-                // 显示默认API Key（部分隐藏）
-                const defaultKey = 'sk-4ITgC1TTgVh4pgJHidHsEf30z6Y9u44q9FdtVUQhpEZRqI1Y';
+                // API Key should be provided by user
+                const defaultKey = '';  // No default key - user must provide their own
                 this.apiKeyInput.value = defaultKey;
-                this.apiKeyInput.placeholder = '使用默认API Key';
+                this.apiKeyInput.placeholder = 'Enter your API Key';
             }
             
             if (savedRules) {
@@ -293,8 +293,8 @@ class FortuneConfigManager {
      */
     resetToDefault() {
         if (confirm('确定要恢复默认配置吗？这将清除您的自定义设置。')) {
-            // 恢复默认API Key
-            const defaultKey = 'sk-4ITgC1TTgVh4pgJHidHsEf30z6Y9u44q9FdtVUQhpEZRqI1Y';
+            // Reset API Key - user must provide their own
+            const defaultKey = '';  // No default key
             this.apiKeyInput.value = defaultKey;
             
             // 清空自定义规则

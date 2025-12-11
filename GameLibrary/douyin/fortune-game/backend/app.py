@@ -13,7 +13,8 @@ from services.live_service import LiveService
 from services.fortune_agent_llmx import get_agent, reset_agent
 
 # 设置DeepSeek API密钥
-os.environ['DEEPSEEK_API_KEY'] = 'sk-5def947674f94a0384c557d47c8a3a0c'
+# DEEPSEEK_API_KEY should be set in environment variables or .env file
+# os.environ['DEEPSEEK_API_KEY'] = 'your-api-key-here'
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'your-secret-key-here'
